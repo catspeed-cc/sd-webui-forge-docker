@@ -8,6 +8,9 @@ Forge is currently based on SD-WebUI 1.10.1 at [this commit](https://github.com/
 
 News are moved to this link: [Click here to see the News section](https://github.com/lllyasviel/stable-diffusion-webui-forge/blob/main/NEWS.md)
 
+# Dockerized Stable Diffusion WebUI Forge
+I am working on a dockerized version, as I need one for my own usage. I will attempt to create it, and keep it up to date. I will replace this message with instructions when complete.
+
 # Quick List
 
 [Gradio 4 UI Must Read (TLDR: You need to use RIGHT MOUSE BUTTON to move canvas!)](https://github.com/lllyasviel/stable-diffusion-webui-forge/discussions/853)
