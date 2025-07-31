@@ -75,6 +75,9 @@ Models can be put in `sd-webui-forge-docker/models/` directory, organized by typ
 
 Outputs are stored in `sd-webui-forge-docker/outputs/txt2img-images/` directory, organized by date
 
+- Clone the catspeed-cc repository for now `git clone https://github.com/catspeed-cc/sd-webui-forge-docker.git`
+- Read the rest of this section, then jump to either [CPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested), [Single GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested), or [Single of Multiple GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested)
+
 Due to the nature of Docker, an image running at shutdown _should_ start up again on boot. If this does not happen, submit a [catspeedcc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
 There are a few main files:
