@@ -131,19 +131,7 @@ Simply run `docker compose up` as it will select automatically the `docker-compo
 - Run `docker compose -f docker-compose.yaml -f docker-compose.multi-gpu.nvidia.yaml up`
 - CTRL + C to close it. Do not bother removing it.
 - If removal is required use `docker compose -f docker-compose.yaml -f docker-compose.multi-gpu.nvidia.yaml down`
-
-# Docker Image Build (unsupported)
-
-These are mostly for my reference. If you wish to build the image they are here for you also. Just keep in mind this is unsupported and you are on your own.
-
-- `docker build -t myorganization/myrepository:mytag .` general build (will be cached)
-
-**_OR_**
-
-- `docker build --progress=plain --build-arg DUMMY=$(date +%s) -t myorganization/myrepository:mytag .` debug build - so you can debug the Dockerfile without caching certain elements
-
-That's it! As previously mentioned, there is no support for this from this point onwards. These were documented for @mooleshacat.
-
+- 
 ## Startup Time Warning:
 The startup time takes a while, it is doing a lot for you in the background. This should become faster on multiple start/stop of the container, but if you `docker compose down` you will need to wait again on next `docker compose up`. Not sure why, maybe it gets obliterated each time.
 
@@ -155,6 +143,18 @@ Holy crap! The image ... YES the image is large. It starts with the fact that we
 The developers know their own project better than I - and I am a noob. They can integrate it into docker better, and try to cut waste out of the image, but of course all dependencies need to be baked into the image. Otherwise the images will not work, or it would have to fetch them inside the container _every time_ you wanted to `docker compose down`. I am happy to help, but mostly can sit and make my own mess in my repository :)
 
 Do not worry, I have _not_ loaded it with 1000's of models :P
+
+## Docker Image Build Warning (unsupported):
+
+These are mostly for my reference. If you wish to build the image they are here for you also. Just keep in mind this is unsupported and you are on your own.
+
+- `docker build -t myorganization/myrepository:mytag .` general build (will be cached)
+
+**_OR_**
+
+- `docker build --progress=plain --build-arg DUMMY=$(date +%s) -t myorganization/myrepository:mytag .` debug build - so you can debug the Dockerfile without caching certain elements
+
+That's it! As previously mentioned, there is no support for this from this point onwards. These were documented for @mooleshacat.
 
 # Forge Status
 
