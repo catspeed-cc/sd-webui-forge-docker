@@ -79,8 +79,8 @@ Due to the nature of Docker, an image running at shutdown _should_ start up agai
 
 These are the current tags:
 ```
-catspeedcc/sd-webui-forge-docker:latest
-catspeedcc/sd-webui-forge-docker:v1.0.0
+catspeedcc/sd-webui-forge-docker:latest - currently points to v1.0.0
+catspeedcc/sd-webui-forge-docker:v1.0.0 - latest stable version (first release)
 
 catspeedcc/sd-webui-forge-docker:development - (not supported, if you use it you are on your own.)
 catspeedcc/sd-webui-forge-docker:bleeding - (not supported, ephemeral, if you use it you are on your own.)
