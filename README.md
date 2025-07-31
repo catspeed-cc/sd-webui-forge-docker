@@ -77,6 +77,13 @@ Outputs are stored in `sd-webui-forge-docker/outputs/txt2img-images/` directory,
 
 Due to the nature of Docker, an image running at shutdown _should_ start up again on boot. If this does not happen, submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
+These are the current tags:
+```
+catspeedcc/sd-webui-forge-docker:latest - (coming soon)
+catspeedcc/sd-webui-forge-docker:v1.0.0 - (coming soon)
+catspeedcc/sd-webui-forge-docker:development - development tag, unsupported
+```
+
 There are a few main files:
 ```
 docker-compose.yaml # CPU-only
