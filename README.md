@@ -82,12 +82,25 @@ Simply run `docker compose up` as it will select automatically the `docker-compo
 
 - Edit `docker-compose.single-gpu.nvidia.yaml` there are comments to guide you
   - You won't need to edit this on first run, unless you have issues.
-  - If you plan only to have image processing, 50GB or less swap should suffice
+  - If you plan only to have image processing, 25GB swap should suffice.
   - If you have issues edit the `docker-compose.single-gpu.nvidia.yaml` file using the comments as guidance.
   - Main lines are `#- --always-low-vram` (un comment if problems persist) and `- --vae-in-fp32` (comment if uncommenting the former - unconfirmed requirement)
 - Run `docker compose -f docker-compose.yaml -f docker-compose.single-gpu.nvidia.yaml up`
 - CTRL + C to close it. Do not bother removing it.
 - If removal is required use `docker compose -f docker-compose.yaml -f docker-compose.single-gpu.nvidia.yaml down`
+
+### Single of Multiple GPU Only
+
+- There is no way to combine multiple GPU to work to the same effort that I am aware of yet.
+- You can designate one GPU to this, and use the other GPU's for other tasks :)
+- Run `nvidia-smi` and note the GPU index (0? 1? 2? etc.)
+- Edit `docker-compose.multi-gpu.nvidia.yaml` replacing the `1` only with the index of your desired GPU
+  - If you plan only to have other AI workloads on the other GPU's, 100GB (or more) swap should suffice (for offloading if model not fit on GPU VRAM)
+  - If you have issues edit the `docker-compose.multi-gpu.nvidia.yaml` file using the comments as guidance.
+  - Main lines are `#- --always-low-vram` (un comment if problems persist) and `- --vae-in-fp32` (comment if uncommenting the former - unconfirmed requirement)
+- Run `docker compose -f docker-compose.yaml -f docker-compose.multi-gpu.nvidia.yaml up`
+- CTRL + C to close it. Do not bother removing it.
+- If removal is required use `docker compose -f docker-compose.yaml -f docker-compose.multi-gpu.nvidia.yaml down`
 
 # Forge Status
 
