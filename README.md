@@ -79,22 +79,22 @@ Due to the nature of Docker, an image running at shutdown _should_ start up agai
 
 These are the current tags:
 ```
-catspeedcc/sd-webui-forge-docker:latest - (coming soon)
-catspeedcc/sd-webui-forge-docker:v1.0.0 - (coming soon)
+catspeedcc/sd-webui-forge-docker:latest
+catspeedcc/sd-webui-forge-docker:v1.0.0
 
-catspeedcc/sd-webui-forge-docker:development - kept @ parity w/ development, unsupported
-catspeedcc/sd-webui-forge-docker:bleeding - can be literally anything I want to test, unsupported
+catspeedcc/sd-webui-forge-docker:development - (not supported, if you use it you are on your own.)
+catspeedcc/sd-webui-forge-docker:bleeding - (not supported, ephemeral, if you use it you are on your own.)
 ```
 
 There are a few main files:
 ```
 docker-compose.yaml # CPU-only
 
-docker-compose.single-gpu.nvidia.yaml # Single GPU only
-docker-compose.multi-gpu.nvidia.yaml # ONE OF MULTIPLE GPU only
+docker-compose.single-gpu.nvidia.yaml    # Single GPU only
+docker-compose.multi-gpu.nvidia.yaml    # ONE OF MULTIPLE GPU only
 
-docker-compose.combined.nvidia.yaml # ONLY so you can copy the service into
-                                    # a different docker-compose.yml file ;)
+docker-compose.combined.nvidia.yaml     # ONLY so you can copy the service into
+                                        # a different docker-compose.yml file ;)
 ```
 
 As far as I know there is no way to combine multiple GPU's on this one same task (image generation) but you can dedicate one of many GPU's to image generation and then use the other GPU's for other tasks (chat, development, etc)
@@ -140,7 +140,7 @@ The way to fix it and cut down startup time is to make your own shellscript that
 ## Large Image Warning:
 Holy crap! The image ... YES the image is large. It starts with the fact that we need a full Ubuntu image with cuda12 for this machine learning / AI task. Then you have the original repository being required to fetch other repositories at runtime on launch to function. When I dockerized this everything was "baked into" the image. Unfortunately I do not see any way around this, even if the _upstream developers_ used submodules, they still have to be initialized and "baked into" the image. ML/AI related source repositories and models are _very_ large, due to the nature of the task. 
 
-The developers know their own project better than I - and I am a noob. They can integrate it into docker better, and try to cut waste out of the image, but of course all dependencies need to be baked into the image. Otherwise the images will not work, or it would have to fetch them inside the container _every time_ you wanted to `docker compose down`. I am happy to help, but mostly can sit and make my own mess in my repository :)
+The developers know their own project better than I - and I am a noob. They can integrate it into docker better, and try to cut waste out of the image, but of course all dependencies need to be baked into the image. Otherwise the images will not work, or it would have to fetch them inside the container _every time_ you wanted to `docker compose down`. It is not the kind of image I would suggest converting to alpine to slim it down, it would be _a lot_ of work. I am happy to help with anything, but mostly can sit and make my own mess in my repository :)
 
 Do not worry, I have _not_ loaded it with 1000's of models :P
 
