@@ -108,7 +108,7 @@ All Docker support for now goes to [catspeed-cc issue tickets](https://github.co
 
 Simply run `docker compose up` as it will select automatically the `docker-compose.yml`. There is no configuring as far as I can tell. If otherwise please submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
-### Single GPU Only (untested)
+### Single GPU Only (untested, should work)
 
 - Edit `docker-compose.single-gpu.nvidia.yaml` there are comments to guide you
   - You won't need to edit this on first run, unless you have issues.
