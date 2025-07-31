@@ -11,7 +11,7 @@ echo "Debug: DOCKER_PSA_LIST:[$DOCKER_PSA_LIST]"
 while read line; do
     echo "Starting docker container: $line"
     docker start $line
-done <<< "$data"
+done <<< "$DOCKER_PSA_LIST"
 
 echo "docker ps output"
 docker ps
