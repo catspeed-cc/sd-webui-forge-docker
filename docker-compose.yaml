@@ -6,7 +6,7 @@ services:
     # kept in for development, do not uncomment!
     #build: .
     # use the image below :)
-    image: catspeedcc/sd-webui-forge-docker:development
+    image: catspeedcc/sd-webui-forge-docker:latest
     command:
       - /app/webui-docker.sh
     ports:

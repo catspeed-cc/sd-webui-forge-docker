@@ -12,7 +12,7 @@ services:
   # GOOD LUCK, YOU ARE NOW OUT OF SCOPE :~P (unsupported)
   sd-forge:
     # use the image below :)
-    image: catspeedcc/sd-webui-forge-docker:development
+    image: catspeedcc/sd-webui-forge-docker:latest
     ports:
       # This is where we limit to localhost or change 127.0.0.1->0.0.0.0
       # but ensure firewalls properly configured (security)!
