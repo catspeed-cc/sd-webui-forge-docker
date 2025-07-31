@@ -65,7 +65,8 @@ If you know what you are doing, you can also install Forge using same method as 
 You can download previous versions [here](https://github.com/lllyasviel/stable-diffusion-webui-forge/discussions/849).
 
 # Docker Installation
-There are multiple docker-compose files. The instructions are straight forward. You must have docker installed so that you can run docker-compose commands without the dash ex. `docker compose up`. If you haven't figured this out, you can try running these commands with the dash ex. `docker-compose up` but if it does not work you will need to figure how to install docker in this way. I am going to look into how I installed it this way, I used to have it the other way. Will update readme.md :)
+
+There are multiple docker-compose files. The instructions are straight forward. You must have docker installed so that you can run docker-compose commands without the dash ex. `docker compose up`. If you haven't figured this out, you can try running the commands with the dash ex. `docker-compose up` but if it does not work you will need to figure how to install docker in this way. I am going to look into how I installed it this way, I used to have it the other way. Will update readme.md :)
 
 There are a few main files:
 ```
@@ -73,6 +74,8 @@ docker-compose.yaml # CPU-only
 docker-compose.single-gpu.nvidia.yaml # Single GPU only
 docker-compose.multi-gpu.nvidia.yaml # ONE OF MULTIPLE GPU only
 ```
+
+All Docker support for now goes to [here](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and if this ever gets merged upstream.
 
 ### CPU Only
 
@@ -101,6 +104,15 @@ Simply run `docker compose up` as it will select automatically the `docker-compo
 - Run `docker compose -f docker-compose.yaml -f docker-compose.multi-gpu.nvidia.yaml up`
 - CTRL + C to close it. Do not bother removing it.
 - If removal is required use `docker compose -f docker-compose.yaml -f docker-compose.multi-gpu.nvidia.yaml down`
+
+# Docker Image Build (unsupported)
+
+These are mostly for my reference. If you wish to build the image they are here for you also. Just keep in mind this is unsupported and you are on your own.
+
+- `docker build -t catspeedcc/sd-webui-forge-docker:development .` general build (will be cached)
+- `docker build --progress=plain --build-arg DUMMY=$(date +%s) -t catspeedcc/sd-webui-forge-docker:development .` debug build - so you can debug the Dockerfile without caching certain elements
+
+That's it! As previously mentioned, there is no support for this from this point onwards. These were documented for @mooleshacat.
 
 # Forge Status
 
