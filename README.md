@@ -66,7 +66,10 @@ You can download previous versions [here](https://github.com/lllyasviel/stable-d
 
 # Docker Installation
 
-There are multiple docker-compose files. The instructions are straight forward. You must have docker installed so that you can run docker-compose commands without the dash ex. `docker compose up`. If you haven't figured this out, you can try running the commands with the dash ex. `docker-compose up` but if it does not work you will need to figure how to install docker in this way. I am going to look into how I installed it this way, I used to have it the other way. Will update readme.md :)
+Install Docker:
+- `sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
+- Test the installation worked with `docker compose version` you should get something like `Docker Compose version v2.24.5`
+- If trouble submit a [catspeedcc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
 Due to the nature of Docker, an image running at shutdown _should_ start up again on boot. If this does not happen, submit a [catspeedcc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
