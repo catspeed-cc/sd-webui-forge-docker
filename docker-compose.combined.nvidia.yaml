@@ -1,4 +1,4 @@
-# docker-compose.yml example
+# docker-compose.combined.nvidia.yaml example
 
 #
 ## WARNING: There is no way to combine all GPU, this is to target
@@ -11,20 +11,27 @@ services:
   # COPY HERE TO END OF FILE TO COPY INTO OTHER DOCKER-COMPOSE
   # GOOD LUCK, YOU ARE NOW OUT OF SCOPE :~P (unsupported)
   sd-forge:
-    # kept in for development, do not uncomment!
-    #build: .
     # use the image below :)
     image: catspeedcc/sd-webui-forge-docker:development
     ports:
-      - "7860:7860"
+      # This is where we limit to localhost or change 127.0.0.1->0.0.0.0
+      # but ensure firewalls properly configured (security)!
+      - "127.0.0.1:7860:7860"
     volumes:
+      # YOU NEED TO CREATE THESE BELOW (IMPORTANT!)
       - ./models:/app/webui/models
       - ./outputs:/app/webui/outputs
+      # You will need to put the docker-compose scripts inside a new directory.
+      # Put in root, docker only runs as root without extensive re-configuration
+      # Run inside /root "cd /root && mkdir -p sdwebui-docker_run/models && mkdir -p sdwebui-docker_run/outputs"
+      # Put docker-compose scripts inside /root/sdwebui-docker_run/ directory
     command:
       # do not touch, this starts the startup script inside container
       - /app/webui-docker.sh
-      # do not touch, commenting this makes webui unavailable to host
-      - --server-name=0.0.0.0
+      # leave below, we bind it to 127.0.0.1 below on the host
+      # experimenting removal of this, to bind back to localhost inside container
+      #- --server-name=0.0.0.0
+      # REMOVE ABOVE BEFORE FINAL MERGE FOR v1.0.0
       ## ONLY enable if having issues generating images
       #- --always-low-vram
       # COMMENT BELOW if you uncomment above
