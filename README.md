@@ -111,8 +111,8 @@ Simply run `docker compose up` as it will select automatically the `docker-compo
 
 These are mostly for my reference. If you wish to build the image they are here for you also. Just keep in mind this is unsupported and you are on your own.
 
-- `docker build -t catspeedcc/sd-webui-forge-docker:development .` general build (will be cached)
-- `docker build --progress=plain --build-arg DUMMY=$(date +%s) -t catspeedcc/sd-webui-forge-docker:development .` debug build - so you can debug the Dockerfile without caching certain elements
+- `docker build -t myorganization/myrepository:mytag .` general build (will be cached)
+- `docker build --progress=plain --build-arg DUMMY=$(date +%s) -t myorganization/myrepository:mytag .` debug build - so you can debug the Dockerfile without caching certain elements
 
 That's it! As previously mentioned, there is no support for this from this point onwards. These were documented for @mooleshacat.
 
