@@ -79,36 +79,37 @@ Due to the nature of Docker, an image running at shutdown _should_ start up agai
 
 These are the current tags:
 ```
-catspeedcc/sd-webui-forge-docker:latest - (coming soon)
-catspeedcc/sd-webui-forge-docker:v1.0.0 - (coming soon)
+catspeedcc/sd-webui-forge-docker:latest - currently points to v1.0.0
+catspeedcc/sd-webui-forge-docker:v1.0.0 - latest stable version (first release)
 
-catspeedcc/sd-webui-forge-docker:development - kept @ parity w/ development, unsupported
-catspeedcc/sd-webui-forge-docker:bleeding - can be literally anything I want to test, unsupported
+catspeedcc/sd-webui-forge-docker:development - (not supported, parity w/ development branch, if you use it you're on your own.)
+catspeedcc/sd-webui-forge-docker:bleeding - (not supported, ephemeral, if you use it you're on your own.)
 ```
 
 There are a few main files:
 ```
 docker-compose.yaml # CPU-only
 
-docker-compose.single-gpu.nvidia.yaml # Single GPU only
-docker-compose.multi-gpu.nvidia.yaml # ONE OF MULTIPLE GPU only
+docker-compose.single-gpu.nvidia.yaml   # Single GPU only
+docker-compose.multi-gpu.nvidia.yaml    # ONE OF MULTIPLE GPU only
 
-docker-compose.combined.nvidia.yaml # ONLY so you can copy the service into
-                                    # a different docker-compose.yml file ;)
+docker-compose.combined.nvidia.yaml     # ONLY so you can copy the service into
+                                        # a different docker-compose.yml file ;)
 ```
 
 As far as I know there is no way to combine multiple GPU's on this one same task (image generation) but you can dedicate one of many GPU's to image generation and then use the other GPU's for other tasks (chat, development, etc)
 
 - Clone the catspeed-cc repository for now `git clone https://github.com/catspeed-cc/sd-webui-forge-docker.git`
-- Read the rest of this section, then jump to either [CPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested), [Single GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested), or [Single of Multiple GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested)
+- DO NOT run the `webui-docker.sh` script ever, it is meant ONLY to be ran inside the docker containers at runtime. (automatic, ignore)
+- Read the rest of this section, then jump to either [CPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#cpu-only-untested), [Single GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#single-gpu-only-untested-should-work), or [Single of Multiple GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#single-of-multiple-gpu-only-tested)
 
-All Docker support for now goes to [catspeed-cc issue tickets](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and if this ever gets merged upstream.
+All Docker support for now goes to [catspeed-cc issue tickets](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and _only if_ this ever gets merged upstream.
 
 ### CPU Only (untested)
 
 Simply run `docker compose up` as it will select automatically the `docker-compose.yml`. There is no configuring as far as I can tell. If otherwise please submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
-### Single GPU Only (untested)
+### Single GPU Only (untested, should work)
 
 - Edit `docker-compose.single-gpu.nvidia.yaml` there are comments to guide you
   - You won't need to edit this on first run, unless you have issues.
@@ -132,7 +133,19 @@ Simply run `docker compose up` as it will select automatically the `docker-compo
 - CTRL + C to close it. Do not bother removing it.
 - If removal is required use `docker compose -f docker-compose.yaml -f docker-compose.multi-gpu.nvidia.yaml down`
 
-# Docker Image Build (unsupported)
+## Startup Time Warning:
+The startup time takes a while, it is doing a lot for you in the background. This should become faster on multiple start/stop of the container, but if you `docker compose down` you will need to wait again on next `docker compose up`. Not sure why, maybe it gets obliterated each time.
+
+The way to fix it and cut down startup time is to make your own shellscript that starts/stops each container instead of removing it.  If you are unsure, just wait for the container to start ... :) I might or might not do something about that for v1.0.0 ;)
+
+## Large Image Warning:
+Holy crap! The image ... YES the image is large. So is this wall of text _lol_. At least for the image it starts with the fact that we need a full Ubuntu image with cuda12 for this machine learning / AI task. Then you have the original repository being required to fetch other repositories at runtime on launch to function. When I dockerized this everything was "baked into" the image. Unfortunately I do not see any way around this, even if the _upstream developers_ used submodules, they still have to be initialized and "baked into" the image. ML/AI related source repositories and models are _very_ large, due to the nature of the task. 
+
+The developers know their own project better than I - and I am a noob. They can integrate it into docker better, and try to cut waste out of the image, but of course all dependencies need to be baked into the image. Otherwise the images will not work, or it would have to fetch them inside the container _every time_ you wanted to `docker compose down`. It is not the kind of image I would suggest converting to alpine to slim it down, it would be _a lot_ of work and _headache_. I am happy to help with anything, but mostly can sit and make my own mess in _my repository_ :)
+
+Do not worry, I have _not_ loaded it with 1000's of models :P
+
+## Docker Image Build Warning: (unsupported)
 
 These are mostly for my reference. If you wish to build the image they are here for you also. Just keep in mind this is unsupported and you are on your own.
 
@@ -142,7 +155,9 @@ These are mostly for my reference. If you wish to build the image they are here 
 
 - `docker build --progress=plain --build-arg DUMMY=$(date +%s) -t myorganization/myrepository:mytag .` debug build - so you can debug the Dockerfile without caching certain elements
 
-That's it! As previously mentioned, there is no support for this from this point onwards. These were documented for @mooleshacat.
+That's it! As previously mentioned, there is no support for this from this point onwards. 
+
+These were documented for @mooleshacat (A.K.A. _future noob self_)
 
 # Forge Status
 
