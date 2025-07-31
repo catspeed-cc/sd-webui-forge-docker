@@ -8,9 +8,6 @@ Forge is currently based on SD-WebUI 1.10.1 at [this commit](https://github.com/
 
 News are moved to this link: [Click here to see the News section](https://github.com/lllyasviel/stable-diffusion-webui-forge/blob/main/NEWS.md)
 
-# Dockerized Stable Diffusion WebUI Forge
-I am working on a dockerized version, as I need one for my own usage. I will attempt to create it, and keep it up to date. I will replace this message with instructions when complete.
-
 # Quick List
 
 [Gradio 4 UI Must Read (TLDR: You need to use RIGHT MOUSE BUTTON to move canvas!)](https://github.com/lllyasviel/stable-diffusion-webui-forge/discussions/853)
@@ -66,6 +63,86 @@ If you know what you are doing, you can also install Forge using same method as 
 ### Previous Versions
 
 You can download previous versions [here](https://github.com/lllyasviel/stable-diffusion-webui-forge/discussions/849).
+
+# Docker Installation
+
+Install Docker:
+- `sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
+- Test the installation worked with `docker compose version` you should get something like `Docker Compose version v2.24.5`
+- If trouble submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
+
+Models can be put in `sd-webui-forge-docker/models/` directory, organized by type - they will be mounted to the container
+
+Outputs are stored in `sd-webui-forge-docker/outputs/txt2img-images/` directory, organized by date
+
+Due to the nature of Docker, an image running at shutdown _should_ start up again on boot. If this does not happen, submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
+
+These are the current tags:
+```
+catspeedcc/sd-webui-forge-docker:latest - (coming soon)
+catspeedcc/sd-webui-forge-docker:v1.0.0 - (coming soon)
+
+catspeedcc/sd-webui-forge-docker:development - kept @ parity w/ development, unsupported
+catspeedcc/sd-webui-forge-docker:bleeding - can be literally anything I want to test, unsupported
+```
+
+There are a few main files:
+```
+docker-compose.yaml # CPU-only
+
+docker-compose.single-gpu.nvidia.yaml # Single GPU only
+docker-compose.multi-gpu.nvidia.yaml # ONE OF MULTIPLE GPU only
+
+docker-compose.combined.nvidia.yaml # ONLY so you can copy the service into
+                                    # a different docker-compose.yml file ;)
+```
+
+As far as I know there is no way to combine multiple GPU's on this one same task (image generation) but you can dedicate one of many GPU's to image generation and then use the other GPU's for other tasks (chat, development, etc)
+
+- Clone the catspeed-cc repository for now `git clone https://github.com/catspeed-cc/sd-webui-forge-docker.git`
+- Read the rest of this section, then jump to either [CPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested), [Single GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested), or [Single of Multiple GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested)
+
+All Docker support for now goes to [catspeed-cc issue tickets](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and if this ever gets merged upstream.
+
+### CPU Only (untested)
+
+Simply run `docker compose up` as it will select automatically the `docker-compose.yml`. There is no configuring as far as I can tell. If otherwise please submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
+
+### Single GPU Only (untested)
+
+- Edit `docker-compose.single-gpu.nvidia.yaml` there are comments to guide you
+  - You won't need to edit this on first run, unless you have issues.
+  - If you plan only to have image processing, 25GB swap should suffice.
+  - If you have issues edit the `docker-compose.single-gpu.nvidia.yaml` file using the comments as guidance.
+  - Main lines are `#- --always-low-vram` (un comment if problems persist) and `- --vae-in-fp32` (comment if uncommenting the former - unconfirmed requirement)
+- Run `docker compose -f docker-compose.yaml -f docker-compose.single-gpu.nvidia.yaml up`
+- CTRL + C to close it. Do not bother removing it.
+- If removal is required use `docker compose -f docker-compose.yaml -f docker-compose.single-gpu.nvidia.yaml down`
+
+### Single of Multiple GPU Only (tested)
+
+- There is no way to combine multiple GPU to work to the same effort that I am aware of yet.
+- You can designate one GPU to this, and use the other GPU's for other tasks :)
+- Run `nvidia-smi` and note the GPU index (0? 1? 2? etc.)
+- Edit `docker-compose.multi-gpu.nvidia.yaml` replacing the `1` only with the index of your desired GPU
+  - If you plan only to have other AI workloads on the other GPU's, 100GB (or more) swap should suffice (for offloading if model not fit on GPU VRAM)
+  - If you have issues edit the `docker-compose.multi-gpu.nvidia.yaml` file using the comments as guidance.
+  - Main lines are `#- --always-low-vram` (un comment if problems persist) and `- --vae-in-fp32` (comment if uncommenting the former - unconfirmed requirement)
+- Run `docker compose -f docker-compose.yaml -f docker-compose.multi-gpu.nvidia.yaml up`
+- CTRL + C to close it. Do not bother removing it.
+- If removal is required use `docker compose -f docker-compose.yaml -f docker-compose.multi-gpu.nvidia.yaml down`
+
+# Docker Image Build (unsupported)
+
+These are mostly for my reference. If you wish to build the image they are here for you also. Just keep in mind this is unsupported and you are on your own.
+
+- `docker build -t myorganization/myrepository:mytag .` general build (will be cached)
+
+**_OR_**
+
+- `docker build --progress=plain --build-arg DUMMY=$(date +%s) -t myorganization/myrepository:mytag .` debug build - so you can debug the Dockerfile without caching certain elements
+
+That's it! As previously mentioned, there is no support for this from this point onwards. These were documented for @mooleshacat.
 
 # Forge Status
 
