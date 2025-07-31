@@ -100,7 +100,7 @@ docker-compose.combined.nvidia.yaml     # ONLY so you can copy the service into
 As far as I know there is no way to combine multiple GPU's on this one same task (image generation) but you can dedicate one of many GPU's to image generation and then use the other GPU's for other tasks (chat, development, etc)
 
 - Clone the catspeed-cc repository for now `git clone https://github.com/catspeed-cc/sd-webui-forge-docker.git`
-- Read the rest of this section, then jump to either [CPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested), [Single GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested), or [Single of Multiple GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested)
+- Read the rest of this section, then jump to either [CPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#cpu-only-untested), [Single GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#single-gpu-only-untested-should-work), or [Single of Multiple GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#single-of-multiple-gpu-only-tested)
 
 All Docker support for now goes to [catspeed-cc issue tickets](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and _only if_ this ever gets merged upstream.
 
