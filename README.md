@@ -69,13 +69,13 @@ You can download previous versions [here](https://github.com/lllyasviel/stable-d
 Install Docker:
 - `sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
 - Test the installation worked with `docker compose version` you should get something like `Docker Compose version v2.24.5`
-- If trouble submit a [catspeedcc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
+- If trouble submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
 Models can be put in `sd-webui-forge-docker/models/` directory, organized by type - they will be mounted to the container
 
 Outputs are stored in `sd-webui-forge-docker/outputs/txt2img-images/` directory, organized by date
 
-Due to the nature of Docker, an image running at shutdown _should_ start up again on boot. If this does not happen, submit a [catspeedcc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
+Due to the nature of Docker, an image running at shutdown _should_ start up again on boot. If this does not happen, submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
 There are a few main files:
 ```
@@ -93,11 +93,11 @@ As far as I know there is no way to combine multiple GPU's on this one same task
 - Clone the catspeed-cc repository for now `git clone https://github.com/catspeed-cc/sd-webui-forge-docker.git`
 - Read the rest of this section, then jump to either [CPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested), [Single GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested), or [Single of Multiple GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested)
 
-All Docker support for now goes to [catspeedcc issue tickets](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and if this ever gets merged upstream.
+All Docker support for now goes to [catspeed-cc issue tickets](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and if this ever gets merged upstream.
 
 ### CPU Only (untested)
 
-Simply run `docker compose up` as it will select automatically the `docker-compose.yml`. There is no configuring as far as I can tell. If otherwise please submit a [catspeedcc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
+Simply run `docker compose up` as it will select automatically the `docker-compose.yml`. There is no configuring as far as I can tell. If otherwise please submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
 ### Single GPU Only (untested)
 
