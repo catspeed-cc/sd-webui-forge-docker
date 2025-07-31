@@ -51,7 +51,7 @@ RUN echo "Cache bust: $DUMMY AFTER INSTALL:" && pip3 --version
 
 WORKDIR /app
 
-COPY start-webui.sh /app/start-webui.sh
+COPY webui-docker.sh /app/webui-docker.sh
 
 # Clone Forge
 RUN git clone https://github.com/lllyasviel/stable-diffusion-webui-forge webui

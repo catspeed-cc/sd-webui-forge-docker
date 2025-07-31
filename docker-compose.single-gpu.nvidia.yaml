@@ -17,7 +17,7 @@ services:
       service: sd-forge
     command:
       # do not touch, this starts the startup script inside container
-      - /app/start-webui.sh
+      - /app/webui-docker.sh
       # do not touch, commenting this makes webui unavailable to host
       - --server-name=0.0.0.0
       ## ONLY UNCOMMENT if having issues generating images

@@ -7,7 +7,7 @@ services:
     # use the image below :)
     image: catspeedcc/sd-webui-forge-docker:development
     command:
-      - /app/start-webui.sh
+      - /app/webui-docker.sh
       - --server-name=0.0.0.0
     ports:
       - "7860:7860"
