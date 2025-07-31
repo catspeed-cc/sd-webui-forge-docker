@@ -73,6 +73,7 @@ Due to the nature of Docker, an image running at shutdown _should_ start up agai
 There are a few main files:
 ```
 docker-compose.yaml # CPU-only
+
 docker-compose.single-gpu.nvidia.yaml # Single GPU only
 docker-compose.multi-gpu.nvidia.yaml # ONE OF MULTIPLE GPU only
 
