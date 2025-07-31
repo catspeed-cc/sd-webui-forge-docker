@@ -75,6 +75,8 @@ There are a few main files:
 docker-compose.yaml # CPU-only
 docker-compose.single-gpu.nvidia.yaml # Single GPU only
 docker-compose.multi-gpu.nvidia.yaml # ONE OF MULTIPLE GPU only
+docker-compose.combined.nvidia.yaml # ONLY so you can copy the service into
+                                    # a different docker-compose.yml file ;)
 ```
 
 As far as I know there is no way to combine multiple GPU's on this one same task (image generation) but you can dedicate one of many GPU's to image generation and then use the other GPU's for other tasks (chat, development, etc)
@@ -114,6 +116,9 @@ Simply run `docker compose up` as it will select automatically the `docker-compo
 These are mostly for my reference. If you wish to build the image they are here for you also. Just keep in mind this is unsupported and you are on your own.
 
 - `docker build -t myorganization/myrepository:mytag .` general build (will be cached)
+
+**_OR_**
+
 - `docker build --progress=plain --build-arg DUMMY=$(date +%s) -t myorganization/myrepository:mytag .` debug build - so you can debug the Dockerfile without caching certain elements
 
 That's it! As previously mentioned, there is no support for this from this point onwards. These were documented for @mooleshacat.
