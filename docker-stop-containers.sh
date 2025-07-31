@@ -10,8 +10,7 @@ echo "Debug: DOCKER_PSA_LIST:[$DOCKER_PSA_LIST]"
 # Loop through each line
 while read line; do
     echo "Stopping docker container: $line"
-    # You can now use "$line" as a variable
-    docker start $line
+    docker stop $line
 done <<< "$DOCKER_PSA_LIST"
 
 echo "docker ps -a output:"

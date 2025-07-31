@@ -8,9 +8,8 @@ DOCKER_PSA_LIST=$(docker ps -a --format '{{.Names}}' | grep "sd-forge")
 echo "Debug: DOCKER_PSA_LIST:[$DOCKER_PSA_LIST]"
 
 # Loop through each line
-while IFS= read -r line; do
+while read line; do
     echo "Starting docker container: $line"
-    # You can now use "$line" as a variable
     docker start $line
 done <<< "$data"
 
