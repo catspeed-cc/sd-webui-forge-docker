@@ -75,6 +75,7 @@ There are a few main files:
 docker-compose.yaml # CPU-only
 docker-compose.single-gpu.nvidia.yaml # Single GPU only
 docker-compose.multi-gpu.nvidia.yaml # ONE OF MULTIPLE GPU only
+
 docker-compose.combined.nvidia.yaml # ONLY so you can copy the service into
                                     # a different docker-compose.yml file ;)
 ```
