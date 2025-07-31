@@ -81,7 +81,7 @@ All Docker support for now goes to [catspeedcc issue tickets](https://github.com
 
 ### CPU Only
 
-Simply run `docker compose up` as it will select automatically the `docker-compose.yml`. There is no configuring as far as I can tell. If otherwise please submit [issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
+Simply run `docker compose up` as it will select automatically the `docker-compose.yml`. There is no configuring as far as I can tell. If otherwise please submit [catspeedcc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
 ### Single GPU Only
 
