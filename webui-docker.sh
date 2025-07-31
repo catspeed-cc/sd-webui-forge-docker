@@ -54,4 +54,5 @@ exec python3 -W "ignore::FutureWarning" -W "ignore::DeprecationWarning" launch.p
 # If we get here, launch.py failed
 echo "❌ SD Forge exited with code $?"
 echo "💡 Debug shell available. Run: docker-compose exec CONTAINER_NAME bash"
+echo "OR run \`docker compose down\` to stop the container" 
 exec sleep infinity
