@@ -35,7 +35,7 @@ services:
       # SET THIS TO THE GPU YOU WANT (index from host system nvidia-smi)
       NVIDIA_VISIBLE_DEVICES: 1
       # KEEP THIS UNCOMMENTED AND 0 IF YOU JUST SPECIFIED GPU INDEX ABOVE
-      # IF SINGLE GPU SYSTEM BOTTOM 3 of 4 COULD POSSIBLY BE COMMENTED
+      # IF SINGLE GPU SYSTEM WHY YOU IN THIS FILE BRO? (docker-compose.single-gpu.nvidia.yaml)
       SD_GPU_DEVICE: 0
     deploy:
       resources:
