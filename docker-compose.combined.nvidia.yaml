@@ -51,5 +51,6 @@ services:
             - driver: nvidia
               device_ids: ["1"]
               capabilities: [gpu]
+    # CHANGE BELOW TO YOUR GPU VRAM (IF UNSURE COMMENT IT OUT!)
     shm_size: '8gb'
   # END OF FILE
