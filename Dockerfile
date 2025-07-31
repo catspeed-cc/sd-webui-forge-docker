@@ -107,3 +107,4 @@ RUN cd /app/webui/repositories/BLIP && \
 
 EXPOSE 7860
 CMD ["/app/start-webui.sh"]
+# END OF FILE
