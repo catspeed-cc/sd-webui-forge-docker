@@ -144,7 +144,7 @@ The developers know their own project better than I - and I am a noob. They can 
 
 Do not worry, I have _not_ loaded it with 1000's of models :P
 
-## Docker Image Build Warning (unsupported):
+## Docker Image Build Warning: (unsupported)
 
 These are mostly for my reference. If you wish to build the image they are here for you also. Just keep in mind this is unsupported and you are on your own.
 
