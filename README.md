@@ -152,6 +152,8 @@ The way to fix it and cut down startup time is to make your own shellscript that
 ## Large Image Warning:
 Holy crap! The image ... YES the image is large. It starts with the fact that we need a full Ubuntu image with cuda12 for this machine learning / AI task. Then you have the original repository being required to fetch other repositories at runtime on launch to function. When I dockerized this everything was "baked into" the image. Unfortunately I do not see any way around this, even if the _upstream developers_ used submodules, they still have to be initialized and "baked into" the image. ML/AI related source repositories and models are _very_ large, due to the nature of the task. 
 
+The developers know their own project better than I - and I am a noob. They can integrate it into docker better, and try to cut waste out of the image, but of course all dependencies need to be baked into the image. Otherwise they will not work, or it would have to fetch them inside the container _every time_ you wanted to `docker compose down`. I am happy to help, but mostly can sit and make my own mess in my repository :)
+
 Do not worry, I have _not_ loaded it with 1000's of models :P
 
 # Forge Status
