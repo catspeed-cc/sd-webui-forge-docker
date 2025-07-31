@@ -154,7 +154,7 @@ These are mostly for my reference. If you wish to build the image they are here 
 
 - `docker build --progress=plain --build-arg DUMMY=$(date +%s) -t myorganization/myrepository:mytag .` debug build - so you can debug the Dockerfile without caching certain elements
 
-That's it! As previously mentioned, there is no support for this from this point onwards. These were documented for @mooleshacat.
+That's it! As previously mentioned, there is no support for this from this point onwards. These were documented for @mooleshacat (A.K.A. _future noob self_)
 
 # Forge Status
 
