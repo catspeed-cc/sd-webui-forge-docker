@@ -102,7 +102,7 @@ As far as I know there is no way to combine multiple GPU's on this one same task
 - Clone the catspeed-cc repository for now `git clone https://github.com/catspeed-cc/sd-webui-forge-docker.git`
 - Read the rest of this section, then jump to either [CPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested), [Single GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested), or [Single of Multiple GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/edit/feature-docker/README.md#cpu-only-untested)
 
-All Docker support for now goes to [catspeed-cc issue tickets](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and if this ever gets merged upstream.
+All Docker support for now goes to [catspeed-cc issue tickets](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and _only if_ this ever gets merged upstream.
 
 ### CPU Only (untested)
 
