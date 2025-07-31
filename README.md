@@ -150,7 +150,7 @@ The startup time takes a while, it is doing a lot for you in the background. Thi
 The way to fix it and cut down startup time is to make your own shellscript that starts/stops each container instead of removing it.  If you are unsure, just wait for the container to start ... :) I might or might not do something about that for v1.0.0 ;)
 
 ## Large Image Warning:
-Holy crap! The image ... YES the image is large. It starts with the fact that we need a full Ubuntu image with cuda12 for this machine learning / AI task. Then you have the original repository being required to fetch other repositories at runtime on launch to function. When I dockerized this everything was "baked into" the image. Unfortunately I do not see any way around this, even if the developer used submodules, they still have to be initialized and "baked into" the image. ML/AI related source repositories and models are _very_ large, due to the nature of the task. 
+Holy crap! The image ... YES the image is large. It starts with the fact that we need a full Ubuntu image with cuda12 for this machine learning / AI task. Then you have the original repository being required to fetch other repositories at runtime on launch to function. When I dockerized this everything was "baked into" the image. Unfortunately I do not see any way around this, even if the _upstream developers_ used submodules, they still have to be initialized and "baked into" the image. ML/AI related source repositories and models are _very_ large, due to the nature of the task. 
 
 Do not worry, I have _not_ loaded it with 1000's of models :P
 
