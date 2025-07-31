@@ -20,9 +20,9 @@ services:
       - /app/start-webui.sh
       # do not touch, commenting this makes webui unavailable to host
       - --server-name=0.0.0.0
-      ## ONLY enable if having issues generating images
+      ## ONLY UNCOMMENT if having issues generating images
       #- --always-low-vram
-      # COMMENT BELOW if you uncomment above
+      # COMMENT BELOW if you uncomment above (???)
       - --vae-in-fp32
       # do not touch below 3 lines, they help :)
       - --cuda-malloc
