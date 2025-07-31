@@ -133,7 +133,22 @@ Simply run `docker compose up` as it will select automatically the `docker-compo
 - CTRL + C to close it. Do not bother removing it.
 - If removal is required use `docker compose -f docker-compose.yaml -f docker-compose.multi-gpu.nvidia.yaml down`
 
-### Start-Stop Docker Scripts:
+### Temporary-Permanent Sauces Mirror & Start-Stop Docker Helper Scripts:
+Temporary-Permanent Sauces Mirror (hosted by catspeed.cc) contains the "Start-Stop Docker Helper Scripts and will be explained. TLDR: GitHub gave error 500 on push of `v1.0.0-sauces.tar.gz` (probs too large) so I am hosting myself instead. The server has HTTPS and I will note the MD5SUM of the file hosted, both in the .MD5 file and also all over PR's and in the RELEASE on GitHub.
+
+Until further notice, the "Temporary-Permanent Sauces Mirror is _hosted by catspeed.cc_. The URL is: https://catspeed.cc/downloads/catspeedcc.sd-webui-forge-docker/sauces/
+
+This will allow me to also offload some resource usage to my own server 🤪 just go easy on it 🤪 try to save in downloads then _copy_ elsewhere to use it 🤪
+```
+-rwxr-xr-x 1 root root  65 Jul 31 12:14 docker-destroy-CPU-only.sh
+-rwxr-xr-x 1 root root 128 Jul 31 12:14 docker-destroy-multi-GPU-only.sh
+-rwxr-xr-x 1 root root 129 Jul 31 12:14 docker-destroy-single-GPU-only.sh
+-rwxr-xr-x 1 root root  75 Jul 31 10:55 docker-init-CPU-only.sh
+-rwxr-xr-x 1 root root 170 Jul 31 11:03 docker-init-multi-GPU-only.sh
+-rwxr-xr-x 1 root root 171 Jul 31 11:02 docker-init-single-GPU-only.sh
+-rwxr-xr-x 1 root root 495 Jul 31 12:09 docker-start-containers.sh
+-rwxr-xr-x 1 root root 506 Jul 31 12:09 docker-stop-containers.sh
+```
 
 This is a placeholder. Update before merging.
 
