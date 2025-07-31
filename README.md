@@ -79,11 +79,11 @@ As far as I know there is no way to combine multiple GPU's on this one same task
 
 All Docker support for now goes to [catspeedcc issue tickets](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and if this ever gets merged upstream.
 
-### CPU Only
+### CPU Only (untested)
 
 Simply run `docker compose up` as it will select automatically the `docker-compose.yml`. There is no configuring as far as I can tell. If otherwise please submit [catspeedcc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
-### Single GPU Only
+### Single GPU Only (untested)
 
 - Edit `docker-compose.single-gpu.nvidia.yaml` there are comments to guide you
   - You won't need to edit this on first run, unless you have issues.
@@ -94,7 +94,7 @@ Simply run `docker compose up` as it will select automatically the `docker-compo
 - CTRL + C to close it. Do not bother removing it.
 - If removal is required use `docker compose -f docker-compose.yaml -f docker-compose.single-gpu.nvidia.yaml down`
 
-### Single of Multiple GPU Only
+### Single of Multiple GPU Only (tested)
 
 - There is no way to combine multiple GPU to work to the same effort that I am aware of yet.
 - You can designate one GPU to this, and use the other GPU's for other tasks :)
