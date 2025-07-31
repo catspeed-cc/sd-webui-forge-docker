@@ -82,8 +82,8 @@ These are the current tags:
 catspeedcc/sd-webui-forge-docker:latest - currently points to v1.0.0
 catspeedcc/sd-webui-forge-docker:v1.0.0 - latest stable version (first release)
 
-catspeedcc/sd-webui-forge-docker:development - (not supported, parity w/ development branch, if you use it you are on your own.)
-catspeedcc/sd-webui-forge-docker:bleeding - (not supported, ephemeral, if you use it you are on your own.)
+catspeedcc/sd-webui-forge-docker:development - (not supported, parity w/ development branch, if you use it you're on your own.)
+catspeedcc/sd-webui-forge-docker:bleeding - (not supported, ephemeral, if you use it you're on your own.)
 ```
 
 There are a few main files:
