@@ -77,7 +77,7 @@ docker-compose.multi-gpu.nvidia.yaml # ONE OF MULTIPLE GPU only
 
 As far as I know there is no way to combine multiple GPU's on this one same task (image generation) but you can dedicate one of many GPU's to image generation and then use the other GPU's for other tasks (chat, development, etc)
 
-All Docker support for now goes to [here](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and if this ever gets merged upstream.
+All Docker support for now goes to [catspeedcc issue tickets](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and if this ever gets merged upstream.
 
 ### CPU Only
 
