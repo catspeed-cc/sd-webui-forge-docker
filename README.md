@@ -8,9 +8,6 @@ Forge is currently based on SD-WebUI 1.10.1 at [this commit](https://github.com/
 
 News are moved to this link: [Click here to see the News section](https://github.com/lllyasviel/stable-diffusion-webui-forge/blob/main/NEWS.md)
 
-# Dockerized Stable Diffusion WebUI Forge
-I am working on a dockerized version, as I need one for my own usage. I will attempt to create it, and keep it up to date. I will replace this message with instructions when complete.
-
 # Quick List
 
 [Gradio 4 UI Must Read (TLDR: You need to use RIGHT MOUSE BUTTON to move canvas!)](https://github.com/lllyasviel/stable-diffusion-webui-forge/discussions/853)
@@ -66,6 +63,31 @@ If you know what you are doing, you can also install Forge using same method as 
 ### Previous Versions
 
 You can download previous versions [here](https://github.com/lllyasviel/stable-diffusion-webui-forge/discussions/849).
+
+# Docker Installation
+There are multiple docker-compose files. The instructions are straight forward. You must have docker installed so that you can run docker-compose commands without the dash ex. `docker compose up`. If you haven't figured this out, you can try running these commands with the dash ex. `docker-compose up` but if it does not work you will need to figure how to install docker in this way. I am going to look into how I installed it this way, I used to have it the other way. Will update readme.md :)
+
+There are a few main files:
+```
+docker-compose.yaml # CPU-only
+docker-compose.single-gpu.nvidia.yaml # Single GPU only
+docker-compose.multi-gpu.nvidia.yaml # ONE OF MULTIPLE GPU only
+```
+
+### CPU Only
+
+Simply run `docker compose up` as it will select automatically the `docker-compose.yml`. There is no configuring as far as I can tell. If otherwise please submit [issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
+
+### Single GPU Only
+
+- Edit `docker-compose.single-gpu.nvidia.yaml` there are comments to guide you
+  - You won't need to edit this on first run, unless you have issues.
+  - If you plan only to have image processing, 50GB or less swap should suffice
+  - If you have issues edit the `docker-compose.single-gpu.nvidia.yaml` file using the comments as guidance.
+  - Main lines are `#- --always-low-vram` (un comment if problems persist) and `- --vae-in-fp32` (comment if uncommenting the former - unconfirmed requirement)
+- Run `docker compose -f docker-compose.yaml -f docker-compose.single-gpu.nvidia.yaml up`
+- CTRL + C to close it. Do not bother removing it.
+- If removal is required use `docker compose -f docker-compose.yaml -f docker-compose.single-gpu.nvidia.yaml down`
 
 # Forge Status
 
