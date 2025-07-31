@@ -71,6 +71,9 @@ Install Docker:
 - Test the installation worked with `docker compose version` you should get something like `Docker Compose version v2.24.5`
 - If trouble submit a [catspeedcc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
+Models can be put in `sd-webui-forge-docker/models/` directory, organized by type
+Outputs are stored in `sd-webui-forge-docker/outputs/txt2img-images/` directory, organized by date
+
 Due to the nature of Docker, an image running at shutdown _should_ start up again on boot. If this does not happen, submit a [catspeedcc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
 There are a few main files:
