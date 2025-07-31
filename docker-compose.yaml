@@ -9,8 +9,6 @@ services:
     image: catspeedcc/sd-webui-forge-docker:development
     command:
       - /app/webui-docker.sh
-      # leave below, we bind it to 127.0.0.1 below on the docker host
-      - --server-name=0.0.0.0
     ports:
       # THIS is where we limit to localhost
       # or change 127.0.0.1->0.0.0.0 but ensure firewalls properly configured!

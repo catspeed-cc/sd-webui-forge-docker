@@ -28,8 +28,6 @@ services:
     command:
       # do not touch, this starts the startup script inside container
       - /app/webui-docker.sh
-      # leave below, we bind it to 127.0.0.1 below on the docker host
-      - --server-name=0.0.0.0
       ## ONLY enable if having issues generating images
       #- --always-low-vram
       # COMMENT BELOW if you uncomment above

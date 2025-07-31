@@ -49,7 +49,8 @@ fi
 echo "STARTING THE PYTHON APP..."
 
 # Run SD Forge with all passed arguments (no default so far)
-exec python3 -W "ignore::FutureWarning" -W "ignore::DeprecationWarning" launch.py${PYTHON_ADD_ARG} "$@"
+# CONFIRMED --server-name=0.0.0.0 is safe as long as docker compose comments are respected / understood.
+exec python3 -W "ignore::FutureWarning" -W "ignore::DeprecationWarning" launch.py --server-name=0.0.0.0${PYTHON_ADD_ARG} "$@"
 
 # If we get here, launch.py failed
 echo "❌ SD Forge exited with code $?"
