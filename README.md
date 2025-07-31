@@ -81,6 +81,7 @@ These are the current tags:
 ```
 catspeedcc/sd-webui-forge-docker:latest - (coming soon)
 catspeedcc/sd-webui-forge-docker:v1.0.0 - (coming soon)
+
 catspeedcc/sd-webui-forge-docker:development - kept @ parity w/ development, unsupported
 catspeedcc/sd-webui-forge-docker:bleeding - can be literally anything I want to test, unsupported
 ```
