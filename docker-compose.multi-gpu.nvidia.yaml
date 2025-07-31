@@ -1,5 +1,13 @@
 # docker-compose.yml example
 
+#
+## WARNING: There is no way to combine all GPU, this is to target
+##          one specific GPU out of your multi-gpu setup so other
+##          GPU's can work on other tasks (development?)
+##
+## WARNING: Currently only nvidia supported.
+#
+
 services:
   sd-forge:
     extends:
