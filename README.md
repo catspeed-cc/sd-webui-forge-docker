@@ -137,6 +137,9 @@ Simply run `docker compose up` as it will select automatically the `docker-compo
 
 This is a placeholder. Update before merging.
 
+## Future Plans:
+- v1.0.1 (may or may not be needed, going to attempt alpine based image)
+
 ## Startup Time Warning:
 The startup time takes a while, it is doing a lot for you in the background. This should become faster on multiple start/stop of the container, but if you `docker compose down` you will need to wait again on next `docker compose up`. Not sure why, maybe it gets obliterated each time.
 
