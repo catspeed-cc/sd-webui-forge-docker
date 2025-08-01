@@ -64,6 +64,129 @@ If you know what you are doing, you can also install Forge using same method as 
 
 You can download previous versions [here](https://github.com/lllyasviel/stable-diffusion-webui-forge/discussions/849).
 
+# Docker Installation
+
+Install Docker:
+- `sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
+- Test the installation worked with `docker compose version` you should get something like `Docker Compose version v2.24.5`
+- If trouble submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
+
+Models can be put in `sd-webui-forge-docker/models/` directory, organized by type - they will be mounted to the container
+
+Outputs are stored in `sd-webui-forge-docker/outputs/txt2img-images/` directory, organized by date
+
+Due to the nature of Docker, an image running at shutdown _should_ start up again on boot. If this does not happen, submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
+
+These are the current tags:
+```
+catspeedcc/sd-webui-forge-docker:latest - currently points to v1.0.0
+catspeedcc/sd-webui-forge-docker:v1.0.0 - latest stable version (first release)
+
+catspeedcc/sd-webui-forge-docker:development - (not supported, parity w/ development branch, if you use it you're on your own.)
+catspeedcc/sd-webui-forge-docker:bleeding - (not supported, ephemeral, if you use it you're on your own.)
+```
+
+There are a few main config files:
+```
+docker-compose.yaml # CPU-only          # Should not need configuration
+
+docker-compose.single-gpu.nvidia.yaml   # Single GPU only (needs config)
+docker-compose.multi-gpu.nvidia.yaml    # ONE OF MULTIPLE GPU only (needs config)
+
+docker-compose.combined.nvidia.yaml     # ONLY so you can copy the service into
+                                        # a different docker-compose.yml file ;)
+```
+
+As far as I know there is no way to combine multiple GPU's on this one same task (image generation) but you can dedicate one of many GPU's to image generation and then use the other GPU's for other tasks (chat, development, etc)
+
+- Clone the catspeed-cc repository for now `git clone https://github.com/catspeed-cc/sd-webui-forge-docker.git`
+- DO NOT run the `webui-docker.sh` script ever, it is meant ONLY to be ran inside the docker containers at runtime. (automatic, ignore)
+- Read the rest of this section, then jump to either [CPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#cpu-only-untested), [Single GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#single-gpu-only-untested-should-work), or [Single of Multiple GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#single-of-multiple-gpu-only-tested)
+
+All Docker support for now goes to [catspeed-cc issue tickets](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and _only if_ this ever gets merged upstream.
+
+### CPU Only (untested)
+
+- `./docker-init-cpu-only.sh` "installs" the docker container
+- `./docker-start-containers.sh` "starts" container(s)
+- `./docker-stop-containers.sh` "stops" container(s)
+- `./docker-destroy-cpu-only.sh` "uninstalls" the docker container
+- You can uninstall/reinstall to debug / start with fresh image (image is already stored locally)
+- Docker helper start/stop scripts to speed up startup when simply restarting container
+If issue please submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
+
+### Single GPU Only (untested, should work)
+
+- Edit & configure `docker-compose.single-gpu.yaml`
+- `./docker-init-single-gpu-only.sh` "installs" the docker container
+- `./docker-start-containers.sh` "starts" container(s)
+- `./docker-stop-containers.sh` "stops" container(s)
+- `./docker-destroy-single-gpu-only.sh` "uninstalls" the docker container
+- You can uninstall/reinstall to debug / start with fresh image (image is already stored locally)
+- Docker helper start/stop scripts to speed up startup when simply restarting container
+If issue please submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
+
+### Single of Multiple GPU Only (tested)
+
+- Edit & configure `docker-compose.multi-gpu.yaml`
+- `./docker-init-multi-gpu-only.sh` "installs" the docker container
+- `./docker-start-containers.sh` "starts" container(s)
+- `./docker-stop-containers.sh` "stops" container(s)
+- `./docker-destroy-multi-gpu-only.sh` "uninstalls" the docker container
+- You can uninstall/reinstall to debug / start with fresh image (image is already stored locally)
+- Docker helper start/stop scripts to speed up startup when simply restarting container
+If issue please submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
+
+### Temporary-Permanent Sauces Mirror & Start-Stop Docker Helper Scripts:
+Temporary-Permanent Sauces Mirror (hosted by catspeed.cc) contains the "Start-Stop Docker Helper Scripts and will be explained. TLDR: GitHub gave error 500 on push of `v1.0.0-sauce.tar.gz` (probs too large) so I am hosting it myself instead. The server has HTTPS and I will note the MD5SUM of the file hosted, both in the .MD5 file on catspeed.cc and also all over PR's and in the RELEASE on GitHub. You can match them to verify the code is authentic and the source is open and fair.
+
+Until further notice, the "Temporary-Permanent Sauces Mirror is _hosted by catspeed.cc_. The URL is: https://catspeed.cc/downloads/catspeedcc.sd-webui-forge-docker/sauces/
+
+This will allow me to also offload some resource usage to my own server 🤪 just go easy on it 🤪 try to save in your `Downloads/` then _copy_ elsewhere to use it 🤪
+
+Each version release will have it's own sauce and updated MD5SUM
+
+# Temporary-Permanent Sauces Mirror (catspeed.cc) MD5SUM's
+
+- **[v1.0.0-sauce.tar.gz](https://catspeed.cc/downloads/catspeedcc.sd-webui-forge-docker/sauces/v1.0.0-sauce.tar.gz) MD5: upd8 [035fa1a240c4c5f0b1b159170e4c2d88](https://catspeed.cc/downloads/catspeedcc.sd-webui-forge-docker/sauces/v1.0.0-sauce.tar.gz.MD5)**
+
+## Have custom docker-compose deployment to integrate into? Extract entire v1.0.0-sauce.tar.gz:
+
+COPY LINES FROM docker-comose.combined.nvidia.yaml INTO _**YOUR DOCKER-COMPOSE PROJECT, PASTE IT AND CONFIGURE IT THERE AS ADDITIONAL SERVICE.**_
+`./models/` and `./outputs/` will be **RELATIVE to YOUR DOCKER-COMPOSE FILE DIRECTORY**__ (extract v1.0.0-sauce.tar.gz in that docker compose yaml directory)
+
+## Future Plans:
+
+- v1.1.0 (may or may not be needed, going to attempt alpin'ization)
+
+## Startup Time Warning:
+
+The startup time takes a while, it is doing a lot for you in the background. This should become faster on multiple start/stop of the container, but if you `./docker-destroy-*-*.sh` you will need to wait again on next `./docker-init-*-*.sh`. You only run ONE init and ONE matching destroy script or you will FAIL. Try to stop the container and start it when you already ran init script - with `./docker-start-containers.sh` and `./docker-stop-containers.sh`.
+
+The way to fix it and cut down startup time is to download the `v1.0.0-sauce.tar.gz` from catspeed (or perhaps you already have the sauce files/scripts via `git clone ... `)
+
+## Large Image Warning:
+
+Holy crap! The image ... YES the image is large. So is this wall of text _lol_. At least for the image it starts with the fact that we need a full Ubuntu image with cuda12 for this machine learning / AI task. Then you have the original repository being required to fetch other repositories at runtime on launch to function. When I dockerized this everything was "baked into" the image. Unfortunately I do not see any way around this, even if the _upstream developers_ used submodules, they still have to be initialized and "baked into" the image. ML/AI related source repositories and models are _very_ large, due to the nature of the task. 
+
+The developers know their own project better than I - and I am a noob. They can integrate it into docker better, and try to cut waste out of the image, but of course all dependencies need to be baked into the image. Otherwise the images will not work, or it would have to fetch them inside the container _every time_ you wanted to `docker compose down`. It is not the kind of image I would suggest converting to alpine to slim it down, it would be _a lot_ of work and _headache_. I am happy to help with anything, but mostly can sit and make my own mess in _my repository_ :)
+
+Do not worry, I have _not_ loaded it with 1000's of models :P
+
+## Docker Image Build Warning: (unsupported)
+
+These are mostly for my reference. If you wish to build the image they are here for you also. Just keep in mind this is unsupported and you are on your own.
+
+- `docker build -t myorganization/myrepository:mytag .` general build (will be cached)
+
+**_OR_**
+
+- `docker build --progress=plain --build-arg DUMMY=$(date +%s) -t myorganization/myrepository:mytag .` debug build - so you can debug the Dockerfile without caching certain elements
+
+That's it! As previously mentioned, there is no support for this from this point onwards. 
+
+These were documented for @mooleshacat (A.K.A. _future noob self_)
+
 # Forge Status
 
 Based on manual test one-by-one:
