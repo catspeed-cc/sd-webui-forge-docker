@@ -134,31 +134,109 @@ Simply run `docker compose up` as it will select automatically the `docker-compo
 - If removal is required use `docker compose -f docker-compose.yaml -f docker-compose.multi-gpu.nvidia.yaml down`
 
 ### Temporary-Permanent Sauces Mirror & Start-Stop Docker Helper Scripts:
-Temporary-Permanent Sauces Mirror (hosted by catspeed.cc) contains the "Start-Stop Docker Helper Scripts and will be explained. TLDR: GitHub gave error 500 on push of `v1.0.0-sauces.tar.gz` (probs too large) so I am hosting myself instead. The server has HTTPS and I will note the MD5SUM of the file hosted, both in the .MD5 file and also all over PR's and in the RELEASE on GitHub.
+Temporary-Permanent Sauces Mirror (hosted by catspeed.cc) contains the "Start-Stop Docker Helper Scripts and will be explained. TLDR: GitHub gave error 500 on push of `v1.0.0-sauce.tar.gz` (probs too large) so I am hosting it myself instead. The server has HTTPS and I will note the MD5SUM of the file hosted, both in the .MD5 file on catspeed.cc and also all over PR's and in the RELEASE on GitHub. You can match them to verify the code is authentic and the source is open and fair.
 
 Until further notice, the "Temporary-Permanent Sauces Mirror is _hosted by catspeed.cc_. The URL is: https://catspeed.cc/downloads/catspeedcc.sd-webui-forge-docker/sauces/
 
-This will allow me to also offload some resource usage to my own server 🤪 just go easy on it 🤪 try to save in downloads then _copy_ elsewhere to use it 🤪
+This will allow me to also offload some resource usage to my own server 🤪 just go easy on it 🤪 try to save in your `Downloads/` then _copy_ elsewhere to use it 🤪
+
+### Warning: if you did `git clone ... `:
+You have all these scripts, you do not need `v1.0.0-sauces.tar.gz` and everything is verified. Helper scripts can run the long commands for you in the steps above instead :) You can go ahead and use the docker compose files to bring up your container in the repository's current location :)
+
+Listing of all files in v1.0.0sauce.tar.gz:
 ```
--rwxr-xr-x 1 root root  65 Jul 31 12:14 docker-destroy-CPU-only.sh
--rwxr-xr-x 1 root root 128 Jul 31 12:14 docker-destroy-multi-GPU-only.sh
--rwxr-xr-x 1 root root 129 Jul 31 12:14 docker-destroy-single-GPU-only.sh
--rwxr-xr-x 1 root root  75 Jul 31 10:55 docker-init-CPU-only.sh
--rwxr-xr-x 1 root root 170 Jul 31 11:03 docker-init-multi-GPU-only.sh
--rwxr-xr-x 1 root root 171 Jul 31 11:02 docker-init-single-GPU-only.sh
--rwxr-xr-x 1 root root 495 Jul 31 12:09 docker-start-containers.sh
--rwxr-xr-x 1 root root 506 Jul 31 12:09 docker-stop-containers.sh
+docker-compose.yaml                     # pick what you need according to below
+docker-compose.combined.nvidia.yaml     # pick what you need according to below
+docker-compose.multi-gpu.nvidia.yaml    # pick what you need according to below
+docker-compose.single-gpu.nvidia.yaml   # pick what you need according to below
+
+docker-init-CPU-only.sh                 # pick what you need according to below
+docker-init-multi-GPU-only.sh           # pick what you need according to below
+docker-init-single-GPU-only.sh          # pick what you need according to below
+
+docker-start-containers.sh              # common for all (always copy this)
+docker-stop-containers.sh               # common for all (always copy this)
+
+docker-destroy-CPU-only.sh              # pick what you need according to below
+docker-destroy-multi-GPU-only.sh        # pick what you need according to below
+docker-destroy-single-GPU-only.sh       # pick what you need according to below
 ```
 
-This is a placeholder. Update before merging.
+### CPU Docker Deployment ONLY:
+you only need out of this:
+```
+docker-compose.yml
+docker-init-CPU-only.sh
+docker-start-containers.sh
+docker-stop-containers.sh
+docker-destroy-CPU-only.sh
+./models/
+./outputs/
+```
+_**Ex:**_
+```
+./docker-init-CPU-only.sh               # Create CPU only docker container
+./docker-start-containers.sh            # start ALL sd-forge containers (with hopefully faster startup!)
+./docker-stop-containers.sh             # stop and preserve ALL sd-forge containers (with hopefully faster startup!)
+./docker-destroy-CPU-only.sh            # DESTROY CPU only docker container (will take long to start, do for debugging/troubleshooting purposes)
+```
+
+### CPU & Single GPU Docker Deployment ONLY:
+you only need out of this:
+```
+docker-compose.yml
+docker-compose.single-gpu.nvidia.yaml
+docker-init-CPU-only.sh
+docker-init-single-GPU-only.sh
+docker-start-containers.sh
+docker-stop-containers.sh
+docker-destroy-CPU-only.sh
+docker-destroy-single-GPU-only.sh
+./models/
+./outputs/
+```
+_**Ex:**_
+```
+./docker-init-single-GPU-only.sh        # Create single GPU only docker container
+./docker-start-containers.sh            # start ALL sd-forge containers (with hopefully faster startup!)
+./docker-stop-containers.sh             # stop and preserve ALL sd-forge containers (with hopefully faster startup!)
+./docker-destroy-single-GPU-only.sh     # DESTROY single GPU only docker container (will take long to start, do for debugging/troubleshooting purposes)
+```
+
+### CPU & Multi GPU Docker Deployment ONLY:
+Only 1 GPU usable ATM AFAIK
+you only need out of this:
+```
+docker-compose.yml
+docker-compose.multi-gpu.nvidia.yaml
+docker-init-CPU-only.sh
+docker-init-multi-GPU-only.sh
+docker-start-containers.sh
+docker-stop-containers.sh
+docker-destroy-CPU-only.sh
+docker-destroy-multi-GPU-only.sh
+./models/
+./outputs/
+```
+_**Ex:**_
+```
+./docker-init-single-GPU-only.sh        # Create multi GPU only docker container
+./docker-start-containers.sh            # start the container (with hopefully faster startup!)
+./docker-stop-containers.sh             # stop and preserve container (with hopefully faster startup!)
+./docker-destroy-single-GPU-only.sh     # DESTROY multi GPU only docker container (will take long to start, do for debugging/troubleshooting purposes)
+```
+
+## Have custom deployment? Extract entire v1.0.0-sauce.tar.gz:
+COPY LINES FROM docker-comose.combined.nvidia.yaml INTO _**YOUR DOCKER-COMPOSE PROJECT, PASTE IT AND CONFIGURE IT THERE.**_
+`./models/` and `./outputs/` will be **RELATIVE to YOUR DOCKER-COMPOSE FILE DIRECTORY**__ (extract v1.0.0-sauce.tar.gz in that directory)
 
 ## Future Plans:
-- v1.0.1 (may or may not be needed, going to attempt alpine based image)
+- v1.1.0 (may or may not be needed, going to attempt alpin'ization)
 
 ## Startup Time Warning:
-The startup time takes a while, it is doing a lot for you in the background. This should become faster on multiple start/stop of the container, but if you `docker compose down` you will need to wait again on next `docker compose up`. Not sure why, maybe it gets obliterated each time.
+The startup time takes a while, it is doing a lot for you in the background. This should become faster on multiple start/stop of the container, but if you `./docker-destroy-*-*.sh` you will need to wait again on next `./docker-init-*-*.sh`. You only run ONE init and ONE matching destroy script or you will FAIL. Try to stop the container and start it when you already ran init script - with `./docker-start-containers.sh` and `./docker-stop-containers.sh`.
 
-The way to fix it and cut down startup time is to make your own shellscript that starts/stops each container instead of removing it.  If you are unsure, just wait for the container to start ... :) I might or might not do something about that for v1.0.0 ;)
+The way to fix it and cut down startup time is to download the `v1.0.0-sauce.tar.gz` from catspeed (or perhaps you already have the sauce files/scripts via `git clone ... `)
 
 ## Large Image Warning:
 Holy crap! The image ... YES the image is large. So is this wall of text _lol_. At least for the image it starts with the fact that we need a full Ubuntu image with cuda12 for this machine learning / AI task. Then you have the original repository being required to fetch other repositories at runtime on launch to function. When I dockerized this everything was "baked into" the image. Unfortunately I do not see any way around this, even if the _upstream developers_ used submodules, they still have to be initialized and "baked into" the image. ML/AI related source repositories and models are _very_ large, due to the nature of the task. 
