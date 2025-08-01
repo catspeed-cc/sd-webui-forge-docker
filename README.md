@@ -86,12 +86,12 @@ catspeedcc/sd-webui-forge-docker:development - (not supported, parity w/ develop
 catspeedcc/sd-webui-forge-docker:bleeding - (not supported, ephemeral, if you use it you're on your own.)
 ```
 
-There are a few main files:
+There are a few main config files:
 ```
-docker-compose.yaml # CPU-only
+docker-compose.yaml # CPU-only          # Should not need configuration
 
-docker-compose.single-gpu.nvidia.yaml   # Single GPU only
-docker-compose.multi-gpu.nvidia.yaml    # ONE OF MULTIPLE GPU only
+docker-compose.single-gpu.nvidia.yaml   # Single GPU only (needs config)
+docker-compose.multi-gpu.nvidia.yaml    # ONE OF MULTIPLE GPU only (needs config)
 
 docker-compose.combined.nvidia.yaml     # ONLY so you can copy the service into
                                         # a different docker-compose.yml file ;)
@@ -107,31 +107,35 @@ All Docker support for now goes to [catspeed-cc issue tickets](https://github.co
 
 ### CPU Only (untested)
 
-Simply run `docker compose up` as it will select automatically the `docker-compose.yml`. There is no configuring as far as I can tell. If otherwise please submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
+- `./docker-init-cpu-only.sh` "installs" the docker container
+- `./docker-start-containers.sh` "starts" container(s)
+- `./docker-stop-containers.sh` "stops" container(s)
+- `./docker-destroy-cpu-only.sh` "uninstalls" the docker container
+- You can uninstall/reinstall to debug / start with fresh image (image is already stored locally)
+- Docker helper start/stop scripts to speed up startup when simply restarting container
+If issue please submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
 ### Single GPU Only (untested, should work)
 
-- Edit `docker-compose.single-gpu.nvidia.yaml` there are comments to guide you
-  - You won't need to edit this on first run, unless you have issues.
-  - If you plan only to have image processing, 25GB swap should suffice.
-  - If you have issues edit the `docker-compose.single-gpu.nvidia.yaml` file using the comments as guidance.
-  - Main lines are `#- --always-low-vram` (un comment if problems persist) and `- --vae-in-fp32` (comment if uncommenting the former - unconfirmed requirement)
-- Run `docker compose -f docker-compose.yaml -f docker-compose.single-gpu.nvidia.yaml up`
-- CTRL + C to close it. Do not bother removing it.
-- If removal is required use `docker compose -f docker-compose.yaml -f docker-compose.single-gpu.nvidia.yaml down`
+- Edit & configure `docker-compose.single-gpu.yaml`
+- `./docker-init-single-gpu-only.sh` "installs" the docker container
+- `./docker-start-containers.sh` "starts" container(s)
+- `./docker-stop-containers.sh` "stops" container(s)
+- `./docker-destroy-single-gpu-only.sh` "uninstalls" the docker container
+- You can uninstall/reinstall to debug / start with fresh image (image is already stored locally)
+- Docker helper start/stop scripts to speed up startup when simply restarting container
+If issue please submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
 ### Single of Multiple GPU Only (tested)
 
-- There is no way to combine multiple GPU to work to the same effort that I am aware of yet.
-- You can designate one GPU to this, and use the other GPU's for other tasks :)
-- Run `nvidia-smi` and note the GPU index (0? 1? 2? etc.)
-- Edit `docker-compose.multi-gpu.nvidia.yaml` replacing the `1` only with the index of your desired GPU
-  - If you plan only to have other AI workloads on the other GPU's, 100GB (or more) swap should suffice (for offloading if model not fit on GPU VRAM)
-  - If you have issues edit the `docker-compose.multi-gpu.nvidia.yaml` file using the comments as guidance.
-  - Main lines are `#- --always-low-vram` (un comment if problems persist) and `- --vae-in-fp32` (comment if uncommenting the former - unconfirmed requirement)
-- Run `docker compose -f docker-compose.yaml -f docker-compose.multi-gpu.nvidia.yaml up`
-- CTRL + C to close it. Do not bother removing it.
-- If removal is required use `docker compose -f docker-compose.yaml -f docker-compose.multi-gpu.nvidia.yaml down`
+- Edit & configure `docker-compose.multi-gpu.yaml`
+- `./docker-init-multi-gpu-only.sh` "installs" the docker container
+- `./docker-start-containers.sh` "starts" container(s)
+- `./docker-stop-containers.sh` "stops" container(s)
+- `./docker-destroy-multi-gpu-only.sh` "uninstalls" the docker container
+- You can uninstall/reinstall to debug / start with fresh image (image is already stored locally)
+- Docker helper start/stop scripts to speed up startup when simply restarting container
+If issue please submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
 ### Temporary-Permanent Sauces Mirror & Start-Stop Docker Helper Scripts:
 Temporary-Permanent Sauces Mirror (hosted by catspeed.cc) contains the "Start-Stop Docker Helper Scripts and will be explained. TLDR: GitHub gave error 500 on push of `v1.0.0-sauce.tar.gz` (probs too large) so I am hosting it myself instead. The server has HTTPS and I will note the MD5SUM of the file hosted, both in the .MD5 file on catspeed.cc and also all over PR's and in the RELEASE on GitHub. You can match them to verify the code is authentic and the source is open and fair.
@@ -140,105 +144,29 @@ Until further notice, the "Temporary-Permanent Sauces Mirror is _hosted by catsp
 
 This will allow me to also offload some resource usage to my own server 🤪 just go easy on it 🤪 try to save in your `Downloads/` then _copy_ elsewhere to use it 🤪
 
-### Warning: if you did `git clone ... `:
-You have all these scripts, you do not need `v1.0.0-sauces.tar.gz` and everything is verified. Helper scripts can run the long commands for you in the steps above instead :) You can go ahead and use the docker compose files to bring up your container in the repository's current location :)
+Each version release will have it's own sauce and updated MD5SUM
 
-Listing of all files in v1.0.0sauce.tar.gz:
-```
-docker-compose.yaml                     # pick what you need according to below
-docker-compose.combined.nvidia.yaml     # pick what you need according to below
-docker-compose.multi-gpu.nvidia.yaml    # pick what you need according to below
-docker-compose.single-gpu.nvidia.yaml   # pick what you need according to below
+# Temporary-Permanent Sauces Mirror (catspeed.cc) MD5SUM's
 
-docker-init-CPU-only.sh                 # pick what you need according to below
-docker-init-multi-GPU-only.sh           # pick what you need according to below
-docker-init-single-GPU-only.sh          # pick what you need according to below
+- **[v1.0.0-sauce.tar.gz](https://catspeed.cc/downloads/catspeedcc.sd-webui-forge-docker/sauces/v1.0.0-sauce.tar.gz) MD5: upd8 [035fa1a240c4c5f0b1b159170e4c2d88](https://catspeed.cc/downloads/catspeedcc.sd-webui-forge-docker/sauces/v1.0.0-sauce.tar.gz.MD5)**
 
-docker-start-containers.sh              # common for all (always copy this)
-docker-stop-containers.sh               # common for all (always copy this)
+## Have custom docker-compose deployment to integrate into? Extract entire v1.0.0-sauce.tar.gz:
 
-docker-destroy-CPU-only.sh              # pick what you need according to below
-docker-destroy-multi-GPU-only.sh        # pick what you need according to below
-docker-destroy-single-GPU-only.sh       # pick what you need according to below
-```
-
-### CPU Docker Deployment ONLY:
-you only need out of this:
-```
-docker-compose.yml
-docker-init-CPU-only.sh
-docker-start-containers.sh
-docker-stop-containers.sh
-docker-destroy-CPU-only.sh
-./models/
-./outputs/
-```
-_**Ex:**_
-```
-./docker-init-CPU-only.sh               # Create CPU only docker container
-./docker-start-containers.sh            # start ALL sd-forge containers (with hopefully faster startup!)
-./docker-stop-containers.sh             # stop and preserve ALL sd-forge containers (with hopefully faster startup!)
-./docker-destroy-CPU-only.sh            # DESTROY CPU only docker container (will take long to start, do for debugging/troubleshooting purposes)
-```
-
-### CPU & Single GPU Docker Deployment ONLY:
-you only need out of this:
-```
-docker-compose.yml
-docker-compose.single-gpu.nvidia.yaml
-docker-init-CPU-only.sh
-docker-init-single-GPU-only.sh
-docker-start-containers.sh
-docker-stop-containers.sh
-docker-destroy-CPU-only.sh
-docker-destroy-single-GPU-only.sh
-./models/
-./outputs/
-```
-_**Ex:**_
-```
-./docker-init-single-GPU-only.sh        # Create single GPU only docker container
-./docker-start-containers.sh            # start ALL sd-forge containers (with hopefully faster startup!)
-./docker-stop-containers.sh             # stop and preserve ALL sd-forge containers (with hopefully faster startup!)
-./docker-destroy-single-GPU-only.sh     # DESTROY single GPU only docker container (will take long to start, do for debugging/troubleshooting purposes)
-```
-
-### CPU & Multi GPU Docker Deployment ONLY:
-Only 1 GPU usable ATM AFAIK
-you only need out of this:
-```
-docker-compose.yml
-docker-compose.multi-gpu.nvidia.yaml
-docker-init-CPU-only.sh
-docker-init-multi-GPU-only.sh
-docker-start-containers.sh
-docker-stop-containers.sh
-docker-destroy-CPU-only.sh
-docker-destroy-multi-GPU-only.sh
-./models/
-./outputs/
-```
-_**Ex:**_
-```
-./docker-init-single-GPU-only.sh        # Create multi GPU only docker container
-./docker-start-containers.sh            # start the container (with hopefully faster startup!)
-./docker-stop-containers.sh             # stop and preserve container (with hopefully faster startup!)
-./docker-destroy-single-GPU-only.sh     # DESTROY multi GPU only docker container (will take long to start, do for debugging/troubleshooting purposes)
-```
-
-## Have custom deployment? Extract entire v1.0.0-sauce.tar.gz:
-COPY LINES FROM docker-comose.combined.nvidia.yaml INTO _**YOUR DOCKER-COMPOSE PROJECT, PASTE IT AND CONFIGURE IT THERE.**_
-`./models/` and `./outputs/` will be **RELATIVE to YOUR DOCKER-COMPOSE FILE DIRECTORY**__ (extract v1.0.0-sauce.tar.gz in that directory)
+COPY LINES FROM docker-comose.combined.nvidia.yaml INTO _**YOUR DOCKER-COMPOSE PROJECT, PASTE IT AND CONFIGURE IT THERE AS ADDITIONAL SERVICE.**_
+`./models/` and `./outputs/` will be **RELATIVE to YOUR DOCKER-COMPOSE FILE DIRECTORY**__ (extract v1.0.0-sauce.tar.gz in that docker compose yaml directory)
 
 ## Future Plans:
+
 - v1.1.0 (may or may not be needed, going to attempt alpin'ization)
 
 ## Startup Time Warning:
+
 The startup time takes a while, it is doing a lot for you in the background. This should become faster on multiple start/stop of the container, but if you `./docker-destroy-*-*.sh` you will need to wait again on next `./docker-init-*-*.sh`. You only run ONE init and ONE matching destroy script or you will FAIL. Try to stop the container and start it when you already ran init script - with `./docker-start-containers.sh` and `./docker-stop-containers.sh`.
 
 The way to fix it and cut down startup time is to download the `v1.0.0-sauce.tar.gz` from catspeed (or perhaps you already have the sauce files/scripts via `git clone ... `)
 
 ## Large Image Warning:
+
 Holy crap! The image ... YES the image is large. So is this wall of text _lol_. At least for the image it starts with the fact that we need a full Ubuntu image with cuda12 for this machine learning / AI task. Then you have the original repository being required to fetch other repositories at runtime on launch to function. When I dockerized this everything was "baked into" the image. Unfortunately I do not see any way around this, even if the _upstream developers_ used submodules, they still have to be initialized and "baked into" the image. ML/AI related source repositories and models are _very_ large, due to the nature of the task. 
 
 The developers know their own project better than I - and I am a noob. They can integrate it into docker better, and try to cut waste out of the image, but of course all dependencies need to be baked into the image. Otherwise the images will not work, or it would have to fetch them inside the container _every time_ you wanted to `docker compose down`. It is not the kind of image I would suggest converting to alpine to slim it down, it would be _a lot_ of work and _headache_. I am happy to help with anything, but mostly can sit and make my own mess in _my repository_ :)
