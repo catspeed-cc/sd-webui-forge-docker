@@ -14,7 +14,7 @@ ARG DUMMY=
 
 # Install system deps
 RUN apt-get update && apt-get install -y \
-    python3 git wget nano curl htop gcc g++ libgl1 libglib2.0-0 && \
+    git wget nano curl htop gcc g++ libgl1 libglib2.0-0 python3 python3.10-venv && \
     apt autoremove -y && \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
@@ -46,6 +46,25 @@ ENV PYTHONWARNINGS="ignore::FutureWarning,ignore::DeprecationWarning"
 
 # Install and set default toolchain
 RUN rustup install 1.70.0 && rustup default 1.70.0
+
+
+# NEW CODE BELOW REMOVE BEFORE MERGE!
+
+# Create a global venv at /opt/venv
+ENV VENV_PATH=/opt/venv
+RUN python3 -m venv $VENV_PATH
+
+# Add the venv's bin directory to PATH
+ENV PATH="$VENV_PATH/bin:$PATH"
+
+# Upgrade pip inside the venv
+RUN pip install --upgrade pip
+
+# Optional: make venv available to all users
+RUN chmod -R 755 $VENV_PATH
+
+# NEW CODE ABOVE REMOVE BEFORE MERGE!
+
 
 # Verify
 RUN echo "Cache bust: $DUMMY AFTER:" && rustc --version
