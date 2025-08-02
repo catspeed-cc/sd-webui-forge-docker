@@ -1,5 +1,7 @@
-# The only line that ever gets cached is next
-FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
+# OLD and LARGE ubuntu image
+#FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
+# NEW and small ubuntu image
+FROM nvidia/cuda:12.9.1-base-ubuntu22.04
 
 # we do not want interactive anything
 ENV DEBIAN_FRONTEND=noninteractive
@@ -12,11 +14,16 @@ ARG DUMMY=
 
 # Install system deps
 RUN apt-get update && apt-get install -y \
-    python3 git wget nano curl htop libgl1 libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
+    python3 git wget nano curl htop gcc g++ libgl1 libglib2.0-0 && \
+    apt autoremove -y && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Upgrade system jeez
-RUN apt-get upgrade -y && apt-get dist-upgrade -y
+RUN apt-get upgrade -y && apt-get dist-upgrade -y && \
+    apt autoremove -y && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Download and install the latest pip directly using get-pip.py
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
@@ -100,6 +107,9 @@ RUN cd /app/webui/repositories/BLIP && \
 #assets_commit_hash = os.environ.get('ASSETS_COMMIT_HASH', "6f7db241d2f8ba7457bac5ca9753331f0c266917")
 #huggingface_guess_commit_hash = os.environ.get('', "84826248b49bb7ca754c73293299c4d4e23a548d")
 #blip_commit_hash = os.environ.get('BLIP_COMMIT_HASH', "48211a1594f1321b00f14c9f7a5b4813144b2fb9")
+
+# Ensure APT cache is cleaned! (image size concerns)
+RUN apt autoremove -y && apt clean && rm -rf /var/lib/apt/lists/*   
 
 #
 ## Startup SD WebUI Forge
