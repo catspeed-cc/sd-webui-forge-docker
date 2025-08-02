@@ -60,7 +60,7 @@ coverage.xml
 GITHUB_PAT
 GITHUB_PAC
 
-# exclude the self hosted sauces
-*-sauce.tar.gz
-# and the work_dir_tmp
+# Exclude the work_dir_tmp
 work_dir_tmp/**/*
+# Exclude the mooleshacat release helper scripts
+github-*.sh
