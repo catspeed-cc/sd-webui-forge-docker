@@ -74,9 +74,15 @@ RUN echo "Cache bust: $DUMMY AFTER INSTALL:" && pip3 --version
 
 WORKDIR /app
 
+# copy the docker initialization script
 COPY webui-docker.sh /app/webui-docker.sh
+RUN chmod +x /app/webui-docker.sh
 
-# mooleshacat note: copy the new secret sauce ;)
+# copy the sauces
+RUN mkdir /app/sauces
+COPY secretsauce.sh /app/sauces
+RUN chmod +x /app/sauces/secretsauce.sh
+# end user calls this script via `docker-reinstall-container-deps.sh`
 
 # Ensure APT cache is cleaned! (image size concerns)
 RUN apt autoremove -y && apt clean && rm -rf /var/lib/apt/lists/*   
