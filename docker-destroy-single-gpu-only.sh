@@ -20,4 +20,6 @@ done <<< "$DOCKER_PSA_LIST"
 echo "docker ps -a output:"
 docker ps -a
 
+echo ""
 echo "Docker containers stopped & removed."
+echo ""
