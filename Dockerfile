@@ -34,7 +34,7 @@ ENV RUSTUP_TOOLCHAIN=1.70.0
 
 # Suppress common harmless warnings in production
 # Does not affect errors or app-level logging
-# Also exists in startup-webui.sh
+# Also exists in webui-docker.sh
 ENV PYTHONWARNINGS="ignore::FutureWarning,ignore::DeprecationWarning"
 
 # Install and set default toolchain
@@ -67,7 +67,7 @@ RUN pip3 install --root-user-action ignore joblib
 #insightface
 
 #
-## Install the git repositories manually, so we can cutback startup time
+## Install the git repositories manually, so we can cut back startup time
 ##
 ## Any repos not installed by this Dockerfile _should_ auto install on start
 ##

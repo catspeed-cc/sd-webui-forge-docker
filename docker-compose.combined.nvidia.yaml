@@ -9,7 +9,6 @@
 #
 services:
   # COPY HERE TO END OF FILE TO COPY INTO OTHER DOCKER-COMPOSE
-  # GOOD LUCK, YOU ARE NOW OUT OF SCOPE :~P (unsupported)
   sd-forge:
     # use the image below :)
     image: catspeedcc/sd-webui-forge-docker:latest
