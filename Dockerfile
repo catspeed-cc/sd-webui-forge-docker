@@ -1,5 +1,7 @@
-# The only line that ever gets cached is next
-FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
+# OLD and LARGE ubuntu image
+#FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
+# NEW and small ubuntu image
+FROM nvidia/cuda:12.9.1-base-ubuntu22.04
 
 # we do not want interactive anything
 ENV DEBIAN_FRONTEND=noninteractive
@@ -12,11 +14,16 @@ ARG DUMMY=
 
 # Install system deps
 RUN apt-get update && apt-get install -y \
-    python3 git wget nano curl htop libgl1 libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
+    git wget nano curl htop gcc g++ libgl1 libglib2.0-0 python3 python3.10-venv && \
+    apt autoremove -y && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Upgrade system jeez
-RUN apt-get upgrade -y && apt-get dist-upgrade -y
+RUN apt-get upgrade -y && apt-get dist-upgrade -y && \
+    apt autoremove -y && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Download and install the latest pip directly using get-pip.py
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
@@ -39,6 +46,25 @@ ENV PYTHONWARNINGS="ignore::FutureWarning,ignore::DeprecationWarning"
 
 # Install and set default toolchain
 RUN rustup install 1.70.0 && rustup default 1.70.0
+
+
+# NEW CODE BELOW REMOVE BEFORE MERGE!
+
+# Create a global venv at /opt/venv
+ENV VENV_PATH=/opt/venv
+RUN python3 -m venv $VENV_PATH
+
+# Add the venv's bin directory to PATH
+ENV PATH="$VENV_PATH/bin:$PATH"
+
+# Upgrade pip inside the venv
+RUN pip install --upgrade pip
+
+# Optional: make venv available to all users
+RUN chmod -R 755 $VENV_PATH
+
+# NEW CODE ABOVE REMOVE BEFORE MERGE!
+
 
 # Verify
 RUN echo "Cache bust: $DUMMY AFTER:" && rustc --version
@@ -91,8 +117,14 @@ RUN echo "Cache bust: $DUMMY" && cd /app/webui/repositories/stable-diffusion-web
 RUN cd /app/webui/repositories/huggingface_guess && \
     git checkout 84826248b49bb7ca754c73293299c4d4e23a548d
 
+#
+# THERE IS A CONFLICT between the requirements.txt for BLIP and the upstream/main requirements.txt
+#
+# LIST OF CORRECTED CONFLICTS:
+#                              `transformers==4.15.0`->`transformers==4.46.1` # 2025-08-02 @ 12-37 EST resolved by mooleshacat
 RUN cd /app/webui/repositories/BLIP && \
     git checkout 48211a1594f1321b00f14c9f7a5b4813144b2fb9 && \
+    sed -i 's/transformers==4\.15\.0/transformers==4.46.1/g' /app/webui/repositories/BLIP/requirements.txt && \
     pip3 install --root-user-action ignore -r requirements.txt
 
 # modules/launch_utils.py contains the repos and hashes
@@ -100,6 +132,9 @@ RUN cd /app/webui/repositories/BLIP && \
 #assets_commit_hash = os.environ.get('ASSETS_COMMIT_HASH', "6f7db241d2f8ba7457bac5ca9753331f0c266917")
 #huggingface_guess_commit_hash = os.environ.get('', "84826248b49bb7ca754c73293299c4d4e23a548d")
 #blip_commit_hash = os.environ.get('BLIP_COMMIT_HASH', "48211a1594f1321b00f14c9f7a5b4813144b2fb9")
+
+# Ensure APT cache is cleaned! (image size concerns)
+RUN apt autoremove -y && apt clean && rm -rf /var/lib/apt/lists/*   
 
 #
 ## Startup SD WebUI Forge
