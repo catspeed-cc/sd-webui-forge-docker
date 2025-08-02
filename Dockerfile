@@ -1,6 +1,3 @@
-# OLD and LARGE ubuntu image
-#FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
-# NEW and small ubuntu image
 FROM nvidia/cuda:12.9.1-base-ubuntu22.04
 
 # we do not want interactive anything
@@ -79,65 +76,13 @@ WORKDIR /app
 
 COPY webui-docker.sh /app/webui-docker.sh
 
-# Clone Forge
-RUN git clone https://github.com/lllyasviel/stable-diffusion-webui-forge webui
-WORKDIR /app/webui
-
-# Install PyTorch with CUDA 12.1
-RUN pip3 install --root-user-action ignore torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-
-# Install requirements
-RUN pip3 install --root-user-action ignore -r requirements_versions.txt
-
-RUN pip3 install --root-user-action ignore joblib 
-#insightface
-
-#
-## Install the git repositories manually, so we can cut back startup time
-##
-## Any repos not installed by this Dockerfile _should_ auto install on start
-##
-# 
-
-# UPGRADE PIP & SETUPTOOLS
-RUN pip3 install --root-user-action ignore --upgrade pip && \
-    pip install --root-user-action ignore --upgrade pip && \
-    pip3 install --root-user-action ignore --force-reinstall --no-deps "setuptools>=62.4"
-
-# modules/launch_utils.py contains the repos and hashes
-RUN mkdir -p /app/webui/repositories && \
-    cd /app/webui/repositories && \
-    git clone --config core.filemode=false https://github.com/AUTOMATIC1111/stable-diffusion-webui-assets.git && \
-    git clone --config core.filemode=false https://github.com/lllyasviel/huggingface_guess.git && \
-    git clone --config core.filemode=false https://github.com/salesforce/BLIP.git
-
-RUN echo "Cache bust: $DUMMY" && cd /app/webui/repositories/stable-diffusion-webui-assets && \
-    git checkout 6f7db241d2f8ba7457bac5ca9753331f0c266917
-
-RUN cd /app/webui/repositories/huggingface_guess && \
-    git checkout 84826248b49bb7ca754c73293299c4d4e23a548d
-
-#
-# THERE IS A CONFLICT between the requirements.txt for BLIP and the upstream/main requirements.txt
-#
-# LIST OF CORRECTED CONFLICTS:
-#                              `transformers==4.15.0`->`transformers==4.46.1` # 2025-08-02 @ 12-37 EST resolved by mooleshacat
-RUN cd /app/webui/repositories/BLIP && \
-    git checkout 48211a1594f1321b00f14c9f7a5b4813144b2fb9 && \
-    sed -i 's/transformers==4\.15\.0/transformers==4.46.1/g' /app/webui/repositories/BLIP/requirements.txt && \
-    pip3 install --root-user-action ignore -r requirements.txt
-
-# modules/launch_utils.py contains the repos and hashes
-# kept for reference :)
-#assets_commit_hash = os.environ.get('ASSETS_COMMIT_HASH', "6f7db241d2f8ba7457bac5ca9753331f0c266917")
-#huggingface_guess_commit_hash = os.environ.get('', "84826248b49bb7ca754c73293299c4d4e23a548d")
-#blip_commit_hash = os.environ.get('BLIP_COMMIT_HASH', "48211a1594f1321b00f14c9f7a5b4813144b2fb9")
+# mooleshacat note: copy the new secret sauce ;)
 
 # Ensure APT cache is cleaned! (image size concerns)
 RUN apt autoremove -y && apt clean && rm -rf /var/lib/apt/lists/*   
 
 #
-## Startup SD WebUI Forge
+## Startup SD WebUI Forge (very last)
 #
 
 EXPOSE 7860
