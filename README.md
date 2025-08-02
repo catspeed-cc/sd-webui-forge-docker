@@ -103,61 +103,71 @@ As far as I know there is no way to combine multiple GPU's on this one same task
 - DO NOT run the `webui-docker.sh` script ever, it is meant ONLY to be ran inside the docker containers at runtime. (automatic, ignore)
 - Read the rest of this section, then jump to either [CPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#cpu-only-untested), [Single GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#single-gpu-only-untested-should-work), or [Single of Multiple GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#single-of-multiple-gpu-only-tested)
 
-All Docker support for now goes to [catspeed-cc issue tickets](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and _only if_ this ever gets merged upstream.
+_**Important:**_ All Docker support for now goes to [catspeed-cc issue tickets](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and _only if_ this ever gets merged upstream.
 
 ### CPU Only (untested)
 
-- `./docker-init-cpu-only.sh` "installs" the docker container
+- `./docker-init-cpu-only.sh` "installs" and starts the docker container
 - `./docker-start-containers.sh` "starts" container(s)
 - `./docker-stop-containers.sh` "stops" container(s)
-- `./docker-destroy-cpu-only.sh` "uninstalls" the docker container
+- `./docker-destroy-cpu-only.sh` "uninstalls" and stops the docker container
 - You can uninstall/reinstall to debug / start with fresh image (image is already stored locally)
 - Docker helper start/stop scripts to speed up startup when simply restarting container
-If issue please submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
 ### Single GPU Only (untested, should work)
 
 - Edit & configure `docker-compose.single-gpu.yaml`
-- `./docker-init-single-gpu-only.sh` "installs" the docker container
+- `./docker-init-single-gpu-only.sh` "installs" and starts the docker container
 - `./docker-start-containers.sh` "starts" container(s)
 - `./docker-stop-containers.sh` "stops" container(s)
-- `./docker-destroy-single-gpu-only.sh` "uninstalls" the docker container
+- `./docker-destroy-single-gpu-only.sh` "uninstalls" and stops the docker container
 - You can uninstall/reinstall to debug / start with fresh image (image is already stored locally)
 - Docker helper start/stop scripts to speed up startup when simply restarting container
-If issue please submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
 ### Single of Multiple GPU Only (tested)
 
 - Edit & configure `docker-compose.multi-gpu.yaml`
-- `./docker-init-multi-gpu-only.sh` "installs" the docker container
+- `./docker-init-multi-gpu-only.sh` "installs" and starts the docker container
 - `./docker-start-containers.sh` "starts" container(s)
 - `./docker-stop-containers.sh` "stops" container(s)
-- `./docker-destroy-multi-gpu-only.sh` "uninstalls" the docker container
+- `./docker-destroy-multi-gpu-only.sh` "uninstalls" and stops the docker container
 - You can uninstall/reinstall to debug / start with fresh image (image is already stored locally)
 - Docker helper start/stop scripts to speed up startup when simply restarting container
-If issue please submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
-### Temporary-Permanent Sauces Mirror & Start-Stop Docker Helper Scripts:
-Temporary-Permanent Sauces Mirror (hosted by catspeed.cc) contains the "Start-Stop Docker Helper Scripts and will be explained. TLDR: GitHub gave error 500 on push of `v1.0.0-sauce.tar.gz` (probs too large) so I am hosting it myself instead. The server has HTTPS and I will note the MD5SUM of the file hosted, both in the .MD5 file on catspeed.cc and also all over PR's and in the RELEASE on GitHub. You can match them to verify the code is authentic and the source is open and fair.
+### Customize a docker-compose.yaml from another project
+Let's say you have another project - let's pick localAGI as an example. You can customize the `docker-compose.yaml` for localAGI and add in this docker service. This way when you start localAGI it will also start your image generation service.
 
-Until further notice, the "Temporary-Permanent Sauces Mirror is _hosted by catspeed.cc_. The URL is: https://catspeed.cc/downloads/catspeedcc.sd-webui-forge-docker/sauces/
+- Edit & configure `docker-compose.combined.nvidia.yaml`
+- Open the localAGI (or other project) directory
+- Copy the lines for the service from `docker-compose.combined.nvidia.yaml` & paste underneath one of the other services
+- Download the sauces archive for your version from https://github.com/catspeed-cc/sd-webui-forge-docker/tree/master/sauces
+- Extract the sauces into your localAGI project directory `tar zxvf v1.0.0-sauce.tar.gz`
+- All sauce helper scripts and docker-compose.yaml files should now be in your project :)
+- DO NOT use the init/destroy scripts, use your `docker compose up` and `docker-compose down` commands as directed by the project readme
+- Docker helper start/stop scripts to speed up startup when simply restarting container
+- IF you need to destroy the container and recreate it for debugging/troubleshooting, then use the respective destroy script followed by `docker compose down` in the localAGI (or other project)
+- Sauce scripts ONLY will restart sd-forge containers - _assuming you did not rename the containers!_
+- IF you chose to rename the container, just make sure "sd-forge" exists in the name, and the sauce scripts should still work :)
 
-This will allow me to also offload some resource usage to my own server 🤪 just go easy on it 🤪 try to save in your `Downloads/` then _copy_ elsewhere to use it 🤪
+## Sauces Archives & Start-Stop Docker Helper Scripts:
+The models have been removed from the sauces directory as there are no models in the upstream/main repository contrary to what I initially thought. This is good, it allows me to remove the models, slim the archive, and then host it on git because the sauce archives are basically just text files zipped up.
 
-Each version release will have it's own sauce and updated MD5SUM
-
-# Temporary-Permanent Sauces Mirror (catspeed.cc) MD5SUM's
-
-- **[v1.0.0-sauce.tar.gz](https://catspeed.cc/downloads/catspeedcc.sd-webui-forge-docker/sauces/v1.0.0-sauce.tar.gz) MD5: upd8 [035fa1a240c4c5f0b1b159170e4c2d88](https://catspeed.cc/downloads/catspeedcc.sd-webui-forge-docker/sauces/v1.0.0-sauce.tar.gz.MD5)**
-
-## Have custom docker-compose deployment to integrate into? Extract entire v1.0.0-sauce.tar.gz:
-
-COPY LINES FROM docker-comose.combined.nvidia.yaml INTO _**YOUR DOCKER-COMPOSE PROJECT, PASTE IT AND CONFIGURE IT THERE AS ADDITIONAL SERVICE.**_
-`./models/` and `./outputs/` will be **RELATIVE to YOUR DOCKER-COMPOSE FILE DIRECTORY**__ (extract v1.0.0-sauce.tar.gz in that docker compose yaml directory)
+- Each version (major or minor) will have a corresponding sauce archive.
+- You only need this sauce archive IF you are planning to use the `docker-compose.combined.nvidia.yaml` to customize a different docker-compose.yaml and add sd-forge as a service.
+- Due to the sauces being hosted on GitHub, MD5SUM's are not required (we are staying on the secured, confirmed, GitHub)
+- MD5SUM's will be posted inside an .MD5 file as the helper script can do it automatically
+- Checking MD5SUM is not required unless you are extremely paranoid
 
 ## Future Plans:
 
 - v1.1.0 (may or may not be needed, going to attempt alpin'ization)
+
+## `docker-compose.combined.nvidia.yaml` instructions:
+PLACEHOLDER
+
+## Docker Support Warning:
+- ALL `sd-webui-forge-docker` docker related issues shall be posted here: https://github.com/catspeed-cc/sd-webui-forge-docker/issues
+- ALL `stable-diffusion-webui-forge` related issues shall be posted here: https://github.com/lllyasviel/stable-diffusion-webui-forge/issues
 
 ## Startup Time Warning:
 
