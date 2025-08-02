@@ -117,8 +117,14 @@ RUN echo "Cache bust: $DUMMY" && cd /app/webui/repositories/stable-diffusion-web
 RUN cd /app/webui/repositories/huggingface_guess && \
     git checkout 84826248b49bb7ca754c73293299c4d4e23a548d
 
+#
+# THERE IS A CONFLICT between the requirements.txt for BLIP and the upstream/main requirements.txt
+#
+# LIST OF CORRECTED CONFLICTS:
+#                              `transformers==4.15.0`->`transformers==4.46.1` # 2025-08-02 @ 12-37 EST resolved by mooleshacat
 RUN cd /app/webui/repositories/BLIP && \
     git checkout 48211a1594f1321b00f14c9f7a5b4813144b2fb9 && \
+    sed -i 's/transformers==4\.15\.0/transformers==4.46.1/g' /app/webui/repositories/BLIP/requirements.txt && \
     pip3 install --root-user-action ignore -r requirements.txt
 
 # modules/launch_utils.py contains the repos and hashes

@@ -29,6 +29,40 @@ else
   echo "⚠️  nvidia-smi not found!" >&2
 fi
 
+# Example: incoming arguments
+args=("$@")
+
+# Array to hold filtered arguments
+filtered_args=()
+
+# Loop through all arguments
+i=0
+while [ $i -lt ${#args[@]} ]; do
+  arg="${args[$i]}"
+
+  # Check for --server-name=0.0.0.0 (combined form)
+  if [[ "$arg" == "--server-name=0.0.0.0" ]]; then
+    # Skip this argument (do not add to filtered_args)
+    :
+  # Check for --server-name followed by 0.0.0.0 (separate arguments)
+  elif [[ "$arg" == "--server-name" ]]; then
+    # Skip both --server-name and the next argument (assume it's 0.0.0.0)
+    ((i++))  # Skip the value
+  else
+    # Keep the argument
+    filtered_args+=("$arg")
+  fi
+
+  ((i++))
+done
+
+# Now use filtered_args instead of original args
+# Example: exec your command
+# exec python app.py "${filtered_args[@]}"
+
+# For debugging: print filtered args
+printf "[DEBUG] Filtered args: '%s'\n" "${filtered_args[@]}"
+
 # TORCH TEST (DEBUG, it failed when GPU bind worked... Remove?)
 #echo ""
 #echo "TORCH:"
@@ -50,7 +84,7 @@ echo "STARTING THE PYTHON APP..."
 
 # Run SD Forge with all passed arguments (no default so far)
 # CONFIRMED --server-name=0.0.0.0 is safe as long as docker compose comments are respected / understood.
-exec python3 -W "ignore::FutureWarning" -W "ignore::DeprecationWarning" launch.py --server-name=0.0.0.0${PYTHON_ADD_ARG} "$@"
+exec python3 -W "ignore::FutureWarning" -W "ignore::DeprecationWarning" launch.py --server-name=0.0.0.0${PYTHON_ADD_ARG} ${filtered_args[@]}
 
 # If we get here, launch.py failed
 echo "❌ SD Forge exited with code $?"
