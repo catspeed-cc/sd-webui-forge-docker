@@ -163,7 +163,9 @@ The models have been removed from the sauces directory as there are no models in
 - v1.1.0 - may or may not be needed, going to attempt alpin'ization
 
 ## Docker Support Warning:
-- ALL `sd-webui-forge-docker` docker related issues shall be posted here: https://github.com/catspeed-cc/sd-webui-forge-docker/issues
+ONLY post docker related issue tickets on this repository's issue ticket system. Any issues with the main project are still to be opened in the main repository.
+
+- ALL docker related issues shall be posted here: https://github.com/catspeed-cc/sd-webui-forge-docker/issues
 - ALL `stable-diffusion-webui-forge` related issues shall be posted here: https://github.com/lllyasviel/stable-diffusion-webui-forge/issues
 
 ## Startup Time Warning:
