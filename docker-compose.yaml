@@ -1,0 +1,18 @@
+
+# docker-compose.yml CPU-only example
+services:
+
+  sd-forge:
+    # kept in for development, do not uncomment!
+    #build: .
+    # use the image below :)
+    image: catspeedcc/sd-webui-forge-docker:latest
+    command:
+      - /app/webui-docker.sh
+    ports:
+      # THIS is where we limit to localhost
+      # or change 127.0.0.1->0.0.0.0 but ensure firewalls properly configured!
+      - "127.0.0.1:7860:7860"
+    volumes:
+      - ./models:/app/webui/models
+      - ./outputs:/app/webui/outputs

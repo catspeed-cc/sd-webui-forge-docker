@@ -55,3 +55,12 @@ trace.json
 /test/results.xml
 coverage.xml
 **/tests/**/expectations
+
+# kthx
+GITHUB_PAT
+GITHUB_PAC
+
+# Exclude the work_dir_tmp
+work_dir_tmp/**/*
+# Exclude the mooleshacat release helper scripts
+github-*.sh
