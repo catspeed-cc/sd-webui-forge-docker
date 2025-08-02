@@ -64,3 +64,5 @@ GITHUB_PAC
 *-sauce.tar.gz
 # and the work_dir_tmp
 work_dir_tmp/**/*
+# and the mooleshacat release helper scripts
+github-*.sh
