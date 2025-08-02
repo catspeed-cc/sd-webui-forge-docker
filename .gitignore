@@ -55,3 +55,12 @@ trace.json
 /test/results.xml
 coverage.xml
 **/tests/**/expectations
+
+# kthx
+GITHUB_PAT
+GITHUB_PAC
+
+# exclude the self hosted sauces
+*-sauce.tar.gz
+# and the work_dir_tmp
+work_dir_tmp/**/*
