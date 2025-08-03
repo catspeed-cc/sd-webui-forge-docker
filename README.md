@@ -72,6 +72,7 @@ Install Docker:
 - If trouble submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
 Models can be put in `sd-webui-forge-docker/models/` directory, organized by type - they will be mounted to the container
+- If you copy models in while container running and after first start, after model copy is complete you can `docker-stop-containers.sh` and `docker-start-containers.sh` and they will be loaded quickly
 
 Outputs are stored in `sd-webui-forge-docker/outputs/` directory
 
@@ -79,7 +80,8 @@ Due to the nature of Docker, an image running at shutdown _should_ start up agai
 
 These are the current tags:
 ```
-catspeedcc/sd-webui-forge-docker:latest - currently points to v1.0.0
+catspeedcc/sd-webui-forge-docker:latest - currently points to v1.1.0
+catspeedcc/sd-webui-forge-docker:v1.1.0 - Important upgrades: smaller docker image, cuda 12.1->12.8 (see README.md)
 catspeedcc/sd-webui-forge-docker:v1.0.0 - latest stable version (first release)
 
 catspeedcc/sd-webui-forge-docker:development - (not supported, parity w/ development branch, if you use it you're on your own.)
@@ -99,17 +101,51 @@ docker-compose.combined.nvidia.yaml     # ONLY so you can copy the service into
 
 As far as I know there is no way to combine multiple GPU's on this one same task (image generation) but you can dedicate one of many GPU's to image generation and then use the other GPU's for other tasks (chat, development, etc)
 
-- Clone the catspeed-cc repository for now `git clone https://github.com/catspeed-cc/sd-webui-forge-docker.git`
-- DO NOT run the `webui-docker.sh` script ever, it is meant ONLY to be ran inside the docker containers at runtime. (automatic, ignore)
+- Clone the catspeed-cc repository `git clone https://github.com/catspeed-cc/sd-webui-forge-docker.git`
+- DO NOT run the `webui-docker.sh` script ever, it is meant ONLY to be ran inside the docker containers at runtime. (automatic, ignore the file)
 - Read the rest of this section, then jump to either [CPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#cpu-only-untested), [Single GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#single-gpu-only-untested-should-work), or [Single of Multiple GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#single-of-multiple-gpu-only-tested)
 
 _**Important:**_ All Docker support for now goes to [catspeed-cc issue tickets](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and _only if_ this ever gets merged upstream.
 
+### IMPORTANT: Cuda version has been upgraded for container from 12.1 -> 12.8
+
+NOTE: Please upgrade your driver first to 535.104.05 or higher
+
+Cuda version has been upgraded for container from 12.1 -> 12.8 please install cuda 12.8 (instructions below)
+
+Both of these can be modified to suit other versions of debian/ubuntu
+
+Debian 11
+```
+sudo apt-get remove --purge '^cuda.*' '^nvidia-cuda.*' && \
+sudo apt-get autoremove -y && \
+wget https://developer.download.nvidia.com/compute/cuda/repos/debian11/x86_64/cuda-debian11.pin && \
+sudo mv cuda-debian11.pin /etc/apt/preferences.d/cuda-repository-pin-600 && \
+sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/debian11/x86_64/3bf863cc.pub && \
+sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/debian11/x86_64/ /" && \
+sudo apt-get update && \
+sudo apt-get install -y cuda-toolkit-12-8
+```
+
+Ubuntu 22.04 change cuda 12.1 -> 12.8
+```
+sudo apt-get remove --purge '^cuda.*' '^nvidia-cuda.*' && \
+sudo apt-get autoremove -y && \
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin && \
+sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600 && \
+sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/3bf863cc.pub && \
+sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /" && \
+sudo apt-get update && \
+sudo apt-get install -y cuda-toolkit-12-8
+```
+
 ### CPU Only (untested)
 
 - `./docker-init-cpu-only.sh` "installs" and starts the docker container
-- `./docker-start-containers.sh` "starts" container(s)
+- After install, even while running you can copy models to models/ and then after run stop/start for quick reload
 - `./docker-stop-containers.sh` "stops" container(s)
+- `./docker-reinstall-container-deps.sh` - reinstalls containers dependencies (requires stop/start, you should prefer to destroy/init)
+- `./docker-start-containers.sh` "starts" container(s)
 - `./docker-destroy-cpu-only.sh` "uninstalls" and stops the docker container
 - You can uninstall/reinstall to debug / start with fresh image (image is already stored locally)
 
@@ -117,8 +153,10 @@ _**Important:**_ All Docker support for now goes to [catspeed-cc issue tickets](
 
 - Edit & configure `docker-compose.single-gpu.yaml`
 - `./docker-init-single-gpu-only.sh` "installs" and starts the docker container
-- `./docker-start-containers.sh` "starts" container(s)
+- After install, even while running you can copy models to models/ and then after run stop/start for quick reload
 - `./docker-stop-containers.sh` "stops" container(s)
+- `./docker-reinstall-container-deps.sh` - reinstalls containers dependencies (requires stop/start, you should prefer to destroy/init)
+- `./docker-start-containers.sh` "starts" container(s)
 - `./docker-destroy-single-gpu-only.sh` "uninstalls" and stops the docker container
 - You can uninstall/reinstall to debug / start with fresh image (image is already stored locally)
 
@@ -126,8 +164,10 @@ _**Important:**_ All Docker support for now goes to [catspeed-cc issue tickets](
 
 - Edit & configure `docker-compose.multi-gpu.yaml`
 - `./docker-init-multi-gpu-only.sh` "installs" and starts the docker container
-- `./docker-start-containers.sh` "starts" container(s)
+- After install, even while running you can copy models to models/ and then after run stop/start for quick reload
 - `./docker-stop-containers.sh` "stops" container(s)
+- `./docker-reinstall-container-deps.sh` - reinstalls containers dependencies (requires stop/start, you should prefer to destroy/init)
+- `./docker-start-containers.sh` "starts" container(s)
 - `./docker-destroy-multi-gpu-only.sh` "uninstalls" and stops the docker container
 - You can uninstall/reinstall to debug / start with fresh image (image is already stored locally)
 
@@ -142,7 +182,7 @@ Let's say you have another project - let's pick localAGI as an example. You can 
 - Paste the lines underneath one of the other services inside the localAGI (or other project) docker-compose.yaml
 - All sauce helper scripts and docker-compose.yaml files should now be in your project :)
 - DO NOT use the init/destroy scripts, use your `docker compose up` and `docker-compose down` commands as directed by the project `README.md`
-- Docker helper start/stop scripts will speed up startup when simply stopping or starting the container
+- Docker helper start/stop scripts will speed up startup when simply stopping or starting the container quickly (ex. to load new models)
 - IF you need to destroy the container and recreate it for debugging/troubleshooting, then use the respective destroy script followed by `docker compose down` in the localAGI (or other project)
 - Sauce scripts ONLY will init/destroy/start/stop sd-forge containers - _assuming you did not rename the containers!_
 - IF you chose to rename the container, just make sure "sd-forge" exists in the name, and the sauce scripts should still work :)
@@ -151,16 +191,16 @@ Let's say you have another project - let's pick localAGI as an example. You can 
 The models have been removed from the sauces directory as there are no models in the upstream/main repository contrary to what I initially thought. This is good, it allows me to remove the models, slim the archive, and then host it on GitHub because the sauce archives are basically just text files zipped up.
 
 - Each version (major or minor) will have a corresponding sauce archive.
-- If you plan to run sd-forge as a standalone, then you do not need the sauces archive
-  - Just clone the git and follow instructions `git clone https://github.com/catspeed-cc/sd-webui-forge-docker.git sd-forge`
 - You only need this sauce archive IF you are planning to use the `docker-compose.combined.nvidia.yaml` to customize a different docker-compose.yaml and add sd-forge as a service.
+- You _could_ use sauces to run a cut down installation that is standalone - no integration with a different docker-compose.yaml - extract, edit yaml, run the respective init script
 - Due to the sauces being hosted on GitHub, MD5SUM's are not required (we are staying on the secured, confirmed, GitHub)
 - MD5SUM's will be posted inside an .MD5 file as the helper script can do it automatically
 - Checking MD5SUM is not required unless you are extremely paranoid
 
 ## Future Plans:
 
-- v1.1.0 - may or may not be needed, going to attempt alpin'ization
+- None as of yet
+- please submit suggestions to https://github.com/catspeed-cc/sd-webui-forge-docker/issues
 
 ## Docker Support Warning:
 ONLY post docker related issue tickets on this repository's issue ticket system. Any issues with the main project are still to be opened in the main repository.
@@ -170,13 +210,11 @@ ONLY post docker related issue tickets on this repository's issue ticket system.
 
 ## Startup Time Warning:
 
-The startup time takes a while, it is doing a lot for you in the background. This should become faster on multiple start/stop of the container, but if you `./docker-destroy-*-*.sh` you will need to wait again on next `./docker-init-*-*.sh`. You only run ONE init and ONE matching destroy script or you will FAIL. Try to stop the container and start it when you already ran init script - with `./docker-start-containers.sh` and `./docker-stop-containers.sh`.
-
-The way to fix it and cut down startup time is to download the `v1.0.0-sauce.tar.gz` from catspeed (or perhaps you already have the sauce files/scripts via `git clone ... `)
+FIRST RUN (when you run the init/install script) is going to take a while - grab a coffee. This was the tradeoff for the smaller docker image. Afterwards, you can mostly use `docker-stop-containers.sh` and `docker-start-containers.sh` to restart containers quickly, ex. if you installed new models.
 
 ## Large Image Warning:
 
-Holy crap! The image ... YES the image is large. So is this wall of text _lol_. At least for the image it starts with the fact that we need a full Ubuntu image with cuda12 for this machine learning / AI task. Then you have the original repository being required to fetch other repositories at runtime on launch to function. When I dockerized this everything was "baked into" the image. Unfortunately I do not see any way around this, even if the _upstream developers_ used submodules, they still have to be initialized and "baked into" the image. ML/AI related source repositories and models are _very_ large, due to the nature of the task. 
+The image may not be _as large_ as it was but I will check if this section can be removed ...
 
 The developers know their own project better than I - and I am a noob. They can integrate it into docker better, and try to cut waste out of the image, but of course all dependencies need to be baked into the image. Otherwise the images will not work, or it would have to fetch them inside the container _every time_ you wanted to `docker compose down`. It is not the kind of image I would suggest converting to alpine to slim it down, it would be _a lot_ of work and _headache_. I am happy to help with anything, but mostly can sit and make my own mess in _my repository_ :)
 
