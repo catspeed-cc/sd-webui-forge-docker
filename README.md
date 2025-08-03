@@ -66,6 +66,40 @@ You can download previous versions [here](https://github.com/lllyasviel/stable-d
 
 # Docker Installation
 
+### IMPORTANT: Cuda version has been upgraded for container from 12.1 -> 12.8
+
+NOTE: Please upgrade your driver first to 535.104.05 or higher
+
+Cuda version has been upgraded for container from 12.1 -> 12.8 please install cuda 12.8 ON THE HOST machine (instructions below)
+
+Both of these can be modified to suit other versions of debian/ubuntu
+
+Debian 11
+```
+sudo apt-get remove --purge '^cuda.*' '^nvidia-cuda.*' && \
+sudo apt-get autoremove -y && \
+wget https://developer.download.nvidia.com/compute/cuda/repos/debian11/x86_64/cuda-debian11.pin && \
+sudo mv cuda-debian11.pin /etc/apt/preferences.d/cuda-repository-pin-600 && \
+sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/debian11/x86_64/3bf863cc.pub && \
+sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/debian11/x86_64/ /" && \
+sudo apt-get update && \
+sudo apt-get install -y cuda-toolkit-12-8
+```
+
+Ubuntu 22.04 change cuda 12.1 -> 12.8
+```
+sudo apt-get remove --purge '^cuda.*' '^nvidia-cuda.*' && \
+sudo apt-get autoremove -y && \
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin && \
+sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600 && \
+sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/3bf863cc.pub && \
+sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /" && \
+sudo apt-get update && \
+sudo apt-get install -y cuda-toolkit-12-8
+```
+
+### Docker Installation (con't)
+
 Install Docker:
 - `sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
 - Test the installation worked with `docker compose version` you should get something like `Docker Compose version v2.24.5`
@@ -106,38 +140,6 @@ As far as I know there is no way to combine multiple GPU's on this one same task
 - Read the rest of this section, then jump to either [CPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#cpu-only-untested), [Single GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#single-gpu-only-untested-should-work), or [Single of Multiple GPU Only](https://github.com/catspeed-cc/sd-webui-forge-docker/README.md#single-of-multiple-gpu-only-tested)
 
 _**Important:**_ All Docker support for now goes to [catspeed-cc issue tickets](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and _only if_ this ever gets merged upstream.
-
-### IMPORTANT: Cuda version has been upgraded for container from 12.1 -> 12.8
-
-NOTE: Please upgrade your driver first to 535.104.05 or higher
-
-Cuda version has been upgraded for container from 12.1 -> 12.8 please install cuda 12.8 (instructions below)
-
-Both of these can be modified to suit other versions of debian/ubuntu
-
-Debian 11
-```
-sudo apt-get remove --purge '^cuda.*' '^nvidia-cuda.*' && \
-sudo apt-get autoremove -y && \
-wget https://developer.download.nvidia.com/compute/cuda/repos/debian11/x86_64/cuda-debian11.pin && \
-sudo mv cuda-debian11.pin /etc/apt/preferences.d/cuda-repository-pin-600 && \
-sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/debian11/x86_64/3bf863cc.pub && \
-sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/debian11/x86_64/ /" && \
-sudo apt-get update && \
-sudo apt-get install -y cuda-toolkit-12-8
-```
-
-Ubuntu 22.04 change cuda 12.1 -> 12.8
-```
-sudo apt-get remove --purge '^cuda.*' '^nvidia-cuda.*' && \
-sudo apt-get autoremove -y && \
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin && \
-sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600 && \
-sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/3bf863cc.pub && \
-sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /" && \
-sudo apt-get update && \
-sudo apt-get install -y cuda-toolkit-12-8
-```
 
 ### CPU Only (untested)
 
