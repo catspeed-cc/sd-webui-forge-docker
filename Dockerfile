@@ -1,5 +1,4 @@
-# The only line that ever gets cached is next
-FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
+FROM nvidia/cuda:12.8.1-base-ubuntu22.04
 
 # we do not want interactive anything
 ENV DEBIAN_FRONTEND=noninteractive
@@ -12,11 +11,16 @@ ARG DUMMY=
 
 # Install system deps
 RUN apt-get update && apt-get install -y \
-    python3 git wget nano curl htop libgl1 libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
+    git wget nano curl htop gcc g++ libgl1 libglib2.0-0 python3 python3.10-venv python3-dev libcudnn8=8.9.2.26-1+cuda12.1 libcudnn8-dev=8.9.2.26-1+cuda12.1 && \
+    apt autoremove -y && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Upgrade system jeez
-RUN apt-get upgrade -y && apt-get dist-upgrade -y
+RUN apt-get upgrade -y && apt-get dist-upgrade -y && \
+    apt autoremove -y && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Download and install the latest pip directly using get-pip.py
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
@@ -40,6 +44,19 @@ ENV PYTHONWARNINGS="ignore::FutureWarning,ignore::DeprecationWarning"
 # Install and set default toolchain
 RUN rustup install 1.70.0 && rustup default 1.70.0
 
+# Create a global venv at /opt/venv
+ENV VENV_PATH=/opt/venv
+RUN python3 -m venv $VENV_PATH
+
+# Add the venv's bin directory to PATH
+ENV PATH="$VENV_PATH/bin:$PATH"
+
+# Upgrade pip inside the venv
+RUN pip install --upgrade pip
+
+# Optional: make venv available to all users
+RUN chmod -R 755 $VENV_PATH
+
 # Verify
 RUN echo "Cache bust: $DUMMY AFTER:" && rustc --version
 
@@ -51,58 +68,24 @@ RUN echo "Cache bust: $DUMMY AFTER INSTALL:" && pip3 --version
 
 WORKDIR /app
 
-COPY webui-docker.sh /app/webui-docker.sh
-
-# Clone Forge
+# fix to our small issue ... We need this baked in, whether it is updated or not
 RUN git clone https://github.com/lllyasviel/stable-diffusion-webui-forge webui
-WORKDIR /app/webui
 
-# Install PyTorch with CUDA 12.1
-RUN pip3 install --root-user-action ignore torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+# copy the docker initialization script
+COPY webui-docker.sh /app/webui-docker.sh
+RUN chmod +x /app/webui-docker.sh
 
-# Install requirements
-RUN pip3 install --root-user-action ignore -r requirements_versions.txt
+# copy the sauces
+RUN mkdir /app/sauces
+COPY secretsauce.sh /app/sauces
+RUN chmod +x /app/sauces/secretsauce.sh
+# end user calls this script via `docker-reinstall-container-deps.sh`
 
-RUN pip3 install --root-user-action ignore joblib 
-#insightface
-
-#
-## Install the git repositories manually, so we can cut back startup time
-##
-## Any repos not installed by this Dockerfile _should_ auto install on start
-##
-# 
-
-# UPGRADE PIP & SETUPTOOLS
-RUN pip3 install --root-user-action ignore --upgrade pip && \
-    pip install --root-user-action ignore --upgrade pip && \
-    pip3 install --root-user-action ignore --force-reinstall --no-deps "setuptools>=62.4"
-
-# modules/launch_utils.py contains the repos and hashes
-RUN mkdir -p /app/webui/repositories && \
-    cd /app/webui/repositories && \
-    git clone --config core.filemode=false https://github.com/AUTOMATIC1111/stable-diffusion-webui-assets.git && \
-    git clone --config core.filemode=false https://github.com/lllyasviel/huggingface_guess.git && \
-    git clone --config core.filemode=false https://github.com/salesforce/BLIP.git
-
-RUN echo "Cache bust: $DUMMY" && cd /app/webui/repositories/stable-diffusion-webui-assets && \
-    git checkout 6f7db241d2f8ba7457bac5ca9753331f0c266917
-
-RUN cd /app/webui/repositories/huggingface_guess && \
-    git checkout 84826248b49bb7ca754c73293299c4d4e23a548d
-
-RUN cd /app/webui/repositories/BLIP && \
-    git checkout 48211a1594f1321b00f14c9f7a5b4813144b2fb9 && \
-    pip3 install --root-user-action ignore -r requirements.txt
-
-# modules/launch_utils.py contains the repos and hashes
-# kept for reference :)
-#assets_commit_hash = os.environ.get('ASSETS_COMMIT_HASH', "6f7db241d2f8ba7457bac5ca9753331f0c266917")
-#huggingface_guess_commit_hash = os.environ.get('', "84826248b49bb7ca754c73293299c4d4e23a548d")
-#blip_commit_hash = os.environ.get('BLIP_COMMIT_HASH', "48211a1594f1321b00f14c9f7a5b4813144b2fb9")
+# Ensure APT cache is cleaned! (image size concerns)
+RUN apt autoremove -y && apt clean && rm -rf /var/lib/apt/lists/*   
 
 #
-## Startup SD WebUI Forge
+## Startup SD WebUI Forge (very last)
 #
 
 EXPOSE 7860
