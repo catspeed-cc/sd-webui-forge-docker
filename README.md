@@ -66,7 +66,7 @@ You can download previous versions [here](https://github.com/lllyasviel/stable-d
 
 # Docker Installation
 
-### IMPORTANT: Cuda version has been upgraded for container from 12.1 -> 12.8
+### IMPORTANT FOR v1.1.0: Cuda version has been upgraded for container from 12.1 -> 12.8
 
 NOTE: Please upgrade your driver first to 535.104.05 or higher
 
