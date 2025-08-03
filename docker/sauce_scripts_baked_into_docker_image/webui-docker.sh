@@ -2,6 +2,10 @@
 # start.sh - SD Forge launcher with debug fallback
 set -euo pipefail  # Exit on error, undefined var, pipe failure
 
+# GET RELATIVE AND ABSOLUTE PATH TO CURRENT SCRIPT
+
+
+
 echo "🚀 Starting Stable Diffusion Forge..." >&2
 echo "🔧 Args: $*" >&2
 

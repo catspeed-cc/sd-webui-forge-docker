@@ -72,12 +72,12 @@ WORKDIR /app
 RUN git clone https://github.com/lllyasviel/stable-diffusion-webui-forge webui
 
 # copy the docker initialization script
-COPY webui-docker.sh /app/webui-docker.sh
+COPY ./docker/sauce_scripts_baked_into_docker_image/webui-docker.sh /app/webui-docker.sh
 RUN chmod +x /app/webui-docker.sh
 
 # copy the sauces
 RUN mkdir /app/sauces
-COPY secretsauce.sh /app/sauces
+COPY ./docker/sauce_scripts_baked_into_docker_image/secretsauce.sh /app/sauces/secretsauce.sh
 RUN chmod +x /app/sauces/secretsauce.sh
 # end user calls this script via `docker-reinstall-container-deps.sh`
 

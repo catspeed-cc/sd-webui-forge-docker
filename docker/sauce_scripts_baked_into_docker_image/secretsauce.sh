@@ -24,7 +24,6 @@ cd /app
 # this works because it does not touch the mounted /models and /outputs directories
 # and there is no compilation needed (appears to be frontend stuff)
 if [ ! -e "./webui" ]; then
-  # mooleshacat brb
   git clone https://github.com/lllyasviel/stable-diffusion-webui-forge webui
   cd webui
 else
