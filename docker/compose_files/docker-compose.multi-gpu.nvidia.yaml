@@ -1,0 +1,47 @@
+# docker-compose.yml example
+
+#
+## WARNING: There is no way to combine all GPU, this is to target
+##          one specific GPU out of your multi-gpu setup so other
+##          GPU's can work on other tasks (development?)
+##
+## WARNING: Currently only nvidia supported.
+#
+
+services:
+  sd-forge:
+    extends:
+      file: docker-compose.yaml
+      service: sd-forge
+    command:
+      # do not touch, this starts the startup script inside container
+      - /app/webui-docker.sh
+      ## ONLY enable if having issues generating images
+      #- --always-low-vram
+      # COMMENT BELOW if you uncomment above
+      - --vae-in-fp32
+      # do not touch below 3 lines, they help :)
+      - --cuda-malloc
+      - --force-upcast-attention
+      - --pin-shared-memory
+    runtime: nvidia
+    environment:
+      # DO NOT TOUCH THIS ENSURES SAME ORDER EVERY TIME
+      CUDA_DEVICE_ORDER: PCI_BUS_ID
+      # SET THIS TO THE GPU YOU WANT (index from host system nvidia-smi)
+      CUDA_VISIBLE_DEVICES: 1
+      # SET THIS TO THE GPU YOU WANT (index from host system nvidia-smi)
+      NVIDIA_VISIBLE_DEVICES: 1
+      # KEEP THIS UNCOMMENTED AND 0 IF YOU JUST SPECIFIED GPU INDEX ABOVE
+      # IF SINGLE GPU SYSTEM WHY YOU IN THIS FILE BRO? (docker-compose.single-gpu.nvidia.yaml)
+      SD_GPU_DEVICE: 0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["1"]
+              capabilities: [gpu]
+    # CHANGE BELOW TO YOUR GPU VRAM (IF UNSURE COMMENT IT OUT!)
+    shm_size: '8gb'
+  # END OF FILE
