@@ -66,7 +66,7 @@ You can download previous versions [here](https://github.com/lllyasviel/stable-d
 
 # Docker Installation
 
-### IMPORTANT FOR v1.1.0: Cuda version has been upgraded for container from 12.1 -> 12.8
+### IMPORTANT FOR v1.1.0 & onwards: Cuda version has been upgraded for container from 12.1 -> 12.8
 
 NOTE: Please upgrade your driver first to 535.104.05 or higher
 
@@ -115,7 +115,8 @@ Due to the nature of Docker, an image running at shutdown _should_ start up agai
 These are the current tags:
 ```
 catspeedcc/sd-webui-forge-docker:latest - currently points to v1.1.0
-catspeedcc/sd-webui-forge-docker:v1.1.0 - Important upgrades: smaller docker image, cuda 12.1->12.8 (see README.md)
+catspeedcc/sd-webui-forge-docker:v1.1.1 - Minor update, cleaned up root (upgrade manually at will, replace 'latest' with 'v1.1.1')
+catspeedcc/sd-webui-forge-docker:v1.1.0 - Important upgrades: smaller docker image, cuda 12.1->12.8 (see README.md, CURRENT 'LATEST')
 catspeedcc/sd-webui-forge-docker:v1.0.0 - latest stable version (first release)
 
 catspeedcc/sd-webui-forge-docker:development - (not supported, parity w/ development branch, if you use it you're on your own.)
