@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.9.1-base-ubuntu22.04
+FROM nvidia/cuda:12.8.1-base-ubuntu22.04
 
 # we do not want interactive anything
 ENV DEBIAN_FRONTEND=noninteractive
@@ -11,7 +11,7 @@ ARG DUMMY=
 
 # Install system deps
 RUN apt-get update && apt-get install -y \
-    git wget nano curl htop gcc g++ libgl1 libglib2.0-0 python3 python3.10-venv && \
+    git wget nano curl htop gcc g++ libgl1 libglib2.0-0 python3 python3.10-venv python3-dev libcudnn8=8.9.2.26-1+cuda12.1 libcudnn8-dev=8.9.2.26-1+cuda12.1 && \
     apt autoremove -y && \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
@@ -44,9 +44,6 @@ ENV PYTHONWARNINGS="ignore::FutureWarning,ignore::DeprecationWarning"
 # Install and set default toolchain
 RUN rustup install 1.70.0 && rustup default 1.70.0
 
-
-# NEW CODE BELOW REMOVE BEFORE MERGE!
-
 # Create a global venv at /opt/venv
 ENV VENV_PATH=/opt/venv
 RUN python3 -m venv $VENV_PATH
@@ -60,9 +57,6 @@ RUN pip install --upgrade pip
 # Optional: make venv available to all users
 RUN chmod -R 755 $VENV_PATH
 
-# NEW CODE ABOVE REMOVE BEFORE MERGE!
-
-
 # Verify
 RUN echo "Cache bust: $DUMMY AFTER:" && rustc --version
 
@@ -73,6 +67,9 @@ RUN echo "Cache bust: $DUMMY AFTER INSTALL:" && python3 --version
 RUN echo "Cache bust: $DUMMY AFTER INSTALL:" && pip3 --version
 
 WORKDIR /app
+
+# fix to our small issue ... We need this baked in, whether it is updated or not
+RUN git clone https://github.com/lllyasviel/stable-diffusion-webui-forge webui
 
 # copy the docker initialization script
 COPY webui-docker.sh /app/webui-docker.sh
