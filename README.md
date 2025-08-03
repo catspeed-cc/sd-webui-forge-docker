@@ -98,7 +98,7 @@ sudo apt-get update && \
 sudo apt-get install -y cuda-toolkit-12-8
 ```
 
-### Docker Installation (con't)
+### Docker Installation (cont'd)
 
 Install Docker:
 - `sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
