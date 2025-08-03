@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # secretsauce.sh - a script that is copied to the container to be executed via "docker exec" by end user to reinstall container(s) dependencies
 
 #
