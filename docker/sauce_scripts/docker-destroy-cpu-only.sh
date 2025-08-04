@@ -4,7 +4,7 @@
 
 # simple destroy script
 echo "Running `docker compose down`"
-docker compose down
+docker compose -f ./docker/compose_files/docker-compose.yaml down
 
 # Get the list of ALL containers `docker ps -a`
 DOCKER_PSA_LIST=$(docker ps -a --format '{{.Names}}' | grep "sd-forge")
