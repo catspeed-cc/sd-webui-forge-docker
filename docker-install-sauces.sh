@@ -121,9 +121,11 @@ if (( IS_INSTALLED > 0 )); then
   exit 0
 fi
 
-echo "# managed by sd-forge-webui-docker BEGIN" | tee -a ~/.bashrc
-echo "export PATH=${NEW_PATH}" | tee -a ~/.bashrc
-echo "# managed by sd-forge-webui-docker END" | tee -a ~/.bashrc
+{
+  echo "# managed by sd-forge-webui-docker BEGIN"
+  echo "export PATH=${NEW_PATH}"
+  echo "# managed by sd-forge-webui-docker END"
+} | tee -a ~/.bashrc
 
 export PATH=${NEW_PATH_EXPANDED}
 
