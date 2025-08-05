@@ -5,8 +5,10 @@ services:
   sd-forge:
     # kept in for development, do not uncomment!
     #build: .
-    # use the image below :)
+    # use the 'latest' image below - if this is 'bleeding' please excuse my
+    # mistake and please change it back to 'latest' or a version 'v*.*.*' for now :)
     image: catspeedcc/sd-webui-forge-docker:bleeding
+    # ABOVE image should be on 'latest' or a version 'v*.*.*'
     command:
       - /app/webui-docker.sh
     ports:
