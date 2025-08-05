@@ -6,7 +6,7 @@ set -euo pipefail  # Exit on error, undefined var, pipe failure
 
 # Function to find the Git root directory, ascending up to 4 levels
 # Required for source line to be accurate and work from all locations
-find_git_root() {
+find_root() {
     local current_dir="$(pwd)"
     local max_levels=6
     local level=0
@@ -27,20 +27,24 @@ find_git_root() {
     done
 
     # to be compatible with slim docker-compose/sauce only installs
+    echo ""
     echo "Warn: falling back to non-git installation default"
     echo "      this is okay if you did a minimal/slim/custom install"
+    echo ""
 
-    # fallback: inside install and uninstall script we are in root
-    echo "${PWD}"
+    # Fallback: script directory or known path
+    local fallback="${PWD}"  # or $(dirname "$0")/..
+    if [ -d "$fallback" ]; then
+      echo "$fallback"
+      return 0  # ← Success!
+    fi
 
-    return 0
+    # if we reach here we failed - even the fallback failed somehow O_o
+    return 1
 }
 
 # Find the Git root
-export GIT_ROOT=/root/sd-forge
-if [[ $? -ne 0 ]]; then
-    exit 1
-fi
+export GIT_ROOT=$(find_root)
 
 echo "#"
 echo "##"

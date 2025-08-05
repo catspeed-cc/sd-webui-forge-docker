@@ -9,11 +9,11 @@
 set -euo pipefail  # Exit on error, undefined var, pipe failure
 
 # Default value
-FDEBUG=false
+export FDEBUG=false
 
 # Function to find the Git root directory, ascending up to 4 levels
 # Required for source line to be accurate and work from all locations
-find_git_root() {
+find_root() {
     local current_dir="$(pwd)"
     local max_levels=6
     local level=0
@@ -34,17 +34,24 @@ find_git_root() {
     done
 
     # to be compatible with slim docker-compose/sauce only installs
+    echo ""
     echo "Warn: falling back to non-git installation default"
     echo "      this is okay if you did a minimal/slim/custom install"
+    echo ""
 
-    # fallback: inside install and uninstall script we are in root
-    echo "${PWD}"
+    # Fallback: script directory or known path
+    local fallback="${PWD}"  # or $(dirname "$0")/..
+    if [ -d "$fallback" ]; then
+      echo "$fallback"
+      return 0  # ← Success!
+    fi
 
-    return 0
+    # if we reach here we failed - even the fallback failed somehow O_o
+    return 1
 }
 
 # Find the Git root
-export GIT_ROOT=/root/sd-forge
+export GIT_ROOT=$(find_root)
 
 echo "#"
 echo "##"
@@ -66,6 +73,23 @@ NEW_PATH="\${PATH}:${ADD_TO_PATH}"
 NEW_PATH_EXPANDED="${PATH}:${ADD_TO_PATH}"
 echo "Final path to add: [${NEW_PATH}]"
 
+# right here is where it exits ... Rest is never executed
+
+# Check if already installed
+IS_INSTALLED=$(grep -c "# managed by sd-forge-webui-docker" ~/.bashrc)
+
+# Show exactly what matches
+echo "DEBUG: Matching lines in ~/.bashrc:"
+grep "# managed by sd-forge-webui-docker" ~/.bashrc || echo "  → No matches found"
+
+echo "DEBUG: SCRIPT SHOULD EXIT IF INSTALLED"
+if (( IS_INSTALLED > 0 )); then
+  echo "Warn: Already installed. Refusing to install again."
+  echo "Run '/docker-uninstall-sauces.sh' first if you want to reinstall."
+  exit 0
+fi
+echo "DEBUG: SCRIPT EXITED BUT CONTINUED!"
+
 echo ""
 echo "Scripts will only be accessible as user ${USER} (should be root, docker runs as root)"
 echo ""
@@ -80,8 +104,6 @@ update_fdebug() {
   echo "FDEBUG set to $value in matching files."
 }
 
-echo ""
-read -p "Do you want to enable DEBUG mode? [N/y]: " -n 1 -r
 echo ""
 
 # Default to 'n' if empty input
@@ -112,15 +134,6 @@ while true; do
   fi
 done
 
-# Check if already installed
-IS_INSTALLED=$(grep -c "# managed by sd-forge-webui-docker" ~/.bashrc)
-
-if (( IS_INSTALLED > 0 )); then
-  echo "Warn: Already installed. Refusing to install again."
-  echo "Run '/docker-uninstall-sauces.sh' first if you want to reinstall."
-  exit 0
-fi
-
 {
   echo "# managed by sd-forge-webui-docker BEGIN"
   echo "export PATH=${NEW_PATH}"
@@ -130,5 +143,5 @@ fi
 export PATH=${NEW_PATH_EXPANDED}
 
 # Configure the GIT_ROOT (important, required)
-find . -type f -name "*.sh" -print0 | xargs -0 sed -i "s|export GIT_ROOT=\$(find_git_root)|export GIT_ROOT=$GIT_ROOT|g"
+find ./docker -type f -name "*.sh" -print0 | xargs -0 sed -i "s|export GIT_ROOT=\$(find_git_root)|export GIT_ROOT=$GIT_ROOT|g"
 

@@ -35,9 +35,6 @@ find_git_root() {
 
 # Find the Git root (FALLBACK, overwritten by installer with hard-code absolute path)
 export GIT_ROOT=/root/sd-forge
-if [[ $? -ne 0 ]]; then
-    exit 1
-fi
 
 re_install_deps() {
 
@@ -51,6 +48,7 @@ re_install_deps() {
 
   # quick fix, tell bash we are handling errors (so do not exit) when we really are not xD
   set +e  # disable exit-on-error
+  set 
 
   # change to work directory ("WD")
   cd /app
