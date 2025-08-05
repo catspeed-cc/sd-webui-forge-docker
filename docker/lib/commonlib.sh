@@ -103,31 +103,6 @@ re_install_deps() {
 
 }
 
-# Function to find the Git root directory, ascending up to 4 levels
-find_git_root() {
-    local current_dir="$(pwd)"
-    local max_levels=4
-    local level=0
-    local dir="$current_dir"
-
-    while [[ $level -le $max_levels ]]; do
-        if [[ -d "$dir/.git" ]]; then
-            echo "$dir"
-            return 0
-        fi
-        # Go up one level
-        dir="$(dirname "$dir")"
-        # If we've reached the root (e.g., /), stop early
-        if [[ "$dir" == "/" ]] || [[ "$dir" == "//" ]]; then
-            break
-        fi
-        ((level++))
-    done
-
-    echo "Error: .git directory not found within $max_levels parent directories." >&2
-    return 1
-}
-
 # init_script_paths.sh - Portable script path initialization
 init_script_paths() {
     local abs_path
@@ -182,12 +157,6 @@ confirm_continue() {
 ## COMMON initialization
 ##
 #
-
-# Find the Git root
-GIT_ROOT=$(find_git_root)
-if [[ $? -ne 0 ]]; then
-    exit 1
-fi
 
 # self-initialize, otherwise errors and empty variables below
 init_script_paths
