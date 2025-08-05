@@ -3,7 +3,7 @@
 # start.sh - SD Forge launcher with debug fallback
 
 # temporary needed
- # export GIT_ROOT=$(find_git_root)
+ # export GIT_ROOT=/root/sd-forge
 
 # this installer and the `secretsauce.sh` script require this to function correctly. others do not.
 set -euo pipefail  # Exit on error, undefined var, pipe failure
@@ -44,7 +44,7 @@ find_git_root() {
 }
 
 # Find the Git root
-export GIT_ROOT=$(find_git_root)
+export GIT_ROOT=/root/sd-forge
 
 echo "#"
 echo "##"
@@ -63,6 +63,7 @@ ADD_TO_PATH=${GIT_ROOT}/docker/sauce_scripts/
 echo "[DEBUG] ADD_TO_PATH: [${ADD_TO_PATH}]"
 echo "Current path: [${PATH}]"
 NEW_PATH="\${PATH}:${ADD_TO_PATH}"
+NEW_PATH_EXPANDED="${PATH}:${ADD_TO_PATH}"
 echo "Final path to add: [${NEW_PATH}]"
 
 echo ""
@@ -72,12 +73,6 @@ echo "This will write the new PATH and also add export to .bashrc to make it per
 echo ""
 confirm_continue
 
-export PATH=${NEW_PATH}
-
-echo "# managed by sd-forge-webui-docker BEGIN" | tee -a ~/.bashrc
-echo "export PATH=${NEW_PATH}" | tee -a ~/.bashrc
-echo "# managed by sd-forge-webui-docker END" | tee -a ~/.bashrc
-
 # Function to update FDEBUG in target files
 update_fdebug() {
   local value=$1
@@ -85,28 +80,53 @@ update_fdebug() {
   echo "FDEBUG set to $value in matching files."
 }
 
-# Infinite loop with prompt
+echo ""
+read -p "Do you want to enable DEBUG mode? [N/y]: " -n 1 -r
+echo ""
+
+# Default to 'n' if empty input
+REPLY=${REPLY:-n}
+
 while true; do
-  echo ""
   read -p "Do you want to enable DEBUG mode? [N/y]: " -n 1 -r
   echo ""
 
-  # Default to 'n' if empty input
+  # Default to 'n' if empty
   REPLY=${REPLY:-n}
 
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
-    FDEBUG=true
-    echo "Enabling DEBUG mode..."
-    update_fdebug true
+  # Check if input is valid (y/Y/n/N)
+  if [[ $REPLY =~ ^[YyNn]$ ]]; then
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      FDEBUG=true
+      echo "Enabling DEBUG mode..."
+      update_fdebug true
+    else
+      FDEBUG=false
+      echo "Disabling DEBUG mode (default)..."
+      update_fdebug false
+    fi
+    break  # Valid input, exit loop
   else
-    FDEBUG=false
-    echo "Disabling DEBUG mode (default)..."
-    update_fdebug false
+    # Invalid input, prompt again
+    echo "Please answer 'y' or 'n'."
   fi
+done
 
-  # Optional: break on certain condition, or let user Ctrl+C
-  # To exit after one run, remove the 'while true' loop
-done   
+# Check if already installed
+IS_INSTALLED=$(grep -c "# managed by sd-forge-webui-docker" ~/.bashrc)
+
+if (( IS_INSTALLED > 0 )); then
+  echo "Warn: Already installed. Refusing to install again."
+  echo "Run '/docker-uninstall-sauces.sh' first if you want to reinstall."
+  exit 0
+fi
+
+echo "# managed by sd-forge-webui-docker BEGIN" | tee -a ~/.bashrc
+echo "export PATH=${NEW_PATH}" | tee -a ~/.bashrc
+echo "# managed by sd-forge-webui-docker END" | tee -a ~/.bashrc
+
+export PATH=${NEW_PATH_EXPANDED}
 
 # Configure the GIT_ROOT (important, required)
 find . -type f -name "*.sh" -print0 | xargs -0 sed -i "s|export GIT_ROOT=\$(find_git_root)|export GIT_ROOT=$GIT_ROOT|g"
+

@@ -4,7 +4,7 @@
 ##
 #
 
-export FDEBUG=false
+export FDEBUG=true
 
 # STILL needed: this is a fallback
 # Function to find the Git root directory, ascending up to 6 levels
@@ -34,7 +34,7 @@ find_git_root() {
 }
 
 # Find the Git root (FALLBACK, overwritten by installer with hard-code absolute path)
-export GIT_ROOT=$(find_git_root)
+export GIT_ROOT=/root/sd-forge
 if [[ $? -ne 0 ]]; then
     exit 1
 fi
