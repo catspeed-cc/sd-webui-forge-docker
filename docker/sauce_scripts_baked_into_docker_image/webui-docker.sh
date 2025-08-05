@@ -63,36 +63,6 @@ echo "#"
 echo "🚀 Starting Stable Diffusion Forge..." >&2
 echo "🔧 Args: $*" >&2
 
-if [ "$FDEBUG" = true ]; then
-  # DEBUG but keep disabled for now... will make debug flag in future update
-  echo "==================="
-  env | grep -E "(CUDA|NVIDIA|SD_GPU)" >&2
-  echo "==================="
-fi
-
-# Always show GPU info so user can adjust their config
-echo "🔍 SD_GPU_DEVICE: '$SD_GPU_DEVICE'" >&2
-if [ "$FDEBUG" = true ]; then
-  # debug gate, this one might confuse the end user ("I thought I picked X not 0")
-  echo "🔍 NVIDIA_VISIBLE_DEVICES: '$NVIDIA_VISIBLE_DEVICES'" >&2
-fi
-echo "🔍 CUDA_DEVICE_ORDER: '$CUDA_DEVICE_ORDER'" >&2
-
-export CUDA_VISIBLE_DEVICES=${SD_GPU_DEVICE}
-if [ "$FDEBUG" = true ]; then
-  # Set CUDA_VISIBLE_DEVICES from safe source
-  echo "🔧 CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES" >&2
-fi
-
-# 🔍 CRITICAL DEBUG: Verify GPU access before launching Python (KEEP in production! user debug)
-#    No debug gate, extremely helpful when debugging problems w/ config :)
-echo "🔍 Running nvidia-smi..." >&2
-if command -v nvidia-smi >/dev/null; then
-  nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv >&2 || true
-else
-  echo "⚠️  nvidia-smi not found!" >&2
-fi
-
 # re/install dependencies
 re_install_deps
 
@@ -133,29 +103,8 @@ while [ $i -lt ${#args[@]} ]; do
   ((i++))
 done
 
-if [ "$FDEBUG" = true ]; then
-  # For debugging: print filtered args
-  printf "[DEBUG] Filtered args: '%s'\n" "${filtered_args[@]}"
-
-  # TORCH TEST (DEBUG, it failed when GPU bind worked... Remove?)
-  echo ""
-  echo "TORCH:"
-  python3 -c "import torch; print(f'Torch: {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}'); print(f'CUDA version: {torch.version.cuda}');"
-fi
-
-## FIX TO PROBLEM! Ensure we use the ENV var now if it is set, and pass --gpu-device-id=0
-## ONLY IF IT IS SET !!!!
-
-# Set CUDA_VISIBLE_DEVICES from safe source
-if [[ -n "${SD_GPU_DEVICE:-}" ]]; then
-  PYTHON_ADD_ARG=" --gpu-device-id=${SD_GPU_DEVICE}"
-  echo "🔧 Will pass GPU arg:${PYTHON_ADD_ARG}" >&2
-else
-  echo "⚠️  WARNING: SD_GPU_DEVICE not set. Running on CPU or default GPU." >&2
-  PYTHON_ADD_ARG=""
-fi
-
-pip3 install --force-reinstall --no-deps --no-cache-dir --root-user-action ignore typing-extensions packaging
+# add if problems in test remove for merge/release
+#pip3 install --force-reinstall --no-deps --no-cache-dir --root-user-action ignore typing-extensions packaging
 
 echo "STARTING THE PYTHON APP..."
 

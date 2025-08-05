@@ -6,48 +6,6 @@
 # this installer and the `secretsauce.sh` script require this to function correctly. others do not.
 set -euo pipefail  # Exit on error, undefined var, pipe failure
 
-# Function to find the Git root directory, ascending up to 4 levels
-# Required for source line to be accurate and work from all locations
-find_root() {
-    local current_dir="$(pwd)"
-    local max_levels=6
-    local level=0
-    local dir="$current_dir"
-
-    while [[ $level -le $max_levels ]]; do
-        if [[ -d "$dir/.git" ]]; then
-            echo "$dir"
-            return 0
-        fi
-        # Go up one level
-        dir="$(dirname "$dir")"
-        # If we've reached the root (e.g., /), stop early
-        if [[ "$dir" == "/" ]] || [[ "$dir" == "//" ]]; then
-            break
-        fi
-        ((level++))
-    done
-
-    # to be compatible with slim docker-compose/sauce only installs
-    echo ""
-    echo "Warn: falling back to non-git installation default"
-    echo "      this is okay if you did a minimal/slim/custom install"
-    echo ""
-
-    # Fallback: script directory or known path
-    local fallback="${PWD}"  # or $(dirname "$0")/..
-    if [ -d "$fallback" ]; then
-      echo "$fallback"
-      return 0  # ← Success!
-    fi
-
-    # if we reach here we failed - even the fallback failed somehow O_o
-    return 1
-}
-
-# Find the Git root
-export GIT_ROOT=$(find_root)
-
 # Source the shared functions
 # Adjust path as needed: relative, absolute, or via environment
 source /app/webui/lib/commonlib.sh
@@ -77,30 +35,6 @@ echo ""
 
 echo "🚀 Starting Stable Diffusion Forge..." >&2
 echo "🔧 Args: $*" >&2
-
-#echo "==================="
-
-# DEBUG !
-#env | grep -E "(CUDA|NVIDIA|SD_GPU)" >&2
-
-#echo "==================="
-
-# Debug: Show all relevant env vars
-echo "🔍 SD_GPU_DEVICE: '$SD_GPU_DEVICE'" >&2
-echo "🔍 NVIDIA_VISIBLE_DEVICES: '$NVIDIA_VISIBLE_DEVICES'" >&2
-echo "🔍 CUDA_DEVICE_ORDER: '$CUDA_DEVICE_ORDER'" >&2
-
-# Set CUDA_VISIBLE_DEVICES from safe source
-export CUDA_VISIBLE_DEVICES=${SD_GPU_DEVICE}
-echo "🔧 CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES" >&2
-
-# 🔍 CRITICAL DEBUG: Verify GPU access before launching Python (KEEP in production! user debug)
-echo "🔍 Running nvidia-smi..." >&2
-if command -v nvidia-smi >/dev/null; then
-  nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv >&2 || true
-else
-  echo "⚠️  nvidia-smi not found!" >&2
-fi
 
 # install dependencies
 re_install_deps

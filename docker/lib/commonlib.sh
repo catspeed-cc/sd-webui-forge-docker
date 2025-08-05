@@ -44,6 +44,51 @@ find_git_root() {
 # Find the Git root (FALLBACK, overwritten by installer with hard-code absolute path)
 export GIT_ROOT=/root/sd-forge
 
+# this is needed for re_install_deps too (precedence)
+if nvcc --version > /dev/null 2>&1; then
+    export CUDA_VERSION=$(nvcc --version | sed -n 's/^.*release $$[0-9]\+\.[0-9]\+$$.*$/\1/p')
+    export CUDA_AVAILABLE=true
+else
+    export CUDA_AVAILABLE=false
+    export CUDA_VERSION=""
+fi
+
+check_cuda_and_install_pytorch() {
+    # Initialize variables
+    CUDA_VERSION=""
+    IS_CUDA_INSTALLED="false"
+
+    # Method 1: Check nvcc (most reliable if available)
+    if command -v nvcc >/dev/null 2>&1; then
+        if nvcc --version >/dev/null 2>&1; then
+            # Extract CUDA version (e.g., 12.8 from "release 12.8")
+            CUDA_VERSION=$(nvcc --version | grep -oE 'release [0-9]+\.[0-9]+' | cut -d' ' -f2)
+            if [[ -n "$CUDA_VERSION" ]]; then
+                IS_CUDA_INSTALLED="true"
+            fi
+        fi
+    fi
+
+    # Method 2: Fallback - check for CUDA runtime files
+    if [[ "$IS_CUDA_INSTALLED" == "false" ]] && [[ -f "/usr/local/cuda/version.txt" ]]; then
+        CUDA_VERSION=$(grep -oE '[0-9]+\.[0-9]+' /usr/local/cuda/version.txt | head -1)
+        if [[ -n "$CUDA_VERSION" ]]; then
+            IS_CUDA_INSTALLED="true"
+        fi
+    fi
+
+    # Log result
+    if [[ "$IS_CUDA_INSTALLED" == "true" ]]; then
+        echo "CUDA detected: $CUDA_VERSION"
+        echo "Installing GPU version of PyTorch..."
+        pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu${CUDA_VERSION//./}
+    else
+        echo "CUDA not detected or not available"
+        echo "Installing CPU-only version of PyTorch for faster startup..."
+        pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+    fi
+}
+
 re_install_deps() {
 
   #
@@ -58,9 +103,8 @@ re_install_deps() {
   set +e  # disable exit-on-error
   set 
 
-  # change to work directory ("WD")
+  # change to work directory (herin: "WD")
   cd /app
-
 
   # RATHER than implement extensive logic to only do the deps if they do not exist,
   # we assume the user only runs init when initializing container, so we can just
@@ -80,11 +124,12 @@ re_install_deps() {
     git pull origin main
   fi
 
-  # pip install commands ALL ARE CHAINED TOGETHER BE CAREFUL EDITING THIS
-  #pip3 install --force-reinstall --no-deps --no-cache-dir --root-user-action ignore torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+  # First CUDA related thing, we need a CPU compatible version
 
   # INSTALL CUDA 12.8 LATEST VERSION - UPDATE TO 12.9 (cu129) when it ships
-  pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+  #pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+
+  check_cuda_and_install_pytorch
 
   # not erroring on success, but pre-emptive fix from below :)
   pip3 install --force-reinstall --no-deps --no-cache-dir --root-user-action ignore -r requirements_versions.txt
@@ -210,6 +255,31 @@ DOCKER_SAUCE_DIR=${GIT_ROOT}/docker/sauce_scripts_baked_into_docker_image
 WORK_DIR=${GIT_ROOT}/work_dir_tmp
 IS_CUSTOM_OR_CUTDOWN_INSTALL=$(grep "^IS_CUSTOM_OR_CUTDOWN_INSTALL=" /path/to/your/file | cut -d '=' -f2)
 
+
+
+# UP HERE check for SD_GPU_DEVICE flags ahead of time, then create flag to toggle GPU flag filtering on/off
+# Set SD_GPU_DEVICE to empty string?
+
+if [[ -z "${SD_GPU_DEVICE+x}" ]] || [[ -z "$SD_GPU_DEVICE" ]]; then
+  echo "SD_GPU_DEVICE is unset or empty. Setting to empty string."
+  export SD_GPU_DEVICE=""
+  # Add other logic here if needed
+  export IS_CPU_ONLY=true
+else
+  export IS_CPU_ONLY=false
+fi
+
+## FIX TO PROBLEM! Ensure we use the variable now if it is set, and pass --gpu-device-id=0
+## ONLY IF IT IS SET !!!!
+# Set CUDA_VISIBLE_DEVICES from safe source
+if [[ -n "${SD_GPU_DEVICE:-}" ]]; then
+  export PYTHON_ADD_ARG=" --gpu-device-id=${SD_GPU_DEVICE}"
+  echo "🔧 Will pass GPU arg:${PYTHON_ADD_ARG}" >&2
+else
+  echo "⚠️  WARNING: SD_GPU_DEVICE not set. Running on CPU or default GPU." >&2
+  export PYTHON_ADD_ARG=""
+fi
+
 echo ""
 echo "Initializing ..."
 echo ""
@@ -217,6 +287,8 @@ echo ""
 echo "Git root found at: $GIT_ROOT"
 echo ""
 echo "Custom or cut-down install? [${IS_CUSTOM_OR_CUTDOWN_INSTALL}]"
+echo ""
+echo "Is CPU only? [$IS_CPU_ONLY]"
 
 echo ""
 # Debug: show paths
@@ -231,3 +303,47 @@ echo "DOCKER_COMPOSE_DIR: $DOCKER_COMPOSE_DIR"
 echo "SAUCE_DIR: $SAUCE_DIR"
 echo "DOCKER_SAUCE_DIR: $DOCKER_SAUCE_DIR"
 echo ""
+
+# BEGINNING of GPU related CONFIGURATION AND DEBUG
+# Only execute this GPU related debug if FDEBUG is true and IS_CPU_ONLY is NOT true (false, anything except true = false)
+# Logic confirmed - if CPU is empty or not set -> default true
+#                 - if debug is enabled AND CPU is not = true (assume it is false, safe default)
+if [ "${FDEBUG:-false}" = "true" ] && [ "${IS_CPU_ONLY:true}" != "true" ] && [ "$IS_CUDA_ONLY" != "" ]; then
+  # DEBUG but keep disabled for now... will make debug flag in future update
+  echo "==================="
+  env | grep -E "(CUDA|NVIDIA|SD_GPU)" >&2
+  echo "==================="
+
+  # Always show GPU info so user can adjust their config
+  echo "🔍 SD_GPU_DEVICE: '$SD_GPU_DEVICE'" >&2
+  if [ "$FDEBUG" = true ]; then
+    # debug gate, this one might confuse the end user ("I thought I picked X not 0")
+    echo "🔍 NVIDIA_VISIBLE_DEVICES: '$NVIDIA_VISIBLE_DEVICES'" >&2
+  fi
+  echo "🔍 CUDA_DEVICE_ORDER: '$CUDA_DEVICE_ORDER'" >&2
+
+  export CUDA_VISIBLE_DEVICES=${SD_GPU_DEVICE}
+  if [ "$FDEBUG" = true ]; then
+    # Set CUDA_VISIBLE_DEVICES from safe source
+    echo "🔧 CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES" >&2
+  fi
+
+  # 🔍 CRITICAL DEBUG: Verify GPU access before launching Python (KEEP in production! user debug)
+  #    No debug gate, extremely helpful when debugging problems w/ config :)
+  echo "🔍 Running nvidia-smi..." >&2
+  if command -v nvidia-smi >/dev/null; then
+    nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv >&2 || true
+  else
+    echo "⚠️  nvidia-smi not found!" >&2
+  fi
+  if [ "$FDEBUG" = true ]; then
+    # For debugging: print filtered args
+    printf "[DEBUG] Filtered args: '%s'\n" "${filtered_args[@]}"
+
+    # TORCH TEST (DEBUG, it failed when GPU bind worked... Remove?)
+    echo ""
+    echo "TORCH:"
+    python3 -c "import torch; print(f'Torch: {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}'); print(f'CUDA version: {torch.version.cuda}');"
+  fi
+fi
+# ENDING of GPU related CONFIGURATION AND DEBUG
