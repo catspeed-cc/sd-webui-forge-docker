@@ -164,6 +164,18 @@ init_script_paths() {
     export REL_SCRIPT_PATH="$REL_SCRIPT_DIR/$SCRIPT_NAME"
 }
 
+confirm_continue() {
+    while true; do
+        read -p "Do you want to continue? [Y/n]: " -r REPLY
+        REPLY=${REPLY:-y}
+
+        case "$REPLY" in
+            [Yy]) break ;;
+            [Nn]) echo "Exiting..."; exit 0 ;;
+            *) echo "Please answer y or n." ;;
+        esac
+    done
+}
 
 #
 ##
@@ -177,9 +189,16 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 
+# self-initialize, otherwise errors and empty variables below
+init_script_paths
+
+echo ""
+echo "Initializing ..."
+echo ""
 # Now you can use GIT_ROOT in your script
 echo "Git root found at: $GIT_ROOT"
 
+echo ""
 # Debug: show paths
 echo "📘 Script name: $SCRIPT_NAME"
 echo "📁 Absolute script path: $ABS_SCRIPT_PATH"
@@ -187,3 +206,4 @@ echo "🔗 Relative script path: $REL_SCRIPT_PATH"
 echo "📁 Absolute dir: $ABS_SCRIPT_DIR"
 echo "🔗 Relative dir: $REL_SCRIPT_DIR"
 echo "💻 Running from: $PWD"
+echo ""
