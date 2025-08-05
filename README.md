@@ -184,7 +184,7 @@ Let's say you have another project - let's pick localAGI as an example. You can 
 - Copy the lines for the service from `docker-compose.combined.nvidia.yaml`
 - Paste the lines underneath one of the other services inside the localAGI (or other project) docker-compose.yaml
 - All sauce helper scripts and docker-compose.yaml files should now be in your project :)
-- DO NOT use the init/destroy scripts, use your `docker compose up` and `docker-compose down` commands as directed by the project `README.md`
+- Use the init/destroy scripts just like you would on a regular docker installation (as outlined above)
 - Docker helper start/stop scripts will speed up startup when simply stopping or starting the container quickly (ex. to load new models)
 - IF you need to destroy the container and recreate it for debugging/troubleshooting, then use the respective destroy script followed by `docker compose down` in the localAGI (or other project)
 - Sauce scripts ONLY will init/destroy/start/stop sd-forge containers - _assuming you did not rename the containers!_
