@@ -8,7 +8,8 @@
 # this installer and the `secretsauce.sh` script require this to function correctly. others do not.
 set -euo pipefail  # Exit on error, undefined var, pipe failure
 
-# GET RELATIVE AND ABSOLUTE PATH TO CURRENT SCRIPT
+# Default value
+FDEBUG=false
 
 # Function to find the Git root directory, ascending up to 4 levels
 # Required for source line to be accurate and work from all locations
@@ -76,6 +77,36 @@ export PATH=${NEW_PATH}
 echo "# managed by sd-forge-webui-docker BEGIN" | tee -a ~/.bashrc
 echo "export PATH=${NEW_PATH}" | tee -a ~/.bashrc
 echo "# managed by sd-forge-webui-docker END" | tee -a ~/.bashrc
+
+# Function to update FDEBUG in target files
+update_fdebug() {
+  local value=$1
+  find ./docker/lib -type f -name "commonlib.sh" -print0 | xargs -0 sed -i "s|export FDEBUG=[a-zA-Z0-9._]*|export FDEBUG=$value|g"
+  echo "FDEBUG set to $value in matching files."
+}
+
+# Infinite loop with prompt
+while true; do
+  echo ""
+  read -p "Do you want to enable DEBUG mode? [N/y]: " -n 1 -r
+  echo ""
+
+  # Default to 'n' if empty input
+  REPLY=${REPLY:-n}
+
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    FDEBUG=true
+    echo "Enabling DEBUG mode..."
+    update_fdebug true
+  else
+    FDEBUG=false
+    echo "Disabling DEBUG mode (default)..."
+    update_fdebug false
+  fi
+
+  # Optional: break on certain condition, or let user Ctrl+C
+  # To exit after one run, remove the 'while true' loop
+done   
 
 # Configure the GIT_ROOT (important, required)
 find . -type f -name "*.sh" -print0 | xargs -0 sed -i "s|export GIT_ROOT=\$(find_git_root)|export GIT_ROOT=$GIT_ROOT|g"

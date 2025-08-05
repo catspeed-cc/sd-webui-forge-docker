@@ -14,6 +14,6 @@ services:
       # or change 127.0.0.1->0.0.0.0 but ensure firewalls properly configured!
       - "127.0.0.1:7860:7860"
     volumes:
-      - ./models:/app/webui/models
-      - ./outputs:/app/webui/outputs
-      - ./docker/lib/commonlib.sh:/app/webui/lib/commonlib.sh
+      - ../../models:/app/webui/models
+      - ../../outputs:/app/webui/outputs
+      - ../lib/commonlib.sh:/app/webui/lib/commonlib.sh
