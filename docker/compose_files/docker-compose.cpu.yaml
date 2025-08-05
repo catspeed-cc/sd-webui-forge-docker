@@ -16,3 +16,4 @@ services:
     volumes:
       - ./models:/app/webui/models
       - ./outputs:/app/webui/outputs
+      - ./docker/lib/commonlib.sh:/app/webui/lib/commonlib.sh

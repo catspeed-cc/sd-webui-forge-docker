@@ -4,6 +4,41 @@
 ##
 #
 
+export FDEBUG=false
+
+# STILL needed: this is a fallback
+# Function to find the Git root directory, ascending up to 6 levels
+# Required for source line to be accurate and work from all locations
+find_git_root() {
+    local current_dir="$(pwd)"
+    local max_levels=6
+    local level=0
+    local dir="$current_dir"
+
+    while [[ $level -le $max_levels ]]; do
+        if [[ -d "$dir/.git" ]]; then
+            echo "$dir"
+            return 0
+        fi
+        # Go up one level
+        dir="$(dirname "$dir")"
+        # If we've reached the root (e.g., /), stop early
+        if [[ "$dir" == "/" ]] || [[ "$dir" == "//" ]]; then
+            break
+        fi
+        ((level++))
+    done
+
+    echo "Error: .git directory not found within $max_levels parent directories." >&2
+    return 1
+}
+
+# Find the Git root (FALLBACK, overwritten by installer with hard-code absolute path)
+export GIT_ROOT=$(find_git_root)
+if [[ $? -ne 0 ]]; then
+    exit 1
+fi
+
 re_install_deps() {
 
   #

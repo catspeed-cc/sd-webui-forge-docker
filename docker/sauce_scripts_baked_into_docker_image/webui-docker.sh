@@ -4,13 +4,49 @@
 
 set -euo pipefail  # Exit on error, undefined var, pipe failure
 
-# GET RELATIVE AND ABSOLUTE PATH TO CURRENT SCRIPT
+# start out in the correct location
+cd /app/webui
 
-# NEW CODE BELOW
+# Function to find the Git root directory, ascending up to 4 levels
+# Required for source line to be accurate and work from all locations
+find_git_root() {
+    local current_dir="$(pwd)"
+    local max_levels=6
+    local level=0
+    local dir="$current_dir"
 
-# Source the shared functions
-# Adjust path as needed: relative, absolute, or via environment
-source ../lib/commonlib.sh
+    while [[ $level -le $max_levels ]]; do
+        if [[ -d "$dir/.git" ]]; then
+            echo "$dir"
+            return 0
+        fi
+        # Go up one level
+        dir="$(dirname "$dir")"
+        # If we've reached the root (e.g., /), stop early
+        if [[ "$dir" == "/" ]] || [[ "$dir" == "//" ]]; then
+            break
+        fi
+        ((level++))
+    done
+
+    # to be compatible with slim docker-compose/sauce only installs
+    echo "Warn: falling back to non-git installation default"
+    echo "      this is okay if you did a minimal/slim/custom install"
+
+    # fallback: inside install and uninstall script we are in root
+    echo "${PWD}"
+
+    return 0
+}
+
+# Find the Git root
+export GIT_ROOT=$(find_git_root)
+if [[ $? -ne 0 ]]; then
+    exit 1
+fi
+
+# Source the shared functions directly only in container scripts
+source /app/webui/lib/commonlib.sh
 
 echo "#"
 echo "##"
@@ -20,45 +56,31 @@ echo "## please grab some coffee, this will take some time on first run"
 echo "##"
 echo "#"
 
-
-# Initialize all path variables
-init_script_paths
-
-# NEW CODE ABOVE
-
-echo ""
-# Debug: show paths
-echo "📘 Script name: $SCRIPT_NAME"
-echo "📁 Absolute script path: $ABS_SCRIPT_PATH"
-echo "🔗 Relative script path: $REL_SCRIPT_PATH"
-echo "📁 Absolute dir: $ABS_SCRIPT_DIR"
-echo "🔗 Relative dir: $REL_SCRIPT_DIR"
-echo "💻 Running from: $PWD"
-echo ""
-echo ""
-
-# NEW CODE ABOVE
-
 echo "🚀 Starting Stable Diffusion Forge..." >&2
 echo "🔧 Args: $*" >&2
 
-#echo "==================="
+if [ "$FDEBUG" = true ]; then
+  # DEBUG but keep disabled for now... will make debug flag in future update
+  echo "==================="
+  env | grep -E "(CUDA|NVIDIA|SD_GPU)" >&2
+  echo "==================="
 
-# DEBUG !
-#env | grep -E "(CUDA|NVIDIA|SD_GPU)" >&2
-
-#echo "==================="
-
-# Debug: Show all relevant env vars
+# Always show GPU info so user can adjust their config
 echo "🔍 SD_GPU_DEVICE: '$SD_GPU_DEVICE'" >&2
-echo "🔍 NVIDIA_VISIBLE_DEVICES: '$NVIDIA_VISIBLE_DEVICES'" >&2
+if [ "$FDEBUG" = true ]; then
+  # debug gate, this one might confuse the end user ("I thought I picked X not 0")
+  echo "🔍 NVIDIA_VISIBLE_DEVICES: '$NVIDIA_VISIBLE_DEVICES'" >&2
+fi
 echo "🔍 CUDA_DEVICE_ORDER: '$CUDA_DEVICE_ORDER'" >&2
 
-# Set CUDA_VISIBLE_DEVICES from safe source
 export CUDA_VISIBLE_DEVICES=${SD_GPU_DEVICE}
-echo "🔧 CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES" >&2
+if [ "$FDEBUG" = true ]; then
+  # Set CUDA_VISIBLE_DEVICES from safe source
+  echo "🔧 CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES" >&2
+fi
 
 # 🔍 CRITICAL DEBUG: Verify GPU access before launching Python (KEEP in production! user debug)
+#    No debug gate, extremely helpful when debugging problems w/ config :)
 echo "🔍 Running nvidia-smi..." >&2
 if command -v nvidia-smi >/dev/null; then
   nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv >&2 || true
@@ -66,17 +88,14 @@ else
   echo "⚠️  nvidia-smi not found!" >&2
 fi
 
-# NEW CODE BELOW
-
-# install dependencies
+# re/install dependencies
 re_install_deps
 
-# NEW CODE ABOVE
-
 # change back to webui dir so we can launch `launch.py`
+# especially here, re_install_deps.sh may change it
 cd /app/webui
 
-# KEEP THIS FOR REFERENCE FOR IDIOT :)
+# KEEP THIS FOR REFERENCE FOR IDIOT (@mooleshacat) :)
 # modules/launch_utils.py contains the repos and hashes
 #assets_commit_hash = os.environ.get('ASSETS_COMMIT_HASH', "6f7db241d2f8ba7457bac5ca9753331f0c266917")
 #huggingface_guess_commit_hash = os.environ.get('', "84826248b49bb7ca754c73293299c4d4e23a548d")
@@ -109,17 +128,15 @@ while [ $i -lt ${#args[@]} ]; do
   ((i++))
 done
 
-# Now use filtered_args instead of original args
-# Example: exec your command
-# exec python app.py "${filtered_args[@]}"
+if [ "$FDEBUG" = true ]; then
+  # For debugging: print filtered args
+  printf "[DEBUG] Filtered args: '%s'\n" "${filtered_args[@]}"
 
-# For debugging: print filtered args
-printf "[DEBUG] Filtered args: '%s'\n" "${filtered_args[@]}"
-
-# TORCH TEST (DEBUG, it failed when GPU bind worked... Remove?)
-#echo ""
-#echo "TORCH:"
-#python3 -c "import torch; print(f'Torch: {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}'); print(f'CUDA version: {torch.version.cuda}');"
+  # TORCH TEST (DEBUG, it failed when GPU bind worked... Remove?)
+  echo ""
+  echo "TORCH:"
+  python3 -c "import torch; print(f'Torch: {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}'); print(f'CUDA version: {torch.version.cuda}');"
+fi
 
 ## FIX TO PROBLEM! Ensure we use the ENV var now if it is set, and pass --gpu-device-id=0
 ## ONLY IF IT IS SET !!!!
@@ -135,17 +152,17 @@ fi
 
 pip3 install --force-reinstall --no-deps --no-cache-dir --root-user-action ignore typing-extensions packaging
 
-#echo "sleep infinity for debug ..."
-#exec sleep infinity
-
 echo "STARTING THE PYTHON APP..."
 
 # Run SD Forge with all passed arguments (no default so far)
 # CONFIRMED --server-name=0.0.0.0 is safe as long as docker compose comments are respected / understood.
 exec python3 -W "ignore::FutureWarning" -W "ignore::DeprecationWarning" launch.py --server-name=0.0.0.0${PYTHON_ADD_ARG} ${filtered_args[@]}
 
-# If we get here, launch.py failed
-echo "❌ SD Forge exited with code $?"
-echo "💡 Debug shell available. Run: docker-compose exec CONTAINER_NAME bash"
-echo "OR run \`docker compose down\` to stop the container" 
-exec sleep infinity
+if [ "$FDEBUG" = true ]; then
+  # This will be enabled by future debug flag
+  # If we get here, launch.py failed
+  echo "❌ SD Forge exited with code $?"
+  echo "💡 Debug shell available. Run: docker-compose exec CONTAINER_NAME bash"
+  echo "OR run \`docker-stop-containers.sh\` or \`docker-destroy-*.sh\` to stop the container" 
+  exec sleep infinity
+fi

@@ -63,6 +63,8 @@ done <<< "$DOCKER_PSA_LIST"
 echo "docker ps -a output:"
 docker ps -a
 
-echo ""
-echo "Docker containers stopped & removed."
-echo ""
+if [ "$FDEBUG" = true ]; then
+  echo ""
+  echo "Docker containers stopped & removed."
+  echo ""
+fi
