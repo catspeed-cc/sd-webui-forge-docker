@@ -84,8 +84,10 @@ grep "# managed by sd-forge-webui-docker" ~/.bashrc || echo "  → No matches fo
 
 echo "DEBUG: SCRIPT SHOULD EXIT IF INSTALLED"
 if (( IS_INSTALLED > 0 )); then
+  echo ""
   echo "Warn: Already installed. Refusing to install again."
   echo "Run '/docker-uninstall-sauces.sh' first if you want to reinstall."
+  echo ""
   exit 0
 fi
 echo "DEBUG: SCRIPT EXITED BUT CONTINUED!"

@@ -6,6 +6,14 @@
 
 export FDEBUG=true
 
+# Disable strict modes to prevent silent exits (STANDARD for this project)
+# Ensure no scripts are called that 'set -e' or if they are it is set back after
+set +e  # Don't exit on command failure
+# Above is critical, it breaks some scripts!
+
+# commented because it is good for debug but spams console
+#set -x  # Trace every command (shows what's running)
+
 # STILL needed: this is a fallback
 # Function to find the Git root directory, ascending up to 6 levels
 # Required for source line to be accurate and work from all locations
