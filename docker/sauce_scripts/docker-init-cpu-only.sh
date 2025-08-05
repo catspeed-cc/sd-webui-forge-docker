@@ -29,7 +29,7 @@ find_git_root() {
 }
 
 # Find the Git root
-GIT_ROOT=$(find_git_root)
+export GIT_ROOT=$(find_git_root)
 if [[ $? -ne 0 ]]; then
     exit 1
 fi
