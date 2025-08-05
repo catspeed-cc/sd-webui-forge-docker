@@ -1,7 +1,8 @@
 
-# docker-compose.yml CPU-only example
+# docker-compose.yml CPU-only example (inherited by others, offloading automatic)
 services:
 
+  # CONTAINER SERVICE NAME
   sd-forge:
     # kept in for development, do not uncomment!
     #build: .
@@ -11,10 +12,17 @@ services:
     # ABOVE image should be on 'latest' or a version 'v*.*.*'
     command:
       - /app/webui-docker.sh
+      # SUPER important this variable is set to the service name above (in this case sd-forge)
+      # also you can change it as long as it has "sd-forge" in the name and is unique
+      # NO spaces - use dashes
+      - --docker-container-name=sd-forge
+      # ABOVE container service names should match
     ports:
-      # THIS is where we limit to localhost
+      # THIS is where we limit to localhost (127.0.0.1)
       # or change 127.0.0.1->0.0.0.0 but ensure firewalls properly configured!
+      # also ONLY change left side port, do _not_ change the port on the right side
       - "127.0.0.1:7860:7860"
+      # Done editing, the rest of the file _should_ be fine in most setups with full GitHub repository
     volumes:
       - ../../models:/app/webui/models
       - ../../outputs:/app/webui/outputs
