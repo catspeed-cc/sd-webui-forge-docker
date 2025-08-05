@@ -197,9 +197,11 @@ confirm_continue() {
 init_script_paths
 
 # SET MANUAL PATHS FIRST (AFTER INIT)!
-DOCKER_COMPOSE_DIR=${ABS_SCRIPT_DIR}/docker/compose_files
-SAUCE_DIR==${ABS_SCRIPT_DIR}/docker/sauce_scripts
-DOCKER_SAUCE_DIR=${ABS_SCRIPT_DIR}/docker/sauce_scripts_baked_into_docker_image
+DOCKER_COMPOSE_DIR=${GIT_ROOT}/docker/compose_files
+SAUCE_DIR=${GIT_ROOT}/docker/sauce_scripts
+SAUCE_DL_DIR=${GIT_ROOT}/sauce_dl
+DOCKER_SAUCE_DIR=${GIT_ROOT}/docker/sauce_scripts_baked_into_docker_image
+WORK_DIR=${GIT_ROOT}/work_dir_tmp
 
 echo ""
 echo "Initializing ..."
