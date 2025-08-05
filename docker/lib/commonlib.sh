@@ -208,12 +208,15 @@ SAUCE_DIR=${GIT_ROOT}/docker/sauce_scripts
 SAUCE_DL_DIR=${GIT_ROOT}/sauce_dl
 DOCKER_SAUCE_DIR=${GIT_ROOT}/docker/sauce_scripts_baked_into_docker_image
 WORK_DIR=${GIT_ROOT}/work_dir_tmp
+IS_CUSTOM_OR_CUTDOWN_INSTALL=$(grep "^IS_CUSTOM_OR_CUTDOWN_INSTALL=" /path/to/your/file | cut -d '=' -f2)
 
 echo ""
 echo "Initializing ..."
 echo ""
 # Now you can use GIT_ROOT in your script
 echo "Git root found at: $GIT_ROOT"
+echo ""
+echo "Custom or cut-down install? [${IS_CUSTOM_OR_CUTDOWN_INSTALL}]"
 
 echo ""
 # Debug: show paths

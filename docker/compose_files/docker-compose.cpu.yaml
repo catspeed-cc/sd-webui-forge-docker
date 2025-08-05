@@ -10,6 +10,12 @@ services:
     # mistake and please change it back to 'latest' or a version 'v*.*.*' for now :)
     image: catspeedcc/sd-webui-forge-docker:bleeding
     # ABOVE image should be on 'latest' or a version 'v*.*.*'
+    environment:
+      # Please change this to configure this setting in this file rather than elsewhere
+      # This affects the host, not the container.
+      # If you are not using the combined compose file _or_ a cut down install using the v1.1.1-sauces.tar.gz
+      # Leave this the way it is.
+      - IS_CUSTOM_OR_CUTDOWN_INSTALL=true
     command:
       - /app/webui-docker.sh
       # SUPER important this variable is set to the service name above (in this case sd-forge)
