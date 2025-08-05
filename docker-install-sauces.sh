@@ -147,3 +147,5 @@ export PATH=${NEW_PATH_EXPANDED}
 # Configure the GIT_ROOT (important, required)
 find ./docker -type f -name "*.sh" -print0 | xargs -0 sed -i "s|export GIT_ROOT=\$(find_git_root)|export GIT_ROOT=$GIT_ROOT|g"
 
+# source the modified ~/.bashrc
+source ~/.bashrc
