@@ -68,6 +68,7 @@ if [ "$FDEBUG" = true ]; then
   echo "==================="
   env | grep -E "(CUDA|NVIDIA|SD_GPU)" >&2
   echo "==================="
+fi
 
 # Always show GPU info so user can adjust their config
 echo "🔍 SD_GPU_DEVICE: '$SD_GPU_DEVICE'" >&2
