@@ -3,7 +3,7 @@
 services:
 
   # CONTAINER SERVICE NAME
-  sd-forge:
+  sd-forge-1:
     # kept in for development, do not uncomment!
     #build: .
     # use the 'latest' image below - if this is 'bleeding' please excuse my
@@ -15,7 +15,7 @@ services:
       # SUPER important this variable is set to the service name above (in this case sd-forge)
       # also you can change it as long as it has "sd-forge" in the name and is unique
       # NO spaces - use dashes
-      - --docker-container-name=sd-forge
+      - --docker-container-name=sd-forge-1
       # ABOVE container service names should match
     ports:
       # THIS is where we limit to localhost (127.0.0.1)

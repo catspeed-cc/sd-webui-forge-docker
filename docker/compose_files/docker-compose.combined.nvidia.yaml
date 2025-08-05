@@ -8,8 +8,9 @@
 ## WARNING: Currently only nvidia supported.
 #
 services:
+
   # COPY HERE TO END OF FILE TO COPY INTO OTHER DOCKER-COMPOSE
-  sd-forge:
+  sd-forge-1:
     # use the image below :)
     image: catspeedcc/sd-webui-forge-docker:latest
     ports:
@@ -26,7 +27,7 @@ services:
       # SUPER important this variable is set to the service name above (in this case sd-forge)
       # also you can change it as long as it has "sd-forge" in the name and is unique
       # NO spaces - use dashes
-      - --docker-container-name=sd-forge
+      - --docker-container-name=sd-forge-1
       # ABOVE container service names should match
       ## ONLY enable if having issues generating images
       #- --always-low-vram
