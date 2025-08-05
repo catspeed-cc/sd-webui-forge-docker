@@ -192,6 +192,11 @@ fi
 # self-initialize, otherwise errors and empty variables below
 init_script_paths
 
+# SET MANUAL PATHS FIRST (AFTER INIT)!
+DOCKER_COMPOSE_DIR=${ABS_SCRIPT_DIR}/docker/compose_files
+SAUCE_DIR==${ABS_SCRIPT_DIR}/docker/sauce_scripts
+DOCKER_SAUCE_DIR=${ABS_SCRIPT_DIR}/docker/sauce_scripts_baked_into_docker_image
+
 echo ""
 echo "Initializing ..."
 echo ""
@@ -206,4 +211,8 @@ echo "🔗 Relative script path: $REL_SCRIPT_PATH"
 echo "📁 Absolute dir: $ABS_SCRIPT_DIR"
 echo "🔗 Relative dir: $REL_SCRIPT_DIR"
 echo "💻 Running from: $PWD"
+echo ""
+echo "DOCKER_COMPOSE_DIR: $DOCKER_COMPOSE_DIR"
+echo "SAUCE_DIR: $SAUCE_DIR"
+echo "DOCKER_SAUCE_DIR: $DOCKER_SAUCE_DIR"
 echo ""
