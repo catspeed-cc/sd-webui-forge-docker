@@ -70,10 +70,17 @@ echo "This will remove the sauce scripts from the PATH and ~/.bashrc. 'Y' to con
 echo ""
 confirm_continue
 
+# Escape NEW_PATH for safe use in sed (escape . * + ? ^ $ [] $$
+escape_for_sed() {
+  echo "$1" | sed 's/[.[\*^$()+?{|]/\\&/g'
+}
+
+export NEW_PATH_ESCAPED=$(escape_for_sed "$NEW_PATH")
+
 # Remove lines that contain the path (more robust)
 sed -i '/# managed by sd-forge-webui-docker BEGIN/,/# managed by sd-forge-webui-docker END/d' ~/.bashrc
 
 # Update current session's PATH (remove the entry)
-export PATH=$(echo "$PATH" | sed -E "s|:${NEW_PATH}||g; s|${NEW_PATH}(:|$)||g; s|^:||; s|:$||")
+export PATH=$(echo ":$PATH:" | sed -E "s#:${NEW_PATH}:#:#g" | sed 's#^:##; s#:$##')
 
 echo "Uninstalled: $NEW_PATH removed from PATH and ~/.bashrc"
