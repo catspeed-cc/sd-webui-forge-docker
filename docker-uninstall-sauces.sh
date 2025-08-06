@@ -90,7 +90,5 @@ export PATH=$(echo ":$PATH:" | sed -E "s#:${NEW_PATH}:#:#g" | sed 's#^:##; s#:$#
 echo "Uninstalled: $NEW_PATH removed from PATH and ~/.bashrc"
 
 echo ""
-echo "Uninstallation completed. Please see available scripts by typing `docker-` and pressing tab"
-echo ""
-echo "Alternatively, read the documentation (README.md)"
+echo "Uninstallation completed."
 echo ""

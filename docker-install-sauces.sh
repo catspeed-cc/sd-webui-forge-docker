@@ -67,11 +67,17 @@ source ${GIT_ROOT}/docker/lib/commonlib.sh
 
 ADD_TO_PATH=${GIT_ROOT}/docker/sauce_scripts/
 
-echo "[DEBUG] ADD_TO_PATH: [${ADD_TO_PATH}]"
-echo "Current path: [${PATH}]"
-NEW_PATH="\${PATH}:${ADD_TO_PATH}"
-NEW_PATH_EXPANDED="${PATH}:${ADD_TO_PATH}"
-echo "Final path to add: [${NEW_PATH}]"
+if [ "$FDEBUG}" = "true" ]; then
+  echo "[DEBUG] ADD_TO_PATH: [${ADD_TO_PATH}]"
+  echo "Current path: [${PATH}]"
+fi
+
+export NEW_PATH="\${PATH}:${ADD_TO_PATH}"
+export NEW_PATH_EXPANDED="${PATH}:${ADD_TO_PATH}"
+
+if [ "$FDEBUG}" = "true" ]; then
+  echo "Final path to add: [${NEW_PATH}]"
+fi
 
 # right here is where it exits ... Rest is never executed
 
@@ -151,7 +157,7 @@ find ./docker -type f -name "*.sh" -print0 | xargs -0 sed -i "s|export GIT_ROOT=
 source ~/.bashrc
 
 echo ""
-echo "Installation completed. Please see available scripts by typing `docker-` and pressing tab"
+echo "Installation completed. Please see available scripts by typing 'docker-' and pressing tab"
 echo ""
 echo "Alternatively, read the documentation (README.md)"
 echo ""
