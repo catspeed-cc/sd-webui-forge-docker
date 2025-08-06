@@ -4,7 +4,11 @@
 ##
 #
 
-export FDEBUG=true
+# DEFAULTS FOR VARIABLES USED (prevents unbound errors for that variable)
+
+: "${FDEBUG:=false}"
+: "${IS_CPU_ONLY:=true}"
+: "${IS_CUDA_ONLY:=false}"
 
 # Disable strict modes to prevent silent exits (STANDARD for this project)
 # Ensure no scripts are called that 'set -e' or if they are it is set back after
@@ -248,12 +252,12 @@ confirm_continue() {
 init_script_paths
 
 # SET MANUAL PATHS FIRST (AFTER INIT)!
-DOCKER_COMPOSE_DIR=${GIT_ROOT}/docker/compose_files
-SAUCE_DIR=${GIT_ROOT}/docker/sauce_scripts
-SAUCE_DL_DIR=${GIT_ROOT}/sauce_dl
-DOCKER_SAUCE_DIR=${GIT_ROOT}/docker/sauce_scripts_baked_into_docker_image
-WORK_DIR=${GIT_ROOT}/work_dir_tmp
-IS_CUSTOM_OR_CUTDOWN_INSTALL=$(grep "^IS_CUSTOM_OR_CUTDOWN_INSTALL=" /path/to/your/file | cut -d '=' -f2)
+export DOCKER_COMPOSE_DIR=${GIT_ROOT}/docker/compose_files
+export SAUCE_DIR=${GIT_ROOT}/docker/sauce_scripts
+export SAUCE_DL_DIR=${GIT_ROOT}/sauce_dl
+export DOCKER_SAUCE_DIR=${GIT_ROOT}/docker/sauce_scripts_baked_into_docker_image
+export WORK_DIR=${GIT_ROOT}/work_dir_tmp
+export IS_CUSTOM_OR_CUTDOWN_INSTALL=$(grep "^IS_CUSTOM_OR_CUTDOWN_INSTALL=" /path/to/your/file | cut -d '=' -f2)
 
 
 
@@ -308,7 +312,7 @@ echo ""
 # Only execute this GPU related debug if FDEBUG is true and IS_CPU_ONLY is NOT true (false, anything except true = false)
 # Logic confirmed - if CPU is empty or not set -> default true
 #                 - if debug is enabled AND CPU is not = true (assume it is false, safe default)
-if [ "${FDEBUG:-false}" = "true" ] && [ "${IS_CPU_ONLY:true}" != "true" ] && [ "$IS_CUDA_ONLY" != "" ]; then
+if [ "${FDEBUG:-false}" = "true" ] && [ "${IS_CPU_ONLY:true}" != "-true" ] && [ "${IS_CUDA_ONLY:-false}" = "true" ]; then
   # DEBUG but keep disabled for now... will make debug flag in future update
   echo "==================="
   env | grep -E "(CUDA|NVIDIA|SD_GPU)" >&2
