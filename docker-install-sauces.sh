@@ -8,9 +8,6 @@
 # this installer and the `secretsauce.sh` script require this to function correctly. others do not.
 set -euo pipefail  # Exit on error, undefined var, pipe failure
 
-# Default value
-export FDEBUG=false
-
 # Function to find the Git root directory, ascending up to 4 levels
 # Required for source line to be accurate and work from all locations
 find_root() {
@@ -79,16 +76,15 @@ if [ "$FDEBUG}" = "true" ]; then
   echo "Final path to add: [${NEW_PATH}]"
 fi
 
-# right here is where it exits ... Rest is never executed
-
 # Check if already installed
 IS_INSTALLED=$(grep -c "# managed by sd-forge-webui-docker" ~/.bashrc)
 
-# Show exactly what matches
-echo "DEBUG: Matching lines in ~/.bashrc:"
-grep "# managed by sd-forge-webui-docker" ~/.bashrc || echo "  → No matches found"
+if [ "$FDEBUG}" = "true" ]; then
+  # Show exactly what matches
+  echo "DEBUG: Matching lines in ~/.bashrc:"
+  grep "# managed by sd-forge-webui-docker" ~/.bashrc || echo "  → No matches found"
+fi
 
-echo "DEBUG: SCRIPT SHOULD EXIT IF INSTALLED"
 if (( IS_INSTALLED > 0 )); then
   echo ""
   echo "Warn: Already installed. Refusing to install again."
@@ -96,9 +92,8 @@ if (( IS_INSTALLED > 0 )); then
   echo ""
   exit 0
 fi
-echo "DEBUG: SCRIPT EXITED BUT CONTINUED!"
 
-echo ""
+#echo ""
 echo "Scripts will only be accessible as user ${USER} (should be root, docker runs as root)"
 echo ""
 echo "This will write the new PATH and also add export to .bashrc to make it persist across shells and reboots. 'Y' to continue 'n' to exit."

@@ -4,6 +4,8 @@
 ##
 #
 
+export FDEBUG=true
+
 # DEFAULTS FOR VARIABLES USED (prevents unbound errors for that variable)
 
 : "${FDEBUG:=false}"
@@ -257,9 +259,7 @@ export SAUCE_DIR=${GIT_ROOT}/docker/sauce_scripts
 export SAUCE_DL_DIR=${GIT_ROOT}/sauce_dl
 export DOCKER_SAUCE_DIR=${GIT_ROOT}/docker/sauce_scripts_baked_into_docker_image
 export WORK_DIR=${GIT_ROOT}/work_dir_tmp
-export IS_CUSTOM_OR_CUTDOWN_INSTALL=$(grep "^IS_CUSTOM_OR_CUTDOWN_INSTALL=" /path/to/your/file | cut -d '=' -f2)
-
-
+export IS_CUSTOM_OR_CUTDOWN_INSTALL=$(grep "^[[:space:]]*- IS_CUSTOM_OR_CUTDOWN_INSTALL=" ./docker/compose_files/docker-compose.cpu.yaml | cut -d '=' -f2)
 
 # UP HERE check for SD_GPU_DEVICE flags ahead of time, then create flag to toggle GPU flag filtering on/off
 # Set SD_GPU_DEVICE to empty string?
@@ -288,6 +288,8 @@ echo ""
 echo "Initializing ..."
 echo ""
 # Now you can use GIT_ROOT in your script
+echo "Debug mode: ${FDEBUG}"
+echo ""
 echo "Git root found at: $GIT_ROOT"
 echo ""
 echo "Custom or cut-down install? [${IS_CUSTOM_OR_CUTDOWN_INSTALL}]"
@@ -312,7 +314,7 @@ echo ""
 # Only execute this GPU related debug if FDEBUG is true and IS_CPU_ONLY is NOT true (false, anything except true = false)
 # Logic confirmed - if CPU is empty or not set -> default true
 #                 - if debug is enabled AND CPU is not = true (assume it is false, safe default)
-if [ "${FDEBUG:-false}" = "true" ] && [ "${IS_CPU_ONLY:true}" != "-true" ] && [ "${IS_CUDA_ONLY:-false}" = "true" ]; then
+if [ "${FDEBUG:-false}" = "true" ] && [ "${IS_CPU_ONLY:-true}" != "true" ] && [ "${IS_CUDA_ONLY:-false}" = "true" ]; then
   # DEBUG but keep disabled for now... will make debug flag in future update
   echo "==================="
   env | grep -E "(CUDA|NVIDIA|SD_GPU)" >&2
@@ -320,7 +322,7 @@ if [ "${FDEBUG:-false}" = "true" ] && [ "${IS_CPU_ONLY:true}" != "-true" ] && [ 
 
   # Always show GPU info so user can adjust their config
   echo "🔍 SD_GPU_DEVICE: '$SD_GPU_DEVICE'" >&2
-  if [ "$FDEBUG" = true ]; then
+  if [ "$FDEBUG" = "true" ]; then
     # debug gate, this one might confuse the end user ("I thought I picked X not 0")
     echo "🔍 NVIDIA_VISIBLE_DEVICES: '$NVIDIA_VISIBLE_DEVICES'" >&2
   fi
