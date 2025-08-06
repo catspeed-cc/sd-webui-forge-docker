@@ -140,7 +140,7 @@ done
   echo "# managed by sd-forge-webui-docker BEGIN"
   echo "export PATH=${NEW_PATH}"
   echo "# managed by sd-forge-webui-docker END"
-} | tee -a ~/.bashrc
+} | tee -a ~/.bashrc > /dev/null
 
 export PATH=${NEW_PATH_EXPANDED}
 
@@ -149,3 +149,9 @@ find ./docker -type f -name "*.sh" -print0 | xargs -0 sed -i "s|export GIT_ROOT=
 
 # source the modified ~/.bashrc
 source ~/.bashrc
+
+echo ""
+echo "Installation completed. Please see available scripts by typing `docker-` and pressing tab"
+echo ""
+echo "Alternatively, read the documentation (README.md)"
+echo ""
