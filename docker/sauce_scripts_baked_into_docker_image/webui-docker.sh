@@ -50,7 +50,7 @@ find_root() {
 export GIT_ROOT=$(find_root)
 
 # Source the shared functions directly only in container scripts
-source /app/webui/lib/commonlib.sh
+source /app/webui/docker/lib/commonlib.sh
 
 echo "#"
 echo "##"
@@ -103,8 +103,9 @@ while [ $i -lt ${#args[@]} ]; do
   ((i++))
 done
 
-# add if problems in test remove for merge/release
-#pip3 install --force-reinstall --no-deps --no-cache-dir --root-user-action ignore typing-extensions packaging
+pip3 install --force-reinstall --no-deps --no-cache-dir --root-user-action ignore typing-extensions packaging
+
+sed -i '/if not torch\.cuda\.is_available():$/,+1d' /app/webui/modules/launch_utils.py
 
 echo "STARTING THE PYTHON APP..."
 

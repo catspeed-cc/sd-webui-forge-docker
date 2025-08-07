@@ -48,7 +48,7 @@ find_git_root() {
 }
 
 # Find the Git root (FALLBACK, overwritten by installer with hard-code absolute path)
-export GIT_ROOT=/root/sd-forge
+export GIT_ROOT=$(find_git_root)
 
 # this is needed for re_install_deps too (precedence)
 if nvcc --version > /dev/null 2>&1; then
@@ -83,16 +83,15 @@ check_cuda_and_install_pytorch() {
         fi
     fi
 
-    # Log result
-    if [[ "$IS_CUDA_INSTALLED" == "true" ]]; then
-        echo "CUDA detected: $CUDA_VERSION"
-        echo "Installing GPU version of PyTorch..."
-        pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu${CUDA_VERSION//./}
-    else
-        echo "CUDA not detected or not available"
-        echo "Installing CPU-only version of PyTorch for faster startup..."
-        pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-    fi
+    echo "CUDA detected: $CUDA_VERSION"
+    echo "Installing GPU version of PyTorch..."
+    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu${CUDA_VERSION//./}
+
+    # Cuda is assumed :-/ Original project even in CPU mode will require Cuda
+    # in this case 12.8 because we force upgraded it inside docker container
+
+    # suggest possibly true CPU only mode, for CPU users using the CPU pytorch packages
+
 }
 
 re_install_deps() {
@@ -246,12 +245,15 @@ confirm_continue() {
 
 #
 ##
-## COMMON initialization
+## Common Initialization
 ##
 #
 
 # self-initialize, otherwise errors and empty variables below
 init_script_paths
+
+# required because docker set the directory `common_lib` as the prefix for container name
+export COMPOSE_PROJECT_NAME=sd-forge
 
 # SET MANUAL PATHS FIRST (AFTER INIT)!
 export DOCKER_COMPOSE_DIR=${GIT_ROOT}/docker/compose_files
@@ -260,6 +262,7 @@ export SAUCE_DL_DIR=${GIT_ROOT}/sauce_dl
 export DOCKER_SAUCE_DIR=${GIT_ROOT}/docker/sauce_scripts_baked_into_docker_image
 export WORK_DIR=${GIT_ROOT}/work_dir_tmp
 export IS_CUSTOM_OR_CUTDOWN_INSTALL=$(grep "^[[:space:]]*- IS_CUSTOM_OR_CUTDOWN_INSTALL=" ./docker/compose_files/docker-compose.cpu.yaml | cut -d '=' -f2)
+export DOCKER_SERVICE_NAME=$(grep "^[[:space:]]*- DOCKER_SERVICE_NAME=" ./docker/compose_files/docker-compose.cpu.yaml | cut -d '=' -f2)
 
 # UP HERE check for SD_GPU_DEVICE flags ahead of time, then create flag to toggle GPU flag filtering on/off
 # Set SD_GPU_DEVICE to empty string?
@@ -288,26 +291,24 @@ echo ""
 echo "Initializing ..."
 echo ""
 # Now you can use GIT_ROOT in your script
-echo "Debug mode: ${FDEBUG}"
-echo ""
-echo "Git root found at: $GIT_ROOT"
-echo ""
+echo "Debug mode: [${FDEBUG}]"
+echo "Docker service name: [${DOCKER_SERVICE_NAME}]"
+echo "Git root found at: [${GIT_ROOT}]"
 echo "Custom or cut-down install? [${IS_CUSTOM_OR_CUTDOWN_INSTALL}]"
-echo ""
-echo "Is CPU only? [$IS_CPU_ONLY]"
+echo "Is CPU only? [${IS_CPU_ONLY}]"
 
 echo ""
 # Debug: show paths
-echo "📘 Script name: $SCRIPT_NAME"
-echo "📁 Absolute script path: $ABS_SCRIPT_PATH"
-echo "🔗 Relative script path: $REL_SCRIPT_PATH"
-echo "📁 Absolute dir: $ABS_SCRIPT_DIR"
-echo "🔗 Relative dir: $REL_SCRIPT_DIR"
-echo "💻 Running from: $PWD"
+echo "📘 Script name: [${SCRIPT_NAME}]"
+echo "📁 Absolute script path: [${ABS_SCRIPT_PATH}]"
+echo "🔗 Relative script path: [${REL_SCRIPT_PATH}]"
+echo "📁 Absolute dir: [${ABS_SCRIPT_DIR}]"
+echo "🔗 Relative dir: [${REL_SCRIPT_DIR}]"
+echo "💻 Running from: [${PWD}]"
 echo ""
-echo "DOCKER_COMPOSE_DIR: $DOCKER_COMPOSE_DIR"
-echo "SAUCE_DIR: $SAUCE_DIR"
-echo "DOCKER_SAUCE_DIR: $DOCKER_SAUCE_DIR"
+echo "DOCKER_COMPOSE_DIR: [${DOCKER_COMPOSE_DIR}]"
+echo "SAUCE_DIR: [${SAUCE_DIR}]"
+echo "DOCKER_SAUCE_DIR: [${DOCKER_SAUCE_DIR}]"
 echo ""
 
 # BEGINNING of GPU related CONFIGURATION AND DEBUG

@@ -146,7 +146,8 @@ done
 export PATH=${NEW_PATH_EXPANDED}
 
 # Configure the GIT_ROOT (important, required)
-find ./docker -type f -name "*.sh" -print0 | xargs -0 sed -i "s|export GIT_ROOT=\$(find_git_root)|export GIT_ROOT=$GIT_ROOT|g"
+#find ./docker -type f -name "*.sh" -print0 | xargs -0 sed -i "s|export GIT_ROOT=\$(find_git_root)|export GIT_ROOT=$GIT_ROOT|g"
+echo "export GIT_ROOT=$GIT_ROOT" tee -a ${GIT_ROOT}/docker/lib/commoncfg.sh
 
 # source the modified ~/.bashrc
 source ~/.bashrc

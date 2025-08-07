@@ -11,17 +11,18 @@ services:
     image: catspeedcc/sd-webui-forge-docker:bleeding
     # ABOVE image should be on 'latest' or a version 'v*.*.*'
     environment:
-      # Please change this to configure this setting in this file rather than elsewhere
+      - DOCKER_SERVICE_NAME=sd-forge-1
       # This affects the host, not the container.
       # If you are not using the combined compose file _or_ a cut down install using the v1.1.1-sauces.tar.gz
       # Leave this the way it is.
       - IS_CUSTOM_OR_CUTDOWN_INSTALL=true
     command:
       - /app/webui-docker.sh
+      - --use-cpu=all
       # SUPER important this variable is set to the service name above (in this case sd-forge)
       # also you can change it as long as it has "sd-forge" in the name and is unique
       # NO spaces - use dashes
-      - --docker-container-name=sd-forge-1
+      #- --docker-service-name=sd-forge-1
       # ABOVE container service names should match
     ports:
       # THIS is where we limit to localhost (127.0.0.1)
@@ -32,4 +33,4 @@ services:
     volumes:
       - ../../models:/app/webui/models
       - ../../outputs:/app/webui/outputs
-      - ../lib/commonlib.sh:/app/webui/lib/commonlib.sh
+      - ../../docker:/app/webui/docker
