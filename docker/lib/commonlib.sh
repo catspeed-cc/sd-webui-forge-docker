@@ -181,6 +181,7 @@ re_install_deps() {
     cd huggingface_guess && git pull origin main && cd ..
     cd BLIP && git pull origin main && cd ..
 
+  # no else we have covered the important bases
   fi
 
   echo "Checkout(ing?) the correct hashes..."
