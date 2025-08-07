@@ -96,7 +96,7 @@ check_cuda_and_install_pytorch() {
 
 re_install_deps() {
 
-  local REINSTALL="$1"  # Accept first argument
+  local REINSTALL="${1:-false}"  # Accept first argument
 
   if [[ "$REINSTALL" == "true" ]]; then
     echo""
@@ -155,11 +155,15 @@ re_install_deps() {
   mkdir -p /app/webui/repositories
   cd /app/webui/repositories
 
-  if [[ "$REINSTALL" == "true" ]]; then
+  # reminder:
+  # anything other than "true" is a "false" (safe default)
+  # bash has no boolean type so we use a string - not a number, a string that represents in english (no magic number)
+  if [[ "$REINSTALL" != "true" ]]; then
 
-    # clobber all three repo dirs
+    # clobber all three repo dirs (commented for possible removal: it forces the packages to reinstall every start
     # I don't like the `-f` in production, but it supresses the errors and prevents container stop on startup
-    rm -rf stable-diffusion-webui-assets/ huggingface_guess/ BLIP/
+    # keeping this in, in the case they exist somehow on first installation
+    #rm -rf stable-diffusion-webui-assets/ huggingface_guess/ BLIP/
 
     # modules/launch_utils.py contains the repos and hashes
     git clone --config core.filemode=false https://github.com/AUTOMATIC1111/stable-diffusion-webui-assets.git && \
@@ -304,7 +308,7 @@ if [[ -n "${SD_GPU_DEVICE:-}" ]]; then
   export PYTHON_ADD_ARG=" --gpu-device-id=${SD_GPU_DEVICE}"
   echo "🔧 Will pass GPU arg:${PYTHON_ADD_ARG}" >&2
 else
-  echo "⚠️  WARNING: SD_GPU_DEVICE not set. Running on CPU or default GPU." >&2
+  echo "⚠️  WARNING: SD_GPU_DEVICE not set. Rust be GPU error or perhaps running oin CPU-only?" >&2
   export PYTHON_ADD_ARG=""
 fi
 
