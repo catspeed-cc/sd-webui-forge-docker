@@ -156,20 +156,22 @@ re_install_deps() {
   mkdir -p /app/webui/repositories
   cd /app/webui/repositories
 
+  # IF ANY directory is missing, rm the directories, and git the repositories
   if [[ ! -d "./stable-diffusion-webui-assets" || ! -d "./huggingface_guess" || ! -d "./BLIP" ]]; then
 
-    echo "None of the three directories exist."
+    echo "One or all three directories missing."
     echo "Fetching Git repositories into /app/webui/repositories"
 
     # Either one or all directories are missing. Assume one might exist and clobber all three.
     # Again I dislike rm -rf (specifically the -f) in production but it is necessary and it is inside the container.
-    rm -rf /app/webui/repositories/stable-diffusion-webui-assets.git /app/webui/repositories/huggingface_guess /app/webui/repositories/BLIP
+    rm -rf /app/webui/repositories/stable-diffusion-webui-assets /app/webui/repositories/huggingface_guess /app/webui/repositories/BLIP
 
     # modules/launch_utils.py contains the repos and hashes
     git clone --config core.filemode=false https://github.com/AUTOMATIC1111/stable-diffusion-webui-assets.git && \
     git clone --config core.filemode=false https://github.com/lllyasviel/huggingface_guess.git && \
     git clone --config core.filemode=false https://github.com/salesforce/BLIP.git
 
+  # IF ALL directories exist already just enter them and pull origin master/main
   elif [[ -d "./stable-diffusion-webui-assets" && -d "./huggingface_guess" && -d "./BLIP" ]]; then
 
     echo "All three directories exist."
