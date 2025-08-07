@@ -152,25 +152,24 @@ re_install_deps() {
   pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore --upgrade pip && \
   pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore "setuptools>=62.4"
 
+  # Make and enter the repositories directory
   mkdir -p /app/webui/repositories
   cd /app/webui/repositories
 
-  # reminder:
-  # anything other than "true" is a "false" (safe default)
-  # bash has no boolean type so we use a string - not a number, a string that represents in english (no magic number)
-  if [[ "$REINSTALL" != "true" ]]; then
+  if [[ ! -d "./stable-diffusion-webui-assets" && ! -d "./huggingface_guess" && ! -d "./BLIP" ]]; then
 
-    # clobber all three repo dirs (commented for possible removal: it forces the packages to reinstall every start
-    # I don't like the `-f` in production, but it supresses the errors and prevents container stop on startup
-    # keeping this in, in the case they exist somehow on first installation
-    #rm -rf stable-diffusion-webui-assets/ huggingface_guess/ BLIP/
+    echo "None of the three directories exist."
+    echo "Fetching Git repositories into /app/webui/repositories"
 
     # modules/launch_utils.py contains the repos and hashes
     git clone --config core.filemode=false https://github.com/AUTOMATIC1111/stable-diffusion-webui-assets.git && \
     git clone --config core.filemode=false https://github.com/lllyasviel/huggingface_guess.git && \
     git clone --config core.filemode=false https://github.com/salesforce/BLIP.git
 
-  else
+  elif [[ -d "./stable-diffusion-webui-assets" && -d "./huggingface_guess" && -d "./BLIP" ]]; then
+
+    echo "All three directories exist."
+    echo "Git pull origins master/main branches"
 
     cd stable-diffusion-webui-assets && git pull origin master && cd ..
     cd huggingface_guess && git pull origin main && cd ..
@@ -178,7 +177,7 @@ re_install_deps() {
 
   fi
 
-  # checkout the correct hashes
+  echo "Checkout(ing?) the correct hashes..."
 
   # sd-webui-assets
   cd /app/webui/repositories/stable-diffusion-webui-assets && \
