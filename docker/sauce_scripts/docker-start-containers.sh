@@ -46,7 +46,7 @@ echo "#"
 source ${GIT_ROOT}/docker/lib/commonlib.sh
 
 # Get the list of ALL containers `docker ps -a`
-DOCKER_PSA_LIST=$(docker ps -a --format '{{.Names}}' | grep "sd-forge")
+DOCKER_PSA_LIST=$(docker ps -a --format '{{.Names}}' | grep "$DOCKER_SERVICE_NAME")
 
 CTRA=0
 # Loop through each container

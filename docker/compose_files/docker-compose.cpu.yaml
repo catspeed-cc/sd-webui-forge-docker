@@ -11,7 +11,12 @@ services:
     image: catspeedcc/sd-webui-forge-docker:bleeding
     # ABOVE image should be on 'latest' or a version 'v*.*.*'
     environment:
+      # # SUPER important this variable is set to the service name above (in this case sd-forge)
+      # also you can change it as long as it has "sd-forge" in the name and is unique
+      # NO spaces - use dashes
       - DOCKER_SERVICE_NAME=sd-forge-1
+      # ABOVE container service names should match
+      #
       # This affects the host, not the container.
       # If you are not using the combined compose file _or_ a cut down install using the v1.1.1-sauces.tar.gz
       # Leave this the way it is.

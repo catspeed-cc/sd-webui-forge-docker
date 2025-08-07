@@ -64,7 +64,7 @@ echo "🚀 Starting Stable Diffusion Forge..." >&2
 echo "🔧 Args: $*" >&2
 
 # re/install dependencies
-re_install_deps
+re_install_deps "false"
 
 # change back to webui dir so we can launch `launch.py`
 # especially here, re_install_deps.sh may change it
@@ -102,10 +102,6 @@ while [ $i -lt ${#args[@]} ]; do
 
   ((i++))
 done
-
-pip3 install --force-reinstall --no-deps --no-cache-dir --root-user-action ignore typing-extensions packaging
-
-sed -i '/if not torch\.cuda\.is_available():$/,+1d' /app/webui/modules/launch_utils.py
 
 echo "STARTING THE PYTHON APP..."
 

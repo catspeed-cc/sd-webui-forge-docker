@@ -96,6 +96,18 @@ check_cuda_and_install_pytorch() {
 
 re_install_deps() {
 
+  local REINSTALL="$1"  # Accept first argument
+
+  if [[ "$REINSTALL" == "true" ]]; then
+    echo""
+    echo "Reinstalling dependencies"
+    export PIP_ADD="--force-reinstall "
+  else
+    echo ""
+    echo "Installing Dependencies"
+    export PIP_ADD=""
+  fi
+
   #
   ##
   ## Install dependencies IF NOT ALREADY INSTALLED!
@@ -106,7 +118,6 @@ re_install_deps() {
 
   # quick fix, tell bash we are handling errors (so do not exit) when we really are not xD
   set +e  # disable exit-on-error
-  set 
 
   # change to work directory (herin: "WD")
   cd /app
@@ -130,28 +141,38 @@ re_install_deps() {
   fi
 
   # not erroring on success, but pre-emptive fix from below :)
-  pip3 install --force-reinstall --no-deps --no-cache-dir --root-user-action ignore -r requirements_versions.txt
+  pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore -r requirements_versions.txt
   exit_code=$?
   if [ $exit_code -ne 0 ]; then
     echo "⚠️ pip install failed with code $exit_code, but continuing..."
   fi
 
-  pip3 install --force-reinstall --no-deps --no-cache-dir --root-user-action ignore joblib
-  pip3 install --force-reinstall --no-deps --no-cache-dir --root-user-action ignore --upgrade pip && \
-  pip3 install --force-reinstall --no-deps --no-cache-dir --root-user-action ignore --upgrade pip && \
-  pip3 install --force-reinstall --no-deps --no-cache-dir --root-user-action ignore "setuptools>=62.4"
+  pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore joblib
+  pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore --upgrade pip && \
+  pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore --upgrade pip && \
+  pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore "setuptools>=62.4"
 
   mkdir -p /app/webui/repositories
   cd /app/webui/repositories
 
-  # clobber all three repo dirs
-  # I don't like the `-f` in production, but it supresses the errors and prevents container stop on startup
-  rm -rf stable-diffusion-webui-assets/ huggingface_guess/ BLIP/
+  if [[ "$REINSTALL" == "true" ]]; then
 
-  # modules/launch_utils.py contains the repos and hashes
-  git clone --config core.filemode=false https://github.com/AUTOMATIC1111/stable-diffusion-webui-assets.git && \
-  git clone --config core.filemode=false https://github.com/lllyasviel/huggingface_guess.git && \
-  git clone --config core.filemode=false https://github.com/salesforce/BLIP.git
+    # clobber all three repo dirs
+    # I don't like the `-f` in production, but it supresses the errors and prevents container stop on startup
+    rm -rf stable-diffusion-webui-assets/ huggingface_guess/ BLIP/
+
+    # modules/launch_utils.py contains the repos and hashes
+    git clone --config core.filemode=false https://github.com/AUTOMATIC1111/stable-diffusion-webui-assets.git && \
+    git clone --config core.filemode=false https://github.com/lllyasviel/huggingface_guess.git && \
+    git clone --config core.filemode=false https://github.com/salesforce/BLIP.git
+
+  else
+
+    cd stable-diffusion-webui-assets && git pull origin master && cd ..
+    cd huggingface_guess && git pull origin main && cd ..
+    cd BLIP && git pull origin main && cd ..
+
+  fi
 
   # checkout the correct hashes
 
@@ -176,7 +197,7 @@ re_install_deps() {
   sed -i 's/transformers==4\.15\.0/transformers==4.46.1/g' /app/webui/repositories/BLIP/requirements.txt
 
   # fix to exit code (even on success) causing container to exit ...
-  pip3 install --force-reinstall --no-deps --no-cache-dir --root-user-action ignore -r requirements.txt
+  pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore -r requirements.txt
   exit_code=$?
   if [ $exit_code -ne 0 ]; then
     echo "⚠️ pip install failed with code $exit_code, but continuing..."
@@ -186,6 +207,8 @@ re_install_deps() {
   # pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
   # do last I think shenannighans happening somewehjre
   check_cuda_and_install_pytorch
+
+  pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore typing-extensions packaging
 
   # change back to webui dir so we can launch `launch.py`
   cd /app/webui

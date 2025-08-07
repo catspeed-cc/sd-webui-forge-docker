@@ -37,7 +37,7 @@ echo "🚀 Starting Stable Diffusion Forge..." >&2
 echo "🔧 Args: $*" >&2
 
 # install dependencies
-re_install_deps
+re_install_deps "true"
 
 # change back to webui dir (good practice)
 cd /app/webui
