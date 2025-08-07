@@ -129,13 +129,6 @@ re_install_deps() {
     git pull origin main
   fi
 
-  # First CUDA related thing, we need a CPU compatible version
-
-  # INSTALL CUDA 12.8 LATEST VERSION - UPDATE TO 12.9 (cu129) when it ships
-  #pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
-
-  check_cuda_and_install_pytorch
-
   # not erroring on success, but pre-emptive fix from below :)
   pip3 install --force-reinstall --no-deps --no-cache-dir --root-user-action ignore -r requirements_versions.txt
   exit_code=$?
@@ -188,6 +181,11 @@ re_install_deps() {
   if [ $exit_code -ne 0 ]; then
     echo "⚠️ pip install failed with code $exit_code, but continuing..."
   fi
+
+  # INSTALL CUDA 12.8 LATEST VERSION - UPDATE TO 12.9 (cu129) when it ships
+  # pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+  # do last I think shenannighans happening somewehjre
+  check_cuda_and_install_pytorch
 
   # change back to webui dir so we can launch `launch.py`
   cd /app/webui
