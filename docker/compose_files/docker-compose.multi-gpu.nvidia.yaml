@@ -9,10 +9,10 @@
 #
 
 services:
-  sd-forge:
+  sd-forge-1:
     extends:
-      file: docker-compose.yaml
-      service: sd-forge
+      file: docker-compose.cpu.yaml
+      service: sd-forge-1
     command:
       # do not touch, this starts the startup script inside container
       - /app/webui-docker.sh

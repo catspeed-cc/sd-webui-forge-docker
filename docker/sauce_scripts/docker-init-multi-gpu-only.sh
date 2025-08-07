@@ -48,4 +48,8 @@ echo "#"
 source ${GIT_ROOT}/docker/lib/commonlib.sh
 
 # simple init but there is config in related docker-compose file(s)
-docker compose -f ${DOCKER_COMPOSE_DIR}/docker-compose.cpu.yaml -f ${DOCKER_COMPOSE_DIR}/docker-compose.multi-gpu.nvidia.yaml up -d
+docker compose \
+               --project-directory ${DOCKER_COMPOSE_DIR} \
+               -f ${DOCKER_COMPOSE_DIR}/docker-compose.cpu.yaml \
+               -f ${DOCKER_COMPOSE_DIR}/docker-compose.multi-gpu.nvidia.yaml \
+               up -d
