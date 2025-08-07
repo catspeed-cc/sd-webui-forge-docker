@@ -218,7 +218,8 @@ re_install_deps() {
   # do last I think shenannighans happening somewehjre
   check_cuda_and_install_pytorch
 
-  pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore typing-extensions packaging
+  # unsure why these need to be reinstalled all the time O_o
+  pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore typing-extensions packaging starlette
 
   # change back to webui dir so we can launch `launch.py`
   cd /app/webui
