@@ -141,16 +141,15 @@ re_install_deps() {
   fi
 
   # not erroring on success, but pre-emptive fix from below :)
-  pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore -r requirements_versions.txt
+  pip3 install ${PIP_ADD}--no-cache-dir --root-user-action ignore -r requirements_versions.txt
   exit_code=$?
   if [ $exit_code -ne 0 ]; then
     echo "⚠️ pip install failed with code $exit_code, but continuing..."
   fi
 
-  pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore joblib
-  pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore --upgrade pip && \
-  pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore --upgrade pip && \
-  pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore "setuptools>=62.4"
+  pip3 install ${PIP_ADD}--no-cache-dir --root-user-action ignore joblib && \
+  pip3 install ${PIP_ADD}--no-cache-dir --root-user-action ignore --upgrade pip && \
+  pip3 install ${PIP_ADD}--no-cache-dir --root-user-action ignore "setuptools>=62.4"
 
   # Make and enter the repositories directory
   mkdir -p /app/webui/repositories
@@ -207,7 +206,7 @@ re_install_deps() {
   sed -i 's/transformers==4\.15\.0/transformers==4.46.1/g' /app/webui/repositories/BLIP/requirements.txt
 
   # fix to exit code (even on success) causing container to exit ...
-  pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore -r requirements.txt
+  pip3 install ${PIP_ADD}--no-cache-dir --root-user-action ignore -r requirements.txt
   exit_code=$?
   if [ $exit_code -ne 0 ]; then
     echo "⚠️ pip install failed with code $exit_code, but continuing..."
@@ -218,8 +217,8 @@ re_install_deps() {
   # do last I think shenannighans happening somewehjre
   check_cuda_and_install_pytorch
 
-  # unsure why these need to be reinstalled all the time O_o
-  pip3 install ${PIP_ADD}--no-deps --no-cache-dir --root-user-action ignore typing-extensions packaging starlette
+  # unsure why these need to be reinstalled all the time O_o (think its fixed testing removal)
+  #pip3 install ${PIP_ADD}--no-cache-dir --root-user-action ignore typing-extensions packaging starlette pydantic_core insightface
 
   # change back to webui dir so we can launch `launch.py`
   cd /app/webui

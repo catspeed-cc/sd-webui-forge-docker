@@ -104,8 +104,8 @@ while [ $i -lt ${#args[@]} ]; do
 done
 
 # Telling sd-forge we want our torch version :) glad they did it this way :)
-export TORCH_INDEX_URL=https://download.pytorch.org/whl/cu128
-export TORCH_COMMAND=python -m pip install torch==2.3.1+cu128 torchvision==0.18.1+cu128 torchaudio==2.3.1+cu128 --index-url https://download.pytorch.org/whl/cu128
+export TORCH_INDEX_URL="https://download.pytorch.org/whl/cu124"
+export TORCH_COMMAND="python -m pip install torch==2.3.1+cu124 torchvision==0.18.1+cu124 torchaudio==2.3.1+cu124 --index-url ${TORCH_INDEX_URL}"   
 
 echo "STARTING THE PYTHON APP..."
 
