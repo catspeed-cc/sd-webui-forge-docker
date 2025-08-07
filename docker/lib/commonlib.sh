@@ -61,37 +61,41 @@ fi
 
 check_cuda_and_install_pytorch() {
     # Initialize variables
-    CUDA_VERSION=""
-    IS_CUDA_INSTALLED="false"
+    export CUDA_VERSION="12.8"
+    export IS_CUDA_INSTALLED="false"
 
-    # Method 1: Check nvcc (most reliable if available)
-    if command -v nvcc >/dev/null 2>&1; then
-        if nvcc --version >/dev/null 2>&1; then
-            # Extract CUDA version (e.g., 12.8 from "release 12.8")
-            CUDA_VERSION=$(nvcc --version | grep -oE 'release [0-9]+\.[0-9]+' | cut -d' ' -f2)
-            if [[ -n "$CUDA_VERSION" ]]; then
-                IS_CUDA_INSTALLED="true"
-            fi
-        fi
+    if [ -x "/usr/local/cuda/bin/nvcc" ]; then
+      CUDA_VERSION=$(/usr/local/cuda/bin/nvcc --version | grep -o 'release [0-9.]*' | cut -d' ' -f2)
+      if [[ "$CUDA_VERSION" == "12.8" ]]; then
+        export CUDA_VERSION IS_CUDA_INSTALLED="true"
+        echo "✅ CUDA 12.8 confirmed."
+      else
+        echo "❌ Found CUDA $CUDA_VERSION, but 12.8 required."
+        export IS_CUDA_INSTALLED="false"
+      fi
+    else
+      echo "❌ nvcc not found. Please install CUDA 12.8 and ensure /usr/local/cuda/bin is in PATH."
+      export IS_CUDA_INSTALLED="false"
     fi
 
-    # Method 2: Fallback - check for CUDA runtime files
-    if [[ "$IS_CUDA_INSTALLED" == "false" ]] && [[ -f "/usr/local/cuda/version.txt" ]]; then
-        CUDA_VERSION=$(grep -oE '[0-9]+\.[0-9]+' /usr/local/cuda/version.txt | head -1)
-        if [[ -n "$CUDA_VERSION" ]]; then
-            IS_CUDA_INSTALLED="true"
-        fi
+    echo "Using CUDA version: $CUDA_VERSION"
+
+    # Build CUDA_TAG *without* exporting yet
+    export CUDA_TAG="cu${CUDA_VERSION//./}"
+
+    # Now apply default *only if CUDA_TAG is empty or invalid*
+    if [[ -z "$CUDA_TAG" || "$CUDA_TAG" == "cu" ]]; then
+        echo "CUDA tag invalid or empty. Defaulting to cu121"
+        export CUDA_TAG="cu121"
     fi
 
-    echo "CUDA detected: $CUDA_VERSION"
-    echo "Installing GPU version of PyTorch..."
-    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu${CUDA_VERSION//./}
+    # Now export and use
+    export CUDA_TAG
 
-    # Cuda is assumed :-/ Original project even in CPU mode will require Cuda
-    # in this case 12.8 because we force upgraded it inside docker container
+    echo "Installing GPU version of PyTorch with $CUDA_TAG..."
+    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/$CUDA_TAG
 
-    # suggest possibly true CPU only mode, for CPU users using the CPU pytorch packages
-
+    echo "PyTorch installed with $CUDA_TAG support."
 }
 
 re_install_deps() {
@@ -164,6 +168,9 @@ re_install_deps() {
     # Either one or all directories are missing. Assume one might exist and clobber all three.
     # Again I dislike rm -rf (specifically the -f) in production but it is necessary and it is inside the container.
     rm -rf /app/webui/repositories/stable-diffusion-webui-assets /app/webui/repositories/huggingface_guess /app/webui/repositories/BLIP
+
+    # supress the wall of text warning :-/
+    git config --global advice.detachedHead false
 
     # modules/launch_utils.py contains the repos and hashes
     git clone --config core.filemode=false https://github.com/AUTOMATIC1111/stable-diffusion-webui-assets.git && \
@@ -295,6 +302,8 @@ export WORK_DIR=${GIT_ROOT}/work_dir_tmp
 export IS_CUSTOM_OR_CUTDOWN_INSTALL=$(grep "^[[:space:]]*- IS_CUSTOM_OR_CUTDOWN_INSTALL=" ./docker/compose_files/docker-compose.cpu.yaml | cut -d '=' -f2)
 export DOCKER_SERVICE_NAME=$(grep "^[[:space:]]*- DOCKER_SERVICE_NAME=" ./docker/compose_files/docker-compose.cpu.yaml | cut -d '=' -f2)
 
+export CUDA_TAG="default/none"
+
 # UP HERE check for SD_GPU_DEVICE flags ahead of time, then create flag to toggle GPU flag filtering on/off
 # Set SD_GPU_DEVICE to empty string?
 
@@ -327,6 +336,9 @@ echo "Docker service name: [${DOCKER_SERVICE_NAME}]"
 echo "Git root found at: [${GIT_ROOT}]"
 echo "Custom or cut-down install? [${IS_CUSTOM_OR_CUTDOWN_INSTALL}]"
 echo "Is CPU only? [${IS_CPU_ONLY}]"
+echo "Cuda available: [${CUDA_AVAILABLE}]"
+echo "Cuda version: [${CUDA_VERSION}]"
+echo "Cuda tag [${CUDA_TAG}]"
 
 echo ""
 # Debug: show paths
@@ -346,7 +358,7 @@ echo ""
 # Only execute this GPU related debug if FDEBUG is true and IS_CPU_ONLY is NOT true (false, anything except true = false)
 # Logic confirmed - if CPU is empty or not set -> default true
 #                 - if debug is enabled AND CPU is not = true (assume it is false, safe default)
-if [ "${FDEBUG:-false}" = "true" ] && [ "${IS_CPU_ONLY:-true}" != "true" ] && [ "${IS_CUDA_ONLY:-false}" = "true" ]; then
+if [ "${FDEBUG:-false}" = "true" ] && [ "${IS_CPU_ONLY:-true}" != "true" ] && [ "${IS_CUDA_ONLY:-false}" == "true" ]; then
   # DEBUG but keep disabled for now... will make debug flag in future update
   echo "==================="
   env | grep -E "(CUDA|NVIDIA|SD_GPU)" >&2

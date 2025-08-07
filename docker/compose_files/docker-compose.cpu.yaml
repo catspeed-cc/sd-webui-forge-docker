@@ -20,7 +20,7 @@ services:
       # This affects the host, not the container.
       # If you are not using the combined compose file _or_ a cut down install using the v1.1.1-sauces.tar.gz
       # Leave this the way it is.
-      - IS_CUSTOM_OR_CUTDOWN_INSTALL=true
+      - IS_CUSTOM_OR_CUTDOWN_INSTALL=false
     command:
       - /app/webui-docker.sh
       - --use-cpu=all
