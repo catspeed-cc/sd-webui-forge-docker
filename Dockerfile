@@ -16,13 +16,6 @@ RUN apt-get update && apt-get install -y \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install nvidia-cuda-toolkit
-#RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
-#dpkg -i cuda-keyring_1.1-1_all.deb && \
-#apt update && \
-#apt install -y cuda-toolkit-12-8    && \
-#nvcc --version
-
 # Upgrade system jeez
 RUN apt-get upgrade -y && apt-get dist-upgrade -y && \
     apt autoremove -y && \
