@@ -225,6 +225,13 @@ re_install_deps() {
   # do last I think shenannighans happening somewehjre
   check_cuda_and_install_pytorch
 
+  # INSTALL `insightface` needed for spaces, etc.
+  pip3 install ${PIP_ADD}--no-cache-dir --root-user-action ignore insightface
+  exit_code=$?
+  if [ $exit_code -ne 0 ]; then
+    echo "⚠️ pip install failed with code $exit_code, but continuing..."
+  fi
+
   # unsure why these need to be reinstalled all the time O_o (think its fixed testing removal)
   #pip3 install ${PIP_ADD}--no-cache-dir --root-user-action ignore typing-extensions packaging starlette pydantic_core insightface
 
