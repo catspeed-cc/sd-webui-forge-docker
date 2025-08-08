@@ -36,16 +36,17 @@ services:
 
       # ===================================================================
       # Main Application
-      # Listens on port 7860 inside the container
-      # Exposed only on localhost (127.0.0.1) for security
-      # Edit _published_ ports only
+      # Exposed only on localhost (127.0.0.1) for security - change only if firewalls are configured correctly
+      # Edit the _published_ port only, it is the port you access from the host
       - published: 7860
         target: 7860
         protocol: tcp
         mode: host
         host_ip: 127.0.0.1
       # ===================================================================
-      
+      # Exposed only on localhost (127.0.0.1) for security - change only if firewalls are configured correctly
+      # Edit the _published_ port only, it is the port you access from the host
+      # You only need to edit the rest if you want `published` port to be different, or you are changing the host
       # Space 1
       - published: 7861
         target: 7861
