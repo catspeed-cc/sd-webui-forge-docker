@@ -6,21 +6,17 @@
 # this installer and the `secretsauce.sh` script require this to function correctly. others do not.
 set -euo pipefail  # Exit on error, undefined var, pipe failure
 
-# Source the shared functions
-# Adjust path as needed: relative, absolute, or via environment
+# Source the shared functions & configuration
 source /app/webui/lib/commonlib.sh
 
 echo "#"
 echo "##"
-echo "## sd-forge-webui-docker startup script"
+echo "## sd-forge-webui-docker secretsauce script"
 echo "##"
+echo "## reinstalling all possible dependencies while container is running"
 echo "## please grab some coffee, this will take some time on first run"
 echo "##"
 echo "#"
-
-
-# Initialize all path variables
-init_script_paths
 
 echo ""
 # Debug: show paths

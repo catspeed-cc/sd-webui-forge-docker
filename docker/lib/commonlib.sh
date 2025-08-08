@@ -2,6 +2,11 @@
 ##
 ## Import common functions and startup routines
 ##
+## This is not only commonlib it is commoncfg
+## It will initialize & auto configure itself
+##
+## Just "source" the script and you are done
+##
 #
 
 export FDEBUG=true

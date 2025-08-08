@@ -49,7 +49,7 @@ find_root() {
 # Find the Git root
 export GIT_ROOT=$(find_root)
 
-# Source the shared functions directly only in container scripts
+# Source the shared functions & configuration
 source /app/webui/docker/lib/commonlib.sh
 
 echo "#"
