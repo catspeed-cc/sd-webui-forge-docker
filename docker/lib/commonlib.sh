@@ -193,7 +193,7 @@ re_install_deps() {
     cd huggingface_guess && git pull origin main && cd ..
     cd BLIP && git pull origin main && cd ..
 
-  # no else we have covered the important bases
+  # no else we have covered the important considerations
   fi
 
   echo "Checkout(ing?) the correct hashes..."
@@ -236,9 +236,16 @@ re_install_deps() {
   if [ $exit_code -ne 0 ]; then
     echo "⚠️ pip install failed with code $exit_code, but continuing..."
   fi
-
-  # unsure why these need to be reinstalled all the time O_o (think its fixed testing removal)
-  #pip3 install ${PIP_ADD}--no-cache-dir --root-user-action ignore typing-extensions packaging starlette pydantic_core insightface
+  
+  # Fix package conflict (this might be removed if I figure out why the conflict was introduced)
+  pip3 uninstall -y blendmodes mediapipe open-clip-torch insightface
+  pip3 install --no-cache-dir --root-user-action ignore \
+  "numpy<2" "protobuf<4" \
+  insightface blendmodes mediapipe open-clip-torch
+  exit_code=$?
+  if [ $exit_code -ne 0 ]; then
+    echo "⚠️ pip install failed with code $exit_code, but continuing..."
+  fi
 
   # change back to webui dir so we can launch `launch.py`
   cd /app/webui

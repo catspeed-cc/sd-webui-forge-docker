@@ -9,7 +9,7 @@ ARG DUMMY=
 
 # Install system deps / upgrade system
 RUN apt-get update && apt-get install -y \
-    git wget nano curl htop gcc g++ \
+    git wget nano curl htop gcc g++ net-tools \
     libgl1 libglib2.0-0 \
     libcudnn8=8.9.2.26-1+cuda12.1 libcudnn8-dev=8.9.2.26-1+cuda12.1 \
     python3 python3.10-venv python3-dev && \
