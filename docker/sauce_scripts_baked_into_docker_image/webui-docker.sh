@@ -104,8 +104,8 @@ while [ $i -lt ${#args[@]} ]; do
 done
 
 # Tell sd-forge to use cu121
-#export TORCH_INDEX_URL="https://download.pytorch.org/whl/cu121"
-#export TORCH_COMMAND="python -m pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url ${TORCH_INDEX_URL}"   
+export TORCH_INDEX_URL="https://download.pytorch.org/whl/cu121"
+export TORCH_COMMAND="python -m pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url ${TORCH_INDEX_URL}"   
 
 echo "STARTING THE PYTHON APP..."
 

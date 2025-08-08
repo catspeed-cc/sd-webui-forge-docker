@@ -81,13 +81,14 @@ check_cuda_and_install_pytorch() {
     echo "Using CUDA version: $CUDA_VERSION"
 
     # Build CUDA_TAG *without* exporting yet
-    export CUDA_TAG="cu${CUDA_VERSION//./}"
+    #export CUDA_TAG="cu${CUDA_VERSION//./}"
 
     # Now apply default *only if CUDA_TAG is empty or invalid*
-    if [[ -z "$CUDA_TAG" || "$CUDA_TAG" == "cu" ]]; then
-        echo "CUDA tag invalid or empty. Defaulting to cu121"
+    #if [[ -z "$CUDA_TAG" || "$CUDA_TAG" == "cu" ]]; then
+        #echo "CUDA tag invalid or empty. Defaulting to cu121"
+        echo "Using cu121..."
         export CUDA_TAG="cu121"
-    fi
+    #fi
 
     # Now export and use
     export CUDA_TAG
