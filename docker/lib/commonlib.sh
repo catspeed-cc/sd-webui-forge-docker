@@ -349,9 +349,15 @@ echo "Docker service name: [${DOCKER_SERVICE_NAME}]"
 echo "Git root found at: [${GIT_ROOT}]"
 echo "Custom or cut-down install? [${IS_CUSTOM_OR_CUTDOWN_INSTALL}]"
 echo "Is CPU only? [${IS_CPU_ONLY}]"
-echo "Cuda available: [${CUDA_AVAILABLE}]"
-echo "Cuda version: [${CUDA_VERSION}]"
-echo "Cuda tag [${CUDA_TAG}]"
+
+# below commented, we need to fix them first. Keeping this code. 
+# it works as it is assuming cu121 torch packages (even with cuda 2.8 on host)
+# possible: remove - we can use the IS_CPU_ONLY to tell whether it is "CPU" or not - if not install cu121 torch packages
+# cuda 12.1 has forwards and backwards compatability as nvidia standard. This means 12.1 _should_ support 12.8 host and 12.1 container.
+# Currently I am running cuda 12.8 on host, with cuda 12.1 torch packages inside container (it works)
+#echo "Cuda available: [${CUDA_AVAILABLE}]"
+#echo "Cuda version: [${CUDA_VERSION}]"
+#echo "Cuda tag [${CUDA_TAG}]"
 
 echo ""
 # Debug: show paths
