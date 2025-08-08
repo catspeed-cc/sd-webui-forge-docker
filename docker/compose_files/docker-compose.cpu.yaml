@@ -85,7 +85,7 @@ services:
       # Space 6
       - published: 7866
         target: 7866
-      protocol: tcp
+        protocol: tcp
         mode: host
         host_ip: 127.0.0.1
 
