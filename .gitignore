@@ -57,6 +57,7 @@ coverage.xml
 **/tests/**/expectations
 
 # kthx
+*~
 GITHUB_PAT
 GITHUB_PAC
 
