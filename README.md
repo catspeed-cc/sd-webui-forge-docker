@@ -69,8 +69,8 @@ You can download previous versions [here](https://github.com/lllyasviel/stable-d
 ### Support
 
 - Docker support is only provided for the `latest` and `v*.*.*` tags (Ex. `v1.1.2`)
-- You may obtain docker related support via [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
-- You may obtain general sd-forge-webui support via [lllyasviel issue ticket](https://github.com/lllyasviel/stable-diffusion-webui-forge/issues)
+- You may obtain docker related support via [catspeed-cc/sd-webui-forge-docker issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
+- You may obtain general sd-forge-webui support via [lllyasviel/stable-diffusion-webui-forge issue ticket](https://github.com/lllyasviel/stable-diffusion-webui-forge/issues)
 
 ### IMPORTANT cuda notice for v1.1.0 & onwards:
 
