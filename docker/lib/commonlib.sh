@@ -291,11 +291,24 @@ confirm_continue() {
     done
 }
 
+end_ps_output() {
+
+  echo""
+  echo "'docker ps' output"
+  docker ps
+  echo ""
+
+}
+
 #
 ##
 ## Common Initialization
 ##
 #
+
+# Tell sd-forge to use cu121 (moved from webui-docker.sh)
+export TORCH_INDEX_URL="https://download.pytorch.org/whl/cu121"
+export TORCH_COMMAND="python -m pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url ${TORCH_INDEX_URL}"   
 
 # self-initialize, otherwise errors and empty variables below
 init_script_paths

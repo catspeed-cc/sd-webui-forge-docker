@@ -53,3 +53,9 @@ docker compose \
                -f ${DOCKER_COMPOSE_DIR}/docker-compose.cpu.yaml \
                -f ${DOCKER_COMPOSE_DIR}/docker-compose.multi-gpu.nvidia.yaml \
                up -d
+
+end_ps_output
+
+echo ""
+echo "Docker container(s) started & installing."
+echo ""

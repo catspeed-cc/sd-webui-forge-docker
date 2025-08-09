@@ -60,9 +60,8 @@ while read container; do
     docker rm $container
 done <<< "$DOCKER_PSA_LIST"
 
-echo "docker ps -a output:"
-docker ps -a
+end_ps_output
 
 echo ""
-echo "Docker containers stopped & removed."
+echo "Docker container(s) stopped & removed."
 echo ""

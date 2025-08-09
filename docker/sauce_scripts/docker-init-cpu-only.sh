@@ -47,3 +47,9 @@ source ${GIT_ROOT}/docker/lib/commonlib.sh
 
 # simple should not be config req'd
 docker compose -f ${DOCKER_COMPOSE_DIR}/docker-compose.cpu.yaml up -d
+
+end_ps_output
+
+echo ""
+echo "Docker container(s) started & installing."
+echo ""

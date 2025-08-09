@@ -60,7 +60,8 @@ while read container; do
   fi
 done <<< "$DOCKER_PSA_LIST"
 
-echo "docker ps output"
-docker ps
+end_ps_output
 
-echo "Docker containers started."
+echo ""
+echo "Docker container(s) started."
+echo ""

@@ -59,8 +59,9 @@ while read container; do
   fi
 done <<< "$DOCKER_PSA_LIST"
 
-echo "docker ps -a output:"
-docker ps -a
+end_ps_output
 
-echo "Docker containers stopped."
+echo ""
+echo "Docker container(s) stopped."
+echo ""
 

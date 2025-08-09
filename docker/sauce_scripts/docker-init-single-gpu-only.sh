@@ -47,3 +47,9 @@ source ${GIT_ROOT}/docker/lib/commonlib.sh
 
 # simple init but there is config in related docker-compose file(s)
 docker compose -f ${DOCKER_COMPOSE_DIR}/docker-compose.cpu.yaml -f ${DOCKER_COMPOSE_DIR}/docker-compose.single-gpu.nvidia.yaml up -d
+
+end_ps_output
+
+echo ""
+echo "Docker container(s) started & installing."
+echo ""

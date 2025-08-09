@@ -58,8 +58,7 @@ echo "## installing all sauce scripts into PATH and ~/.bashrc"
 echo "##"
 echo "#"
 
-# Source the shared functions
-# Adjust path as needed: relative, absolute
+# Source the shared functions & configuration
 source ${GIT_ROOT}/docker/lib/commonlib.sh
 
 ADD_TO_PATH=${GIT_ROOT}/docker/sauce_scripts/
