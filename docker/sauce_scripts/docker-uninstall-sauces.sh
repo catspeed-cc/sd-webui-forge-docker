@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# start.sh - SD Forge launcher with debug fallback
+# docker-uninstall-sauces.sh: remove sauces from path & ~/.bashrc
 
 set -euo pipefail  # Exit on error, undefined var, pipe failure
 
@@ -54,8 +54,7 @@ echo "## UNinstalling all sauce scripts from PATH and ~/.bashrc"
 echo "##"
 echo "#"
 
-# Source the shared functions
-# Adjust path as needed: relative, absolute
+# Source the shared functions & configuration
 source ${GIT_ROOT}/docker/lib/commonlib.sh
 
 ADD_TO_PATH=${GIT_ROOT}/docker/sauce_scripts/

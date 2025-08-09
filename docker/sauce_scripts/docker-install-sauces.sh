@@ -1,9 +1,6 @@
 #!/bin/bash
 
-# start.sh - SD Forge launcher with debug fallback
-
-# temporary needed
- # export GIT_ROOT=/root/sd-forge
+# docker-install-sauces.sh: add sauces to path & ~/.bashrc
 
 # this installer and the `secretsauce.sh` script require this to function correctly. others do not.
 set -euo pipefail  # Exit on error, undefined var, pipe failure

@@ -1,3 +1,4 @@
+
 #
 ##
 ## Import common functions and startup routines
@@ -54,6 +55,9 @@ find_git_root() {
 
 # Find the Git root (FALLBACK, overwritten by installer with hard-code absolute path)
 export GIT_ROOT=$(find_git_root)
+
+# source commoncfg.sh here and below in 1 other spots (hard to separate, just source it x2 is easiest)
+source ${GIT_ROOT}/docker/lib/commoncfg.sh
 
 # this is needed for re_install_deps too (precedence)
 if nvcc --version > /dev/null 2>&1; then
@@ -427,3 +431,6 @@ if [ "${FDEBUG:-false}" = "true" ] && [ "${IS_CPU_ONLY:-true}" != "true" ] && [ 
   fi
 fi
 # ENDING of GPU related CONFIGURATION AND DEBUG
+
+# source commoncfg.sh here and above because some config happens above
+source ${GIT_ROOT}/docker/lib/commoncfg.sh
