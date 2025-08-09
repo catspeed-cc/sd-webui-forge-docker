@@ -132,32 +132,43 @@ cd "${GIT_ROOT}/docker" || { echo "Failed to enter docker directory"; exit 1; }
 
 SCRIPT_DIR="${GIT_ROOT}/docker/sauce_scripts"
 
+REL_DOCKER_DIR="./docker/sauce_scripts"
+
 # Main menu function
 show_menu() {
     clear
     echo "===================================="
     echo "    SD-Forge Docker Management Menu "
     echo "===================================="
+    echo "Pick option. If nano opens, edit then ctrl + x, save, exit"
+    echo "             If it scrolls continuous (eg. tail logs), ctrl + c to exit"
     echo
-    echo "🔧 Sauces Initialization & Setup"
-    echo "  1) '$SCRIPT_DIR/docker-install-sauces.sh' - Install Sauces to ~/.bashrc"
-    echo "  2) '$SCRIPT_DIR/docker-uninstall-sauces.sh' - Uninstall Sauces from ~/.bashrc"
+    echo "Please refer to README.md for installation and use :)"
     echo
-    echo "🔧 Container Install & Setup"
-    echo "  3) '$SCRIPT_DIR/docker-init-cpu-only.sh' - Initialize CPU-Only Container (NVIDIA)"
-    echo "  4) '$SCRIPT_DIR/docker-init-single-gpu-only.sh' - Initialize Single-GPU Container (NVIDIA)"
-    echo "  5) '$SCRIPT_DIR/docker-init-multi-gpu-only.sh' - Initialize Multi-GPU Container (NVIDIA)"
+    echo "🔧 Sauces Installation"
+    echo "  1) 'docker-install-sauces.sh' - Install Sauces to ~/.bashrc"
+    echo "  2) 'docker-uninstall-sauces.sh' - Uninstall Sauces from ~/.bashrc"
+    echo
+    echo "🔧 Container Configuration"
+    echo "  3) 'docker-config-cpu-only.sh' - Edit the main/cpu configuration file (req'd for all)"
+    echo "  4) 'docker-config-single-gpu-only.sh' - Edit the single gpu configuration file (req'd for gpu)"
+    echo "  5) 'docker-config-multi-gpu-only.sh' - Edit the multi gpu configuration file (req'd for gpu)"
+    echo
+    echo "🔧 Container Install"
+    echo "  6) 'docker-init-cpu-only.sh' - Initialize CPU-Only Container (NVIDIA)"
+    echo "  7) 'docker-init-single-gpu-only.sh' - Initialize Single-GPU Container (NVIDIA)"
+    echo "  8) 'docker-init-multi-gpu-only.sh' - Initialize Multi-GPU Container (NVIDIA)"
     echo
     echo "📦 Container Management"
-    echo "  6) '$SCRIPT_DIR/docker-install-sauces.sh' - Start All Containers"
-    echo "  7) '$SCRIPT_DIR/docker-install-sauces.sh' - Stop All Containers"
-    echo "  8) '$SCRIPT_DIR/docker-install-sauces.sh' - Reinstall Container Dependencies"
-    echo "  9) '$SCRIPT_DIR/docker-install-sauces.sh' - Tail Container logs"
+    echo "  9) 'docker-install-sauces.sh' - Start All Containers"
+    echo " 10) 'docker-install-sauces.sh' - Stop All Containers"
+    echo " 11) 'docker-install-sauces.sh' - Reinstall Container Dependencies"
+    echo " 12) 'docker-install-sauces.sh' - Tail Container logs"
     echo
-    echo "🗑️  Container Uninstall & Destroy"
-    echo " 10) '$SCRIPT_DIR/docker-destroy-cpu-only.sh' - Destroy CPU-Only Container"
-    echo " 11) '$SCRIPT_DIR/docker-destroy-single-gpu-only.sh' - Destroy Single-GPU Container"
-    echo " 12) '$SCRIPT_DIR/docker-destroy-multi-gpu-only.sh' - Destroy Multi-GPU Container"
+    echo "🗑️  Container Uninstall"
+    echo " 13) 'docker-destroy-cpu-only.sh' - Destroy CPU-Only Container"
+    echo " 14) 'docker-destroy-single-gpu-only.sh' - Destroy Single-GPU Container"
+    echo " 15) 'docker-destroy-multi-gpu-only.sh' - Destroy Multi-GPU Container"
     echo
     echo "🧩 Advanced & Maintenance"
     echo
