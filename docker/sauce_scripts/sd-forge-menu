@@ -160,10 +160,10 @@ show_menu() {
     echo "  8) 'docker-init-multi-gpu-only.sh' - Initialize Multi-GPU Container (NVIDIA)"
     echo
     echo "📦 Container Management"
-    echo "  9) 'docker-install-sauces.sh' - Start All Containers"
-    echo " 10) 'docker-install-sauces.sh' - Stop All Containers"
-    echo " 11) 'docker-install-sauces.sh' - Reinstall Container Dependencies"
-    echo " 12) 'docker-install-sauces.sh' - Tail Container logs"
+    echo "  9) 'docker-start-containers.sh' - Start All Containers"
+    echo " 10) 'docker-stop-containers.sh' - Stop All Containers"
+    echo " 11) 'docker-reinstall-container-deps.sh' - Reinstall Container Dependencies"
+    echo " 12) 'docker-tail-container-logs.sh' - Tail Container logs"
     echo
     echo "🗑️  Container Uninstall"
     echo " 13) 'docker-destroy-cpu-only.sh' - Destroy CPU-Only Container"
@@ -189,18 +189,230 @@ while true; do
             break
             ;;
 
-#        "1")
-#            echo
-#            echo "Initializing CPU-Only Container..."
-#            echo "----------------------------------------"
-#            if [[ -x "$SCRIPT_DIR/docker-init-cpu-only.sh" ]]; then
-#                "$SCRIPT_DIR/docker-init-cpu-only.sh"
-#            else
-#                echo "Error: docker-init-cpu-only.sh not found or not executable."
-#            fi
-#            read -p "Press Enter to continue..."
-#            ;;
-   
+        "1")
+            echo
+            echo "Installing sauces to ~/.bashrc..."
+            echo "----------------------------------------"
+            ESCRIPT_NAME=docker-install-sauces.sh
+            ESCRIPT=$SCRIPT_DIR/$ESCRIPT_NAME
+            if [[ -x "$ESCRIPT" ]]; then
+              sleep 1
+              "$ESCRIPT"
+            else
+              echo "Error: $ESCRIPT_NAME not found or not executable."
+            fi
+            read -p "Press Enter to continue..."
+            ;;
+
+        "2")
+            echo
+            echo "Uninstalling sauces from ~/.bashrc..."
+            echo "----------------------------------------"
+            ESCRIPT_NAME=docker-uninstall-sauces.sh
+            ESCRIPT=$SCRIPT_DIR/$ESCRIPT_NAME
+            if [[ -x "$ESCRIPT" ]]; then
+              sleep 1
+              "$ESCRIPT"
+            else
+              echo "Error: $ESCRIPT_NAME not found or not executable."
+            fi
+            read -p "Press Enter to continue..."
+            ;;
+
+        "3")
+            echo
+            echo "Editing main/cpu config (req'd for all)..."
+            echo "----------------------------------------"
+            ESCRIPT_NAME=docker-config-cpu-only.sh
+            ESCRIPT=$SCRIPT_DIR/$ESCRIPT_NAME
+            if [[ -x "$ESCRIPT" ]]; then
+              sleep1
+              "$ESCRIPT"
+            else
+              echo "Error: $ESCRIPT_NAME not found or not executable."
+            fi
+            read -p "Press Enter to continue..."
+            ;;
+
+        "4")
+            echo
+            echo "Editing single gpu only config (req'd for single gpu)..."
+            echo "----------------------------------------"
+            ESCRIPT_NAME=docker-config-single-gpu-only.sh
+            ESCRIPT=$SCRIPT_DIR/$ESCRIPT_NAME
+            if [[ -x "$ESCRIPT" ]]; then
+              sleep1
+              "$ESCRIPT"
+            else
+              echo "Error: $ESCRIPT_NAME not found or not executable."
+            fi
+            read -p "Press Enter to continue..."
+            ;;
+
+        "5")
+            echo
+            echo "Editing single of multi gpu only config (req'd for single of multi gpu)..."
+            echo "----------------------------------------"
+            ESCRIPT_NAME=docker-config-multi-gpu-only.sh
+            ESCRIPT=$SCRIPT_DIR/$ESCRIPT_NAME
+            if [[ -x "$ESCRIPT" ]]; then
+              sleep1
+              "$ESCRIPT"
+            else
+              echo "Error: $ESCRIPT_NAME not found or not executable."
+            fi
+            read -p "Press Enter to continue..."
+            ;;
+
+        "6")
+            echo
+            echo "Creating cpu only container..."
+            echo "----------------------------------------"
+            ESCRIPT_NAME=docker-init-cpu-only.sh
+            ESCRIPT=$SCRIPT_DIR/$ESCRIPT_NAME
+            if [[ -x "$ESCRIPT" ]]; then
+              sleep1
+              "$ESCRIPT"
+            else
+              echo "Error: $ESCRIPT_NAME not found or not executable."
+            fi
+            read -p "Press Enter to continue..."
+            ;;
+
+        "7")
+            echo
+            echo "Creating single gpu only container..."
+            echo "----------------------------------------"
+            ESCRIPT_NAME=docker-init-single-gpu-only.sh
+            ESCRIPT=$SCRIPT_DIR/$ESCRIPT_NAME
+            if [[ -x "$ESCRIPT" ]]; then
+              sleep1
+              "$ESCRIPT"
+            else
+              echo "Error: $ESCRIPT_NAME not found or not executable."
+            fi
+            read -p "Press Enter to continue..."
+            ;;
+
+        "8")
+            echo
+            echo "Creating single of multi gpu only container..."
+            echo "----------------------------------------"
+            ESCRIPT_NAME=docker-init-multi-gpu-only.sh
+            ESCRIPT=$SCRIPT_DIR/$ESCRIPT_NAME
+            if [[ -x "$ESCRIPT" ]]; then
+              sleep1
+              "$ESCRIPT"
+            else
+              echo "Error: $ESCRIPT_NAME not found or not executable."
+            fi
+            read -p "Press Enter to continue..."
+            ;;
+
+        "9")
+            echo
+            echo "Starting container(s)..."
+            echo "----------------------------------------"
+            ESCRIPT_NAME=docker-start-containers.sh
+            ESCRIPT=$SCRIPT_DIR/$ESCRIPT_NAME
+            if [[ -x "$ESCRIPT" ]]; then
+              sleep1
+              "$ESCRIPT"
+            else
+              echo "Error: $ESCRIPT_NAME not found or not executable."
+            fi
+            read -p "Press Enter to continue..."
+            ;;
+
+        "10")
+            echo
+            echo "Stopping container(s)..."
+            echo "----------------------------------------"
+            ESCRIPT_NAME=docker-stop-containers.sh
+            ESCRIPT=$SCRIPT_DIR/$ESCRIPT_NAME
+            if [[ -x "$ESCRIPT" ]]; then
+              sleep1
+              "$ESCRIPT"
+            else
+              echo "Error: $ESCRIPT_NAME not found or not executable."
+            fi
+            read -p "Press Enter to continue..."
+            ;;
+
+        "11")
+            echo
+            echo "Reinstalling container(s) dependencies... (must be running!)"
+            echo "----------------------------------------"
+            ESCRIPT_NAME=docker-reinstall-container-deps.sh
+            ESCRIPT=$SCRIPT_DIR/$ESCRIPT_NAME
+            if [[ -x "$ESCRIPT" ]]; then
+              sleep1
+              "$ESCRIPT"
+            else
+              echo "Error: $ESCRIPT_NAME not found or not executable."
+            fi
+            read -p "Press Enter to continue..."
+            ;;
+
+        "12")
+            echo
+            echo "Tail container logs... (must be running!)"
+            echo "----------------------------------------"
+            ESCRIPT_NAME=docker-tail-container-logs.sh
+            ESCRIPT=$SCRIPT_DIR/$ESCRIPT_NAME
+            if [[ -x "$ESCRIPT" ]]; then
+              sleep1
+              "$ESCRIPT"
+            else
+              echo "Error: $ESCRIPT_NAME not found or not executable."
+            fi
+            read -p "Press Enter to continue..."
+            ;;
+
+        "13")
+            echo
+            echo "Destroying cpu only container... (must be running!)"
+            echo "----------------------------------------"
+            ESCRIPT_NAME=docker-destroy-cpu-only.sh
+            ESCRIPT=$SCRIPT_DIR/$ESCRIPT_NAME
+            if [[ -x "$ESCRIPT" ]]; then
+              sleep1
+              "$ESCRIPT"
+            else
+              echo "Error: $ESCRIPT_NAME not found or not executable."
+            fi
+            read -p "Press Enter to continue..."
+            ;;
+
+        "14")
+            echo
+            echo "Destroying single gpu only container... (must be running!)"
+            echo "----------------------------------------"
+            ESCRIPT_NAME=docker-destroy-single-gpu-only.sh
+            ESCRIPT=$SCRIPT_DIR/$ESCRIPT_NAME
+            if [[ -x "$ESCRIPT" ]]; then
+              sleep1
+              "$ESCRIPT"
+            else
+              echo "Error: $ESCRIPT_NAME not found or not executable."
+            fi
+            read -p "Press Enter to continue..."
+            ;;
+
+        "15")
+            echo
+            echo "Destroying single of multi gpu only container... (must be running!)"
+            echo "----------------------------------------"
+            ESCRIPT_NAME=docker-destroy-multi-gpu-only.sh
+            ESCRIPT=$SCRIPT_DIR/$ESCRIPT_NAME
+            if [[ -x "$ESCRIPT" ]]; then
+              sleep1
+              "$ESCRIPT"
+            else
+              echo "Error: $ESCRIPT_NAME not found or not executable."
+            fi
+            read -p "Press Enter to continue..."
+            ;;
 
           *)
             echo
