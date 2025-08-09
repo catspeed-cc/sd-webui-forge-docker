@@ -217,7 +217,6 @@ while true; do
             else
               echo "Error: $ESCRIPT_NAME not found or not executable."
             fi
-            read -p "Press Enter to continue..."
             ;;
 
         "4")
@@ -232,7 +231,6 @@ while true; do
             else
               echo "Error: $ESCRIPT_NAME not found or not executable."
             fi
-            read -p "Press Enter to continue..."
             ;;
 
         "5")
@@ -247,7 +245,6 @@ while true; do
             else
               echo "Error: $ESCRIPT_NAME not found or not executable."
             fi
-            read -p "Press Enter to continue..."
             ;;
 
         "6")
@@ -352,7 +349,6 @@ while true; do
             else
               echo "Error: $ESCRIPT_NAME not found or not executable."
             fi
-            read -p "Press Enter to continue..."
             ;;
 
         "13")

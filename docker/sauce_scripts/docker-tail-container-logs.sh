@@ -117,14 +117,7 @@ DOCKER_PSA_LIST=$(docker ps -a --format '{{.Names}}' | grep "$DOCKER_SERVICE_NAM
 
 # Loop through each container
 while read container; do
-  echo "Stopping docker container: $container"
-  
-  # If this is a custom/cutdown install, start only one container
-  if [[ "$IS_CUSTOM_OR_CUTDOWN_INSTALL" == "true" ]]; then
-    echo "Custom/cutdown install detected: started only one container."
-    docker tail -f $container
-    break
-  else
-    docker tail -f $container    
-  fi
+  echo "Follow logs for docker container: $container"
+  docker logs -f $container
+  break
 done <<< "$DOCKER_PSA_LIST"
