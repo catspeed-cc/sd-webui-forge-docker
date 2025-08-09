@@ -159,7 +159,8 @@ Read the rest of this section, then jump to either [CPU Only](https://github.com
 _**Important:**_ All Docker support for now goes to [catspeed-cc issue tickets](https://github.com/catspeed-cc/sd-webui-forge-docker/issues) until and _only if_ this ever gets merged upstream.
 
 ### CPU Only (untested)
-
+Below commands & more exist inside the menu! `./sdf-docker-menu.sh` from project root or `sdf-menu` after installed to ~/.bashrc from any subdirectory of project root
+- Edit & configure `docker-compose.cpu.yaml`
 - `./docker-init-cpu-only.sh` "installs" and starts the docker container
 - After install, even while running you can copy models to models/ and then after run stop/start for quick reload
 - `./docker-stop-containers.sh` "stops" container(s)
@@ -169,7 +170,7 @@ _**Important:**_ All Docker support for now goes to [catspeed-cc issue tickets](
 - You can uninstall/reinstall to debug / start with fresh image (image is already stored locally)
 
 ### Single GPU Only (untested, should work)
-
+Below commands & more exist inside the menu! `./sdf-docker-menu.sh` from project root or `sdf-menu` after installed to ~/.bashrc from any subdirectory of project root
 - Edit & configure `docker-compose.cpu.yaml`
 - Edit & configure `docker-compose.single-gpu.nvidia.yaml`
 - `./docker-init-single-gpu-only.sh` "installs" and starts the docker container
@@ -181,7 +182,7 @@ _**Important:**_ All Docker support for now goes to [catspeed-cc issue tickets](
 - You can uninstall/reinstall to debug / start with fresh image (image is already stored locally)
 
 ### Single of Multiple GPU Only (tested)
-
+Below commands & more exist inside the menu! `./sdf-docker-menu.sh` from project root or `sdf-menu` after installed to ~/.bashrc from any subdirectory of project root
 - Edit & configure `docker-compose.cpu.yaml`
 - Edit & configure `docker-compose.multi-gpu.nvidia.yaml`
 - `./docker-init-multi-gpu-only.sh` "installs" and starts the docker container
@@ -200,16 +201,19 @@ Let's say you have another project - let's pick localAGI as an example. You can 
 
 - Open the localAGI (or other project) directory
 - Download the sauces archive for your version from https://github.com/catspeed-cc/sd-webui-forge-docker/tree/master/sauces
-- Extract the sauces into your localAGI (or other) project directory `tar zxvf v1.0.0-sauce.tar.gz`
+- Extract the sauces into your localAGI (or other) project directory `tar zxvf v1.0.0-sauce.tar.gz -C /root/sd-forge` (change the directory to the project directory)
 - Edit & configure `docker-compose.combined.nvidia.yaml` (the menu can't help you, you must manually edit)
 - Copy the lines for the service from `docker-compose.combined.nvidia.yaml`
 - Paste the lines underneath one of the other services inside the localAGI (or other project) docker-compose.yaml
-- All sauce helper scripts and docker-compose.yaml files should now be in your project :)
+- The menu, all sauce helper scripts and docker-compose.yaml files should now be in your project :)
+- You can use the menu `./sdf-docker-menu.sh` from project root or `sdf-menu` after installed to ~/.bashrc from any subdirectory of project root to install/start container
 - Use the init/destroy scripts just like you would on a regular docker installation (as outlined above)
 - Docker helper start/stop scripts will speed up startup when simply stopping or starting the container quickly (ex. to load new models)
 - IF you need to destroy the container and recreate it for debugging/troubleshooting, then use the respective destroy script followed by `docker compose down` in the localAGI (or other project)
 - Sauce scripts ONLY will init/destroy/start/stop sd-forge containers
 - IF you chose to rename the container, just make sure "sd-forge" exists in the name, and the sauce scripts should still work :)
+- If you want to run commands manually without menu after scripts are installed to ~/.bashrc with menu you can use the command from any directory within the project (Ex. `docker-init-single-gpu-only.sh`)
+- You can type `docker-` and press tab to get a list of all helper scripts
 
 ## Sauces Archives & Start-Stop Docker Helper Scripts:
 The sauces archives are basically all the docker compose files, and bash scripts required (including menu) to manage your docker installation and make it easier.
