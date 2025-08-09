@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# docker-install-sauces.sh: add sauces to path & ~/.bashrc
+# sd-forge-menu.sh
 
-# this installer and the `secretsauce.sh` script require this to function correctly. others do not.
+# required to function correctly
 set -euo pipefail  # Exit on error, undefined var, pipe failure
 
 # STILL needed: this is a fallback
@@ -117,13 +117,13 @@ fi
 
 echo "#"
 echo "##"
-echo "## sd-forge-webui-docker - sd-forge-menu script initiated"
+echo "## sd-forge-menu.sh - sd-forge-menu script initiated"
 echo "##"
 echo "## Providing menu to user for docker management"
 echo "##"
 echo "#"
 
-sleep 3
+sleep 1
 clear
 reset
 
@@ -140,9 +140,6 @@ show_menu() {
     echo "===================================="
     echo "    SD-Forge Docker Management Menu "
     echo "===================================="
-    echo "Pick option. If nano opens, edit then ctrl + x, save, exit"
-    echo "             If it scrolls continuous (eg. tail logs), ctrl + c to exit"
-    echo
     echo "Please refer to README.md for installation and use :)"
     echo
     echo "🔧 Sauces Installation"
