@@ -119,8 +119,8 @@ if [[ ":$PATH:" == *":/usr/local/cuda/bin"* ]]; then
     export NEW_PATH_EXPANDED="${PATH}:/usr/local/cuda/bin"
 fi
 
-# Ether way we add ADD_T__PATH
-export NEW_PATH="${NEW_PATH}:${GIT_ROOT}/docker/sauce_scripts/"
+# Ether way we add add NEW_PATH to PATH
+export NEW_PATH="${GIT_ROOT}/docker/sauce_scripts/"
 export NEW_PATH="${PATH}:${NEW_PATH}:${GIT_ROOT}/docker/sauce_scripts/"
 
 if [ "$FDEBUG}" = "true" ]; then
