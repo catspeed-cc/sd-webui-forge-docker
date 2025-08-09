@@ -1,23 +1,19 @@
 FROM nvidia/cuda:12.8.1-base-ubuntu22.04
 
-# we do not want interactive anything
+# we do not want interactive anything during build
 ENV DEBIAN_FRONTEND=noninteractive
 
 # dummy to hold timestamp during build to bust the cache
-# the lines probably were not cached, but we leave for debug anyways
-# pretty much nothing caches and the build takes long
-# especially the "exporting image" and "exporting layers" steps.
+# add this to lines that are being cached to ensure it is not cached during build
 ARG DUMMY=
 
-# Install system deps
+# Install system deps / upgrade system
 RUN apt-get update && apt-get install -y \
-    git wget nano curl htop gcc g++ libgl1 libglib2.0-0 python3 python3.10-venv python3-dev libcudnn8=8.9.2.26-1+cuda12.1 libcudnn8-dev=8.9.2.26-1+cuda12.1 && \
-    apt autoremove -y && \
-    apt clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# Upgrade system jeez
-RUN apt-get upgrade -y && apt-get dist-upgrade -y && \
+    git wget nano curl htop gcc g++ net-tools \
+    libgl1 libglib2.0-0 \
+    libcudnn8=8.9.2.26-1+cuda12.1 libcudnn8-dev=8.9.2.26-1+cuda12.1 \
+    python3 python3.10-venv python3-dev && \
+    apt-get upgrade -y && apt-get dist-upgrade -y && \
     apt autoremove -y && \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
@@ -72,12 +68,12 @@ WORKDIR /app
 RUN git clone https://github.com/lllyasviel/stable-diffusion-webui-forge webui
 
 # copy the docker initialization script
-COPY webui-docker.sh /app/webui-docker.sh
+COPY ./docker/sauce_scripts_baked_into_docker_image/webui-docker.sh /app/webui-docker.sh
 RUN chmod +x /app/webui-docker.sh
 
 # copy the sauces
 RUN mkdir /app/sauces
-COPY secretsauce.sh /app/sauces
+COPY ./docker/sauce_scripts_baked_into_docker_image/secretsauce.sh /app/sauces/secretsauce.sh
 RUN chmod +x /app/sauces/secretsauce.sh
 # end user calls this script via `docker-reinstall-container-deps.sh`
 
