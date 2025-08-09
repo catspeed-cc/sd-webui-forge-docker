@@ -66,6 +66,12 @@ You can download previous versions [here](https://github.com/lllyasviel/stable-d
 
 # Docker Installation
 
+### Support
+
+- Docker support is only provided for the `latest` and `v*.*.*` tags
+- You may obtain docker related support via [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
+- You may obtain general sd-forge-webui support via [lllyasviel issue ticket](https://github.com/lllyasviel/stable-diffusion-webui-forge/issues)
+
 ### IMPORTANT cuda notice for v1.1.0 & onwards:
 
 You should be able to use any cuda 12.x version (12.1->12.8) as cuda is backwards and forwards compatible at least within the major version. If you use cuda 12.8 you will need driver 535.13504.05 or higher
@@ -98,7 +104,6 @@ sudo apt-get install -y cuda-toolkit-12-8
 - `apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
 - `apt install -y nano`
 - Test the installation worked with `docker compose version` you should get something like `Docker Compose version v2.24.5`
-- If trouble submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
 Models can be put in `sd-webui-forge-docker/models/` directory, organized by type - they will be mounted to the container
 - If you copy models in while container running and after first start, after model copy is complete you can `docker-stop-containers.sh` and `docker-start-containers.sh` and they will be loaded quickly
@@ -110,7 +115,7 @@ Due to the nature of Docker, an image running at shutdown _should_ start up agai
 These are the current tags:
 ```
 catspeedcc/sd-webui-forge-docker:latest - currently points to v1.1.2
-catspeedcc/sd-webui-forge-docker:v1.1.2 - Menu helper script, cleaned project root further
+catspeedcc/sd-webui-forge-docker:v1.1.2 - Menu helper script, cleaned project root more
 catspeedcc/sd-webui-forge-docker:v1.1.1 - Minor update, cleaned up project root
 catspeedcc/sd-webui-forge-docker:v1.1.0 - Important upgrades: smaller docker image, cuda 12.1->12.8 (see README.md, CURRENT 'LATEST')
 catspeedcc/sd-webui-forge-docker:v1.0.0 - latest stable version (first release)
