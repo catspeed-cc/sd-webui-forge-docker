@@ -61,18 +61,14 @@ echo "#"
 # Source the shared functions & configuration
 source ${GIT_ROOT}/docker/lib/commonlib.sh
 
-ADD_TO_PATH=${GIT_ROOT}/docker/sauce_scripts/
+export ADD_TO_PATH=${GIT_ROOT}/docker/sauce_scripts/
+
+export NEW_PATH="\${PATH}:/usr/local/cuda/bin:${ADD_TO_PATH}"
+export NEW_PATH_EXPANDED="${PATH}:/usr/local/cuda/bin:${ADD_TO_PATH}"
 
 if [ "$FDEBUG}" = "true" ]; then
   echo "[DEBUG] ADD_TO_PATH: [${ADD_TO_PATH}]"
   echo "Current path: [${PATH}]"
-fi
-
-export NEW_PATH="\${PATH}:/usr/local/cuda/bin:${ADD_TO_PATH}"
-export NEW_PATH_EXPANDED="${PATH}:${ADD_TO_PATH}"
-
-if [ "$FDEBUG}" = "true" ]; then
-  echo "Final path to add: [${NEW_PATH}]"
 fi
 
 # Check if already installed
@@ -98,6 +94,8 @@ echo ""
 echo "This will write the new PATH and also add export to .bashrc to make it persist across shells and reboots. 'Y' to continue 'n' to exit."
 echo ""
 confirm_continue
+
+
 
 # Function to update FDEBUG in target files
 update_fdebug() {
@@ -136,12 +134,14 @@ while true; do
   fi
 done
 
+# echo the path to the .bashrc
 {
   echo "# managed by sd-forge-webui-docker BEGIN"
   echo "export PATH=${NEW_PATH}"
   echo "# managed by sd-forge-webui-docker END"
 } | tee -a ~/.bashrc > /dev/null
 
+# this is why we need the fully expanded path, to set the PATH :)
 export PATH=${NEW_PATH_EXPANDED}
 
 # Configure the GIT_ROOT (important, required)
