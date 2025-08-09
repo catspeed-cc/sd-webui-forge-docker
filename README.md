@@ -149,7 +149,7 @@ Optionally you may also run the scripts directly from any subdirectory of the pr
 
 You will notice the main configurations are editable via this menu (using nano) - this script is compatible with SSH.
 
-Not yet possible to edit the Custom/Cut-down install config (`docker-compose.combined.yaml`) that must be done manually as you must configure it, then copy it to your docker-compose.yaml
+It is not yet possible to edit the Custom/Cut-down install config (`docker-compose.combined.yaml`) with the menu - that must be done manually as you must configure it, then copy it to your docker-compose.yaml
 
 ## Installation from GitHub
 
