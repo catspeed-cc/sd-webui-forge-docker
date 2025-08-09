@@ -68,13 +68,13 @@ You can download previous versions [here](https://github.com/lllyasviel/stable-d
 
 This is a dockerized version of lllyasviel/stable-diffusion-webui-forge. It fetches lllyasviel/stable-diffusion-webui-forge source inside the container.
 
-### Support
+## Support
 
 - Docker support is only provided for the `latest` and `v*.*.*` tags (Ex. `v1.1.2`)
 - You may obtain docker related support via [catspeed-cc/sd-webui-forge-docker issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 - You may obtain general sd-forge-webui support via [lllyasviel/stable-diffusion-webui-forge issue ticket](https://github.com/lllyasviel/stable-diffusion-webui-forge/issues)
 
-### IMPORTANT cuda notice for v1.1.0 & onwards:
+## IMPORTANT cuda notice for v1.1.0 & onwards:
 
 You should be able to use any cuda 12.x version (12.1->12.8) as cuda is backwards and forwards compatible at least within the major version. If you use cuda 12.8 you will need driver 535.13504.05 or higher
 
@@ -102,7 +102,7 @@ sudo apt-get update && \
 sudo apt-get install -y cuda-toolkit-12-8
 ```
 
-### Install Docker & nano:
+## Install Docker & nano:
 - `apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
 - `apt install -y nano`
 - Test the installation worked with `docker compose version` you should get something like `Docker Compose version v2.24.5`
@@ -139,7 +139,7 @@ There are a few main config files:
 
 As far as I know there is no way to combine multiple GPU's on this one same task (image generation) but you can dedicate one of many GPU's to image generation and then use the other GPU's for other tasks (chat, development, etc)
 
-# Installation from GitHub
+## Installation from GitHub
 
 - Clone the catspeed-cc repository `git clone https://github.com/catspeed-cc/sd-webui-forge-docker.git`
 - Run the menu script `./sdf-docker-menu.sh` and select option 1 (Install Sauces to ~/.bashrc)
@@ -184,7 +184,7 @@ _**Important:**_ All Docker support for now goes to [catspeed-cc issue tickets](
 - `./docker-destroy-multi-gpu-only.sh` "uninstalls" and stops the docker container
 - You can uninstall/reinstall to debug / start with fresh image (image is already stored locally)
 
-# Custom / Cut-down Installation w/ sauces archive
+## Custom / Cut-down Installation w/ sauces archive
 
 ### Customize a docker-compose.yaml from another project
 
@@ -202,8 +202,6 @@ Let's say you have another project - let's pick localAGI as an example. You can 
 - IF you need to destroy the container and recreate it for debugging/troubleshooting, then use the respective destroy script followed by `docker compose down` in the localAGI (or other project)
 - Sauce scripts ONLY will init/destroy/start/stop sd-forge containers
 - IF you chose to rename the container, just make sure "sd-forge" exists in the name, and the sauce scripts should still work :)
-
-# General Docker Information
 
 ## v1.1.2 Menu script
 
@@ -227,12 +225,6 @@ The sauces archives are basically all the docker compose files, and bash scripts
 
 - None as of yet
 - please submit suggestions to https://github.com/catspeed-cc/sd-webui-forge-docker/issues
-
-## Docker Support Warning:
-ONLY post docker related issue tickets on this repository's issue ticket system. Any issues with the main project are still to be opened in the main repository.
-
-- ALL docker related issues shall be posted here: https://github.com/catspeed-cc/sd-webui-forge-docker/issues
-- ALL `stable-diffusion-webui-forge` related issues shall be posted here: https://github.com/lllyasviel/stable-diffusion-webui-forge/issues
 
 ## v1.1.0 Startup Time Warning:
 
