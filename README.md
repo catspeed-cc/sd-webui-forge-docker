@@ -143,7 +143,7 @@ As far as I know there is no way to combine multiple GPU's on this one same task
 
 Included in v1.1.2 is the sdf-docker-menu! To use it for the first time you must type `./sdf-docker-menu.sh` from the root, and install the sauces to ~/.bashrc (option1)
 
-Afterwards you can call the menu with `sdf-menu`. Each time you complete a command it loops back to the main menu, where you can run a different command or quit.
+Afterwards you can call the menu with `sdf-menu` from any subdirectory of the project root. Each time you complete a command it loops back to the main menu, where you can run a different command or quit.
 
 You will notice the main configurations are editable via this menu (using nano) - this script is compatible with SSH.
 
