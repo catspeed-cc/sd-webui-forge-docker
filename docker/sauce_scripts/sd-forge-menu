@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# secretsauce.sh - a script that is copied to the container to be executed via "docker exec" by end user to reinstall container(s) dependencies
+# docker-install-sauces.sh: add sauces to path & ~/.bashrc
 
 # this installer and the `secretsauce.sh` script require this to function correctly. others do not.
 set -euo pipefail  # Exit on error, undefined var, pipe failure
@@ -117,29 +117,112 @@ fi
 
 echo "#"
 echo "##"
-echo "## sd-forge-webui-docker secretsauce script"
+echo "## sd-forge-webui-docker sd-forge-menu.sh script initiated"
 echo "##"
-echo "## reinstalling all possible dependencies while container is running"
-echo "## please grab some coffee, this will take some time on first run"
+echo "## Providing menu to user for docker management"
 echo "##"
 echo "#"
 
-echo ""
-# Debug: show paths
-echo "📘 Script name: $SCRIPT_NAME"
-echo "📁 Absolute script path: $ABS_SCRIPT_PATH"
-echo "🔗 Relative script path: $REL_SCRIPT_PATH"
-echo "📁 Absolute dir: $ABS_SCRIPT_DIR"
-echo "🔗 Relative dir: $REL_SCRIPT_DIR"
-echo "💻 Running from: $PWD"
-echo ""
-echo ""
+sleep 3
+clear
+reset
 
-echo "🚀 Starting Stable Diffusion Forge..." >&2
-echo "🔧 Args: $*" >&2
+# Navigate to the docker directory
+cd "${GIT_ROOT}/docker" || { echo "Failed to enter docker directory"; exit 1; }
 
-# install dependencies
-re_install_deps "true"
+SCRIPT_DIR="${GIT_ROOT}/docker/sauce_scripts"
 
-# change back to webui dir (good practice)
-cd /app/webui
+# Main menu function
+show_menu() {
+    clear
+    echo "===================================="
+    echo "    SD-Forge Docker Management Menu "
+    echo "===================================="
+    echo
+    echo "🔧 Sauces Initialization & Setup"
+    echo "  1) '$SCRIPT_DIR/docker-install-sauces.sh' - Install Sauces to ~/.bashrc"
+    echo "  2) '$SCRIPT_DIR/docker-uninstall-sauces.sh' - Uninstall Sauces from ~/.bashrc"
+    echo
+    echo "🔧 Container Install & Setup"
+    echo "  3) '$SCRIPT_DIR/docker-init-cpu-only.sh' - Initialize CPU-Only Container (NVIDIA)"
+    echo "  4) '$SCRIPT_DIR/docker-init-single-gpu-only.sh' - Initialize Single-GPU Container (NVIDIA)"
+    echo "  5) '$SCRIPT_DIR/docker-init-multi-gpu-only.sh' - Initialize Multi-GPU Container (NVIDIA)"
+    echo
+    echo "📦 Container Management"
+    echo "  6) '$SCRIPT_DIR/docker-install-sauces.sh' - Start All Containers"
+    echo "  7) '$SCRIPT_DIR/docker-install-sauces.sh' - Stop All Containers"
+    echo "  8) '$SCRIPT_DIR/docker-install-sauces.sh' - Reinstall Container Dependencies"
+    echo "  9) '$SCRIPT_DIR/docker-install-sauces.sh' - Tail Container logs"
+    echo
+    echo "🗑️  Container Uninstall & Destroy"
+    echo " 10) '$SCRIPT_DIR/docker-destroy-cpu-only.sh' - Destroy CPU-Only Container"
+    echo " 11) '$SCRIPT_DIR/docker-destroy-single-gpu-only.sh' - Destroy Single-GPU Container"
+    echo " 12) '$SCRIPT_DIR/docker-destroy-multi-gpu-only.sh' - Destroy Multi-GPU Container"
+    echo
+    echo "🧩 Advanced & Maintenance"
+    echo
+    echo "  Q) Quit"
+    echo
+    printf " Choose an option: "
+}
+
+# Main loop
+while true; do
+    show_menu
+    read -r choice
+
+    case "${choice,,}" in
+        "q")
+            echo
+            echo "Exiting. Goodbye!"
+            break
+            ;;
+
+#        "1")
+#            echo
+#            echo "Initializing CPU-Only Container..."
+#            echo "----------------------------------------"
+#            if [[ -x "$SCRIPT_DIR/docker-init-cpu-only.sh" ]]; then
+#                "$SCRIPT_DIR/docker-init-cpu-only.sh"
+#            else
+#                echo "Error: docker-init-cpu-only.sh not found or not executable."
+#            fi
+#            read -p "Press Enter to continue..."
+#            ;;
+   
+
+          *)
+            echo
+            echo "Invalid option: '$choice'. Please select a valid number or 'Q' to quit."
+            read -p "Press Enter to continue..."
+            ;;
+            
+    esac
+  
+done
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
