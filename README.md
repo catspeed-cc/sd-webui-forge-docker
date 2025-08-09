@@ -139,6 +139,14 @@ There are a few main config files:
 
 As far as I know there is no way to combine multiple GPU's on this one same task (image generation) but you can dedicate one of many GPU's to image generation and then use the other GPU's for other tasks (chat, development, etc)
 
+## v1.1.2 Menu script
+
+Included in v1.1.2 is the sdf-docker-menu! To use it for the first time you must type `./sdf-docker-menu.sh` from the root, and install the sauces to ~/.bashrc (option1)
+
+Afterwards you can call the menu with `sdf-menu`. Each time you complete a command it loops back to the main menu, where you can run a different command or quit.
+
+You will notice the main configurations are editable via this menu (using nano) - this script is compatible with SSH.
+
 ## Installation from GitHub
 
 - Clone the catspeed-cc repository `git clone https://github.com/catspeed-cc/sd-webui-forge-docker.git`
@@ -202,14 +210,6 @@ Let's say you have another project - let's pick localAGI as an example. You can 
 - IF you need to destroy the container and recreate it for debugging/troubleshooting, then use the respective destroy script followed by `docker compose down` in the localAGI (or other project)
 - Sauce scripts ONLY will init/destroy/start/stop sd-forge containers
 - IF you chose to rename the container, just make sure "sd-forge" exists in the name, and the sauce scripts should still work :)
-
-## v1.1.2 Menu script
-
-Included in v1.1.2 is the sdf-docker-menu! To use it for the first time you must type `./sdf-docker-menu.sh` from the root, and install the sauces to ~/.bashrc (option1)
-
-Afterwards you can call the menu with `sdf-menu`. Each time you complete a command it loops back to the main menu, where you can run a different command or quit.
-
-You will notice the main configurations are editable via this menu (using nano) - this script is compatible with SSH.
 
 ## Sauces Archives & Start-Stop Docker Helper Scripts:
 The sauces archives are basically all the docker compose files, and bash scripts required (including menu) to manage your docker installation and make it easier.
