@@ -8,7 +8,7 @@ services:
     #build: .
     # use the 'latest' image below - if this is 'bleeding' please excuse my
     # mistake and please change it back to 'latest' or a version 'v*.*.*' for now :)
-    image: catspeedcc/sd-webui-forge-docker:bleeding
+    image: catspeedcc/sd-webui-forge-docker:latest
     # ABOVE image should be on 'latest' or a version 'v*.*.*'
     environment:
       # # SUPER important this variable is set to the service name above (in this case sd-forge)
