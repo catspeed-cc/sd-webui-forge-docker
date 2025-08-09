@@ -61,14 +61,24 @@ echo "#"
 # Source the shared functions & configuration
 source ${GIT_ROOT}/docker/lib/commonlib.sh
 
-export ADD_TO_PATH=${GIT_ROOT}/docker/sauce_scripts/
+# determine if cuda exists in the path - if not add it
+if [[ ":$PATH:" == *":/usr/local/cuda/bin:"* ]]; then
+    echo "CUDA path is already in PATH"
+    export NEW_PATH="\${PATH}:/usr/local/cuda/bin"
+    export NEW_PATH_EXPANDED="${PATH}:/usr/local/cuda/bin"
+else
+    echo "CUDA path is not in PATH"
+    # Optionally, add it: export PATH="$PATH:/usr/local/cuda/bin"
+fi
 
-export NEW_PATH="\${PATH}:/usr/local/cuda/bin:${ADD_TO_PATH}"
-export NEW_PATH_EXPANDED="${PATH}:/usr/local/cuda/bin:${ADD_TO_PATH}"
+# Ether way we add ADD_T__PATH
+export NEW_PATH="${NEW_PATH}:${GIT_ROOT}/docker/sauce_scripts/"
+export NEW_PATH="${PATH}:${NEW_PATH}:${GIT_ROOT}/docker/sauce_scripts/"
 
 if [ "$FDEBUG}" = "true" ]; then
-  echo "[DEBUG] ADD_TO_PATH: [${ADD_TO_PATH}]"
   echo "Current path: [${PATH}]"
+  echo "New path: [${NEW_PATH}]"
+  echo "New path expanded: [${NEW_PATH_EXPANDED}]"
 fi
 
 # Check if already installed
