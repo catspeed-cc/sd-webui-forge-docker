@@ -101,6 +101,8 @@ if [[ "$PROJECT_ROOT" = "error" || "$PROJECT_ROOT" = "error" ]]; then
   exit 1
 fi
 
+source ${GIT_ROOT}/docker/lib/commonlib.sh
+
 echo "#"
 echo "##"
 echo "## sd-forge-webui-docker docker-uninstall-sauces.sh script initiated"

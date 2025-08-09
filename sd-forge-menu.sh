@@ -102,6 +102,8 @@ if [[ "$PROJECT_ROOT" = "error" || "$PROJECT_ROOT" = "error" ]]; then
   exit 1
 fi
 
+source ${GIT_ROOT}/docker/lib/commonlib.sh
+
 echo "Executing menu script ..."
 ${GIT_ROOT}/docker/sauce_scripts/sd-forge-menu
 
