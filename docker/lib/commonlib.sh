@@ -69,19 +69,20 @@ check_cuda_and_install_pytorch() {
     export CUDA_VERSION="12.8"
     export IS_CUDA_INSTALLED="false"
 
-    if [ -x "/usr/local/cuda/bin/nvcc" ]; then
-      CUDA_VERSION=$(/usr/local/cuda/bin/nvcc --version | grep -o 'release [0-9.]*' | cut -d' ' -f2)
-      if [[ "$CUDA_VERSION" == "12.8" ]]; then
-        export CUDA_VERSION IS_CUDA_INSTALLED="true"
-        echo "✅ CUDA 12.8 confirmed."
-      else
-        echo "❌ Found CUDA $CUDA_VERSION, but 12.8 required."
-        export IS_CUDA_INSTALLED="false"
-      fi
-    else
-      echo "❌ nvcc not found. Please install CUDA 12.8 and ensure /usr/local/cuda/bin is in PATH."
-      export IS_CUDA_INSTALLED="false"
-    fi
+    # commented until fixed in future version - not required for working application but nice to have
+    #if [ -x "/usr/local/cuda/bin/nvcc" ]; then
+    #  CUDA_VERSION=$(/usr/local/cuda/bin/nvcc --version | grep -o 'release [0-9.]*' | cut -d' ' -f2)
+    #  if [[ "$CUDA_VERSION" == "12.8" ]]; then
+    #    export CUDA_VERSION IS_CUDA_INSTALLED="true"
+    #    echo "✅ CUDA 12.8 confirmed."
+    #  else
+    #    echo "❌ Found CUDA $CUDA_VERSION, but 12.8 required."
+    #    export IS_CUDA_INSTALLED="false"
+    #  fi
+    #else
+    #  echo "❌ nvcc not found. Please install CUDA 12.8 and ensure /usr/local/cuda/bin is in PATH."
+    #  export IS_CUDA_INSTALLED="false"
+    #fi
 
     echo "Using CUDA version: $CUDA_VERSION"
 
