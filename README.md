@@ -70,7 +70,7 @@ You can download previous versions [here](https://github.com/lllyasviel/stable-d
 
 You should be able to use any cuda 12.x version (12.1->12.8) as cuda is backwards and forwards compatible at least within the major version. If you use cuda 12.8 you will need driver 535.13504.05 or higher
 
-Install cuda 12.8 on Debian 11
+### Install cuda 12.8 on Debian 11
 ```
 sudo apt-get remove --purge '^cuda.*' '^nvidia-cuda.*' && \
 sudo apt-get autoremove -y && \
@@ -82,7 +82,7 @@ sudo apt-get update && \
 sudo apt-get install -y cuda-toolkit-12-8
 ```
 
-Install cuda 12.8 on Ubuntu 22.04
+### Install cuda 12.8 on Ubuntu 22.04
 ```
 sudo apt-get remove --purge '^cuda.*' '^nvidia-cuda.*' && \
 sudo apt-get autoremove -y && \
@@ -94,7 +94,7 @@ sudo apt-get update && \
 sudo apt-get install -y cuda-toolkit-12-8
 ```
 
-Install Docker & nano:
+### Install Docker & nano:
 - `apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
 - `apt install -y nano`
 - Test the installation worked with `docker compose version` you should get something like `Docker Compose version v2.24.5`
