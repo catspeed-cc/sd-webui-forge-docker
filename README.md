@@ -246,16 +246,6 @@ The developers know their own project better than I - and I am a noob. They can 
 
 Do not worry, I have _not_ loaded it with 1000's of models :P
 
-## What do you use an image generating AI for?
-
-Currently I use it for nothing but the plan is to use it for readme images if I ever need them, or logos and header images.
-
-In my current setup this is auxiliary to the main task: AI development - "VIBE coding" as the kids call it, man I am getting old... - I plan to use what I learned from this, to segregate my GPU's in my host system, so that each container only accesses one GPU, so I can divide them up. I plan to use LocalAGI/LocalAI federated nodes & codellama13B and Mixtrial 8x7B MOE models which are fine tuned for development, and when my Threadripper build & 2 x SXM4 A100 GPU's arrive, I will get another model to run :)
-
-Not only do I get a docker image, YOU get a docker image too - I feel like Oprah, look under your chair for docker images :P
-
-On top of all that it helps me in my future LocalAGI/LocalAI endeavours! :)
-
 ## Docker Image Build Warning: (unsupported)
 
 These are mostly for my reference. If you wish to build the image they are here for you also. Just keep in mind this is unsupported and you are on your own.
