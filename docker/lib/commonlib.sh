@@ -320,7 +320,7 @@ export COMPOSE_PROJECT_NAME=sd-forge
 # SET MANUAL PATHS FIRST (AFTER INIT)!
 export DOCKER_COMPOSE_DIR=${GIT_ROOT}/docker/compose_files
 export SAUCE_DIR=${GIT_ROOT}/docker/sauce_scripts
-export SAUCE_DL_DIR=${GIT_ROOT}/sauce_dl
+export SAUCE_DL_DIR=${GIT_ROOT}/docker/sauce_dl
 export DOCKER_SAUCE_DIR=${GIT_ROOT}/docker/sauce_scripts_baked_into_docker_image
 export WORK_DIR=${GIT_ROOT}/work_dir_tmp
 export IS_CUSTOM_OR_CUTDOWN_INSTALL=$(grep "^[[:space:]]*- IS_CUSTOM_OR_CUTDOWN_INSTALL=" ./docker/compose_files/docker-compose.cpu.yaml | cut -d '=' -f2)
