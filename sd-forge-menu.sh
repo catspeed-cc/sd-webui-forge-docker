@@ -5,9 +5,10 @@
 # this installer and the `secretsauce.sh` script require this to function correctly. others do not.
 set -euo pipefail  # Exit on error, undefined var, pipe failure
 
-# Function to find the Git root directory, ascending up to 4 levels
+# STILL needed: this is a fallback
+# Function to find the Git root directory, ascending up to 6 levels
 # Required for source line to be accurate and work from all locations
-find_root() {
+find_git_root() {
     local current_dir="$(pwd)"
     local max_levels=6
     local level=0
@@ -27,25 +28,92 @@ find_root() {
         ((level++))
     done
 
-    # to be compatible with slim docker-compose/sauce only installs
-    echo ""
-    echo "Warn: falling back to non-git installation default"
-    echo "      this is okay if you did a minimal/slim/custom install"
-    echo ""
-
-    # Fallback: script directory or known path
-    local fallback="${PWD}"  # or $(dirname "$0")/..
-    if [ -d "$fallback" ]; then
-      echo "$fallback"
-      return 0  # ← Success!
-    fi
-
-    # if we reach here we failed - even the fallback failed somehow O_o
+    echo "Error: .git directory not found within $max_levels parent directories." >&2
     return 1
 }
 
-# Find the Git root
-export GIT_ROOT=$(find_root)
+find_project_root() {
+
+  PROJECT_ROOT=""
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+  # Check if we are inside the 'docker' directory (current path contains /docker)
+  if [[ "$PWD" == *"/docker" || "$PWD" == *"/docker/"* ]]; then
+    if [[ -d "./sauce_scripts" && \
+          -d "./compose_files" && \
+          -d "./sauce_scripts_baked_into_docker_image" && \
+          -f "./compose_files/docker-compose.yaml" ]]; then
+        # Confirmed: we are in the correct docker/ directory
+        echo "✅ Running inside valid docker/ directory."
+        PROJECT_ROOT="$(dirname "$PWD")"
+    else
+        echo "❌ Directory structure incomplete: not a valid SD-Forge docker/ directory." >&2
+        exit 1
+    fi
+
+  # Last resort: check if we can find commonlib.sh relative to current location
+  elif [[ -f "./docker/lib/commonlib.sh" ]]; then
+    echo "✅ Found docker/lib/commonlib.sh — assuming current directory is project root."
+    PROJECT_ROOT="$PWD"
+  else
+    # No valid context found
+    echo "❌ Error: Could not locate SD-Forge project structure." >&2
+    echo "Please ensure the project contains the './docker' directory" >&2
+    echo "Refer to the README.md RE: custom cut down install (you need the sauces archive)" >&2
+    exit 1
+  fi
+
+  # If we get here, we are either in an SD-Forge repo or a custom/cutdown install
+
+  # Attempt to detect Git root
+  export GIT_ROOT=$(find_git_root)
+
+  # Nested logic: decide PROJECT_ROOT and validate everything in one flow
+  if [[ -n "$GIT_ROOT" && -d "$GIT_ROOT" && -f "$GIT_ROOT/docker/lib/commonlib.sh" ]]; then
+    # Git root is valid AND points to a real SD-Forge project
+    PROJECT_ROOT="$GIT_ROOT"
+  else
+    # No valid Git root — rely on existing PROJECT_ROOT
+    if [[ -n "$PROJECT_ROOT" && -d "$PROJECT_ROOT" ]]; then
+        echo "❌ Failed to determine valid GIT_ROOT." >&2
+        echo "❌ Failed to determine valid PROJECT_ROOT." >&2
+        echo "   Neither a Git-controlled SD-Forge repo nor valid PROJECT_ROOT found." >&2
+        echo "   Consult README.md or file catspeed-cc issue ticket." >&2
+        exit 1
+    fi
+    # OVERRIDE GIT_ROOT
+    GIT_ROOT=$PROJECT_ROOT    
+  fi
+  
+  # Export and report (only reached if validation passed)
+  export PROJECT_ROOT
+  echo "📁 Git root set to: $GIT_ROOT"
+  echo "📁 Project root set to: $PROJECT_ROOT" 
+
+}
+
+# find the GIT_ROOT or PROJECT_ROOT (set both variables, source common config first time)
+find_project_root
+
+# safely test for commonlib/commoncfg and attempt sourcing it :)
+if [[ -f "$GIT_ROOT/docker/lib/commonlib.sh" && -f "$GIT_ROOT/docker/lib/commoncfg.sh" ]]; then
+  # source the library
+  if ! source "$GIT_ROOT/docker/lib/commonlib.sh"; then
+    echo "❌ Failed to source commonlib.sh." >&2
+    echo "   Found Git-controlled SD-Forge repo or valid PROJECT_ROOT but failed to source critical libs." >&2
+    echo "   Check sauces archive is installed in project root." >&2
+    echo "   Consult README.md custom/cutdown install or file catspeed-cc issue ticket." >&2
+    exit 1
+  fi
+  # source the config
+  if ! source "$GIT_ROOT/docker/lib/commoncfg.sh"; then
+    echo "❌ Failed to source commoncfg.sh." >&2
+    echo "   Found Git-controlled SD-Forge repo or valid PROJECT_ROOT but failed to source critical libs." >&2
+    echo "   Check sauces archive is installed in project root." >&2
+    echo "   Consult README.md custom/cutdown install or file catspeed-cc issue ticket." >&2
+    exit 1
+  fi
+fi
 
 echo "#"
 echo "##"
@@ -65,8 +133,7 @@ reset
 # Navigate to the docker directory
 cd "${GIT_ROOT}/docker" || { echo "Failed to enter docker directory"; exit 1; }
 
-SCRIPT_DIR="./sauce_scripts"
-WEBUI_SCRIPT_DIR="./sauce_scripts_baked_into_docker_image"
+SCRIPT_DIR="${GIT_ROOT}/docker/sauce_scripts"
 
 # Main menu function
 show_menu() {
@@ -75,24 +142,27 @@ show_menu() {
     echo "    SD-Forge Docker Management Menu "
     echo "===================================="
     echo
-    echo "🔧 Initialization & Setup"
-    echo "  1) Initialize CPU-Only Container"
-    echo "  2) Initialize Single-GPU Container (NVIDIA)"
-    echo "  3) Initialize Multi-GPU Container (NVIDIA)"
+    echo "🔧 Sauces Initialization & Setup"
+    echo "  1) '$SCRIPT_DIR/docker-install-sauces.sh' - Install Sauces to ~/.bashrc"
+    echo "  2) '$SCRIPT_DIR/docker-uninstall-sauces.sh' - Uninstall Sauces from ~/.bashrc"
+    echo
+    echo "🔧 Container Install & Setup"
+    echo "  3) '$SCRIPT_DIR/docker-init-cpu-only.sh' - Initialize CPU-Only Container (NVIDIA)"
+    echo "  4) '$SCRIPT_DIR/docker-init-single-gpu-only.sh' - Initialize Single-GPU Container (NVIDIA)"
+    echo "  5) '$SCRIPT_DIR/docker-init-multi-gpu-only.sh' - Initialize Multi-GPU Container (NVIDIA)"
     echo
     echo "📦 Container Management"
-    echo "  4) Start All Containers"
-    echo "  5) Stop All Containers"
-    echo "  6) Reinstall Container Dependencies"
+    echo "  6) '$SCRIPT_DIR/docker-install-sauces.sh' - Start All Containers"
+    echo "  7) '$SCRIPT_DIR/docker-install-sauces.sh' - Stop All Containers"
+    echo "  8) '$SCRIPT_DIR/docker-install-sauces.sh' - Reinstall Container Dependencies"
+    echo "  9) '$SCRIPT_DIR/docker-install-sauces.sh' - Tail Container logs"
     echo
-    echo "🗑️  Cleanup & Destroy"
-    echo "  7) Destroy CPU-Only Container"
-    echo "  8) Destroy Single-GPU Container"
-    echo "  9) Destroy Multi-GPU Container"
+    echo "🗑️  Container Uninstall & Destroy"
+    echo " 10) '$SCRIPT_DIR/docker-destroy-cpu-only.sh' - Destroy CPU-Only Container"
+    echo " 11) '$SCRIPT_DIR/docker-destroy-single-gpu-only.sh' - Destroy Single-GPU Container"
+    echo " 12) '$SCRIPT_DIR/docker-destroy-multi-gpu-only.sh' - Destroy Multi-GPU Container"
     echo
     echo "🧩 Advanced & Maintenance"
-    echo " 10) Install Additional Sauces"
-    echo " 11) Uninstall Additional Sauces"
     echo
     echo "  Q) Quit"
     echo
@@ -111,98 +181,28 @@ while true; do
             break
             ;;
 
-        "1")
+#        "1")
+#            echo
+#            echo "Initializing CPU-Only Container..."
+#            echo "----------------------------------------"
+#            if [[ -x "$SCRIPT_DIR/docker-init-cpu-only.sh" ]]; then
+#                "$SCRIPT_DIR/docker-init-cpu-only.sh"
+#            else
+#                echo "Error: docker-init-cpu-only.sh not found or not executable."
+#            fi
+#            read -p "Press Enter to continue..."
+#            ;;
+   
+
+          *)
             echo
-            echo "Initializing CPU-Only Container..."
-            echo "----------------------------------------"
-            if [[ -x "$SCRIPT_DIR/docker-init-cpu-only.sh" ]]; then
-                "$SCRIPT_DIR/docker-init-cpu-only.sh"
-            else
-                echo "Error: docker-init-cpu-only.sh not found or not executable."
-            fi
+            echo "Invalid option: '$choice'. Please select a valid number or 'Q' to quit."
             read -p "Press Enter to continue..."
             ;;
-
-        "2")
-            echo
-            echo "Initializing Single-GPU Container (NVIDIA)..."
-            echo "----------------------------------------"
-            if [[ -x "$SCRIPT_DIR/docker-init-single-gpu-only.sh" ]]; then
-                "$SCRIPT_DIR/docker-init-single-gpu-only.sh"
-            else
-                echo "Error: docker-init-single-gpu-only.sh not found or not executable."
-            fi
-            read -p "Press Enter to continue..."
-            ;;
-
-        "3")
-            echo
-            echo "Initializing Multi-GPU Container (NVIDIA)..."
-            echo "----------------------------------------"
-            if [[ -x "$SCRIPT_DIR/docker-init-multi-gpu-only.sh" ]]; then
-                "$SCRIPT_DIR/docker-init-multi-gpu-only.sh"
-            else
-                echo "Error: docker-init-multi-gpu-only.sh not found or not executable."
-            fi
-            read -p "Press Enter to continue..."
-            ;;
-
-        "4")
-            echo
-            echo "Starting All Containers..."
-            echo "----------------------------------------"
-            if [[ -x "$SCRIPT_DIR/docker-start-containers.sh" ]]; then
-                "$SCRIPT_DIR/docker-start-containers.sh"
-            else
-                echo "Error: docker-start-containers.sh not found or not executable."
-            fi
-            read -p "Press Enter to continue..."
-            ;;
-
-        "5")
-            echo
-            echo "Stopping All Containers..."
-            echo "----------------------------------------"
-            if [[ -x "$SCRIPT_DIR/docker-stop-containers.sh" ]]; then
-                "$SCRIPT_DIR/docker-stop-containers.sh"
-            else
-                echo "Error: docker-stop-containers.sh not found or not executable."
-            fi
-            read -p "Press Enter to continue..."
-            ;;
-
-        "6")
-            echo
-            echo "Reinstalling Container Dependencies..."
-            echo "----------------------------------------"
-            if [[ -x "$SCRIPT_DIR/docker-reinstall-container-deps.sh" ]]; then
-                "$SCRIPT_DIR/docker-reinstall-container-deps.sh"
-            else
-                echo "Error: docker-reinstall-container-deps.sh not found or not executable."
-            fi
-            read -p "Press Enter to continue..."
-            ;;
-
-        "7")
-            echo
-            echo "Destroying CPU-Only Container..."
-            echo "----------------------------------------"
-            if [[ -x "$SCRIPT_DIR/docker-destroy-cpu-only.sh" ]]; then
-                "$SCRIPT_DIR/docker-destroy-cpu-only.sh"
-            else
-                echo "Error: docker-destroy-cpu-only.sh not found or not executable."
-            fi
-            read -p "Press Enter to continue..."
-            ;;
-
-        "8")
-            echo
-            echo "Destroying Single-GPU Container..."
-            echo "----------------------------------------"
-            if [[ -x "$SCRIPT_DIR/docker-destroy-single-gpu-only.sh" ]]; then
-                "$SCRIPT_DIR/docker   
-
-
+            
+    esac
+  
+done
 
 
 

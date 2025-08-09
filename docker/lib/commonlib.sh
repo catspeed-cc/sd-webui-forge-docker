@@ -72,12 +72,6 @@ find_project_root() {
         exit 1
     fi
 
-  # Else, check if we are in the project root (i.e., where 'docker/' is a subdirectory)
-  elif [[ -d "./docker" && -f "./docker/lib/commonlib.sh" ]]; then
-    echo "⚠️  Running from project root. Please run this script from inside ./docker."
-    echo "💡 Hint: cd ./docker && ./sauce_scripts/sd-forge-menu"
-    exit 1
-
   # Last resort: check if we can find commonlib.sh relative to current location
   elif [[ -f "./docker/lib/commonlib.sh" ]]; then
     echo "✅ Found docker/lib/commonlib.sh — assuming current directory is project root."
@@ -110,18 +104,6 @@ find_project_root() {
     fi
     # OVERRIDE GIT_ROOT
     GIT_ROOT=$PROJECT_ROOT    
-  fi
-
-  # before we leave how about we safely test for commonconfig and attempt sourcing it :)
-  if [[ -f "$GIT_ROOT/docker/lib/commonlib.sh" && -f "$GIT_ROOT/docker/lib/commoncfg.sh" ]]; then
-    # source the config
-    if ! source "$GIT_ROOT/docker/lib/commoncfg.sh" ; then
-      echo "❌ Failed to source commoncfg.sh." >&2
-      echo "   Found Git-controlled SD-Forge repo or valid PROJECT_ROOT but failed to source critical libs." >&2
-      echo "   Check sauces archive is installed in project root." >&2
-      echo "   Consult README.md custom/cutdown install or file catspeed-cc issue ticket." >&2
-      exit 1
-    fi
   fi
   
   # Export and report (only reached if validation passed)
@@ -379,6 +361,19 @@ end_ps_output() {
 
 # find the GIT_ROOT or PROJECT_ROOT (set both variables, source common config first time)
 find_project_root
+
+# safely test for commonlib/commoncfg and attempt sourcing it :)
+if [[ -f "$GIT_ROOT/docker/lib/commonlib.sh" && -f "$GIT_ROOT/docker/lib/commoncfg.sh" ]]; then
+  # DO NOT source the lib again, it is already sourced and it would create infinite loop
+  # source the config
+  if ! source "$GIT_ROOT/docker/lib/commoncfg.sh"; then
+    echo "❌ Failed to source commoncfg.sh." >&2
+    echo "   Found Git-controlled SD-Forge repo or valid PROJECT_ROOT but failed to source critical libs." >&2
+    echo "   Check sauces archive is installed in project root." >&2
+    echo "   Consult README.md custom/cutdown install or file catspeed-cc issue ticket." >&2
+    exit 1
+  fi
+fi
 
 #
 ##

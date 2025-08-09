@@ -4,9 +4,10 @@
 
 set -euo pipefail  # Exit on error, undefined var, pipe failure
 
-# Function to find the Git root directory, ascending up to 4 levels
+# STILL needed: this is a fallback
+# Function to find the Git root directory, ascending up to 6 levels
 # Required for source line to be accurate and work from all locations
-find_root() {
+find_git_root() {
     local current_dir="$(pwd)"
     local max_levels=6
     local level=0
@@ -26,25 +27,92 @@ find_root() {
         ((level++))
     done
 
-    # to be compatible with slim docker-compose/sauce only installs
-    echo ""
-    echo "Warn: falling back to non-git installation default"
-    echo "      this is okay if you did a minimal/slim/custom install"
-    echo ""
-
-    # Fallback: script directory or known path
-    local fallback="${PWD}"  # or $(dirname "$0")/..
-    if [ -d "$fallback" ]; then
-      echo "$fallback"
-      return 0  # ← Success!
-    fi
-
-    # if we reach here we failed - even the fallback failed somehow O_o
+    echo "Error: .git directory not found within $max_levels parent directories." >&2
     return 1
 }
 
-# Find the Git root
-export GIT_ROOT=$(find_root)
+find_project_root() {
+
+  PROJECT_ROOT=""
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+  # Check if we are inside the 'docker' directory (current path contains /docker)
+  if [[ "$PWD" == *"/docker" || "$PWD" == *"/docker/"* ]]; then
+    if [[ -d "./sauce_scripts" && \
+          -d "./compose_files" && \
+          -d "./sauce_scripts_baked_into_docker_image" && \
+          -f "./compose_files/docker-compose.yaml" ]]; then
+        # Confirmed: we are in the correct docker/ directory
+        echo "✅ Running inside valid docker/ directory."
+        PROJECT_ROOT="$(dirname "$PWD")"
+    else
+        echo "❌ Directory structure incomplete: not a valid SD-Forge docker/ directory." >&2
+        exit 1
+    fi
+
+  # Last resort: check if we can find commonlib.sh relative to current location
+  elif [[ -f "./docker/lib/commonlib.sh" ]]; then
+    echo "✅ Found docker/lib/commonlib.sh — assuming current directory is project root."
+    PROJECT_ROOT="$PWD"
+  else
+    # No valid context found
+    echo "❌ Error: Could not locate SD-Forge project structure." >&2
+    echo "Please ensure the project contains the './docker' directory" >&2
+    echo "Refer to the README.md RE: custom cut down install (you need the sauces archive)" >&2
+    exit 1
+  fi
+
+  # If we get here, we are either in an SD-Forge repo or a custom/cutdown install
+
+  # Attempt to detect Git root
+  export GIT_ROOT=$(find_git_root)
+
+  # Nested logic: decide PROJECT_ROOT and validate everything in one flow
+  if [[ -n "$GIT_ROOT" && -d "$GIT_ROOT" && -f "$GIT_ROOT/docker/lib/commonlib.sh" ]]; then
+    # Git root is valid AND points to a real SD-Forge project
+    PROJECT_ROOT="$GIT_ROOT"
+  else
+    # No valid Git root — rely on existing PROJECT_ROOT
+    if [[ -n "$PROJECT_ROOT" && -d "$PROJECT_ROOT" ]]; then
+        echo "❌ Failed to determine valid GIT_ROOT." >&2
+        echo "❌ Failed to determine valid PROJECT_ROOT." >&2
+        echo "   Neither a Git-controlled SD-Forge repo nor valid PROJECT_ROOT found." >&2
+        echo "   Consult README.md or file catspeed-cc issue ticket." >&2
+        exit 1
+    fi
+    # OVERRIDE GIT_ROOT
+    GIT_ROOT=$PROJECT_ROOT    
+  fi
+  
+  # Export and report (only reached if validation passed)
+  export PROJECT_ROOT
+  echo "📁 Git root set to: $GIT_ROOT"
+  echo "📁 Project root set to: $PROJECT_ROOT" 
+
+}
+
+# find the GIT_ROOT or PROJECT_ROOT (set both variables, source common config first time)
+find_project_root
+
+# safely test for commonlib/commoncfg and attempt sourcing it :)
+if [[ -f "$GIT_ROOT/docker/lib/commonlib.sh" && -f "$GIT_ROOT/docker/lib/commoncfg.sh" ]]; then
+  # source the library
+  if ! source "$GIT_ROOT/docker/lib/commonlib.sh"; then
+    echo "❌ Failed to source commonlib.sh." >&2
+    echo "   Found Git-controlled SD-Forge repo or valid PROJECT_ROOT but failed to source critical libs." >&2
+    echo "   Check sauces archive is installed in project root." >&2
+    echo "   Consult README.md custom/cutdown install or file catspeed-cc issue ticket." >&2
+    exit 1
+  fi
+  # source the config
+  if ! source "$GIT_ROOT/docker/lib/commoncfg.sh"; then
+    echo "❌ Failed to source commoncfg.sh." >&2
+    echo "   Found Git-controlled SD-Forge repo or valid PROJECT_ROOT but failed to source critical libs." >&2
+    echo "   Check sauces archive is installed in project root." >&2
+    echo "   Consult README.md custom/cutdown install or file catspeed-cc issue ticket." >&2
+    exit 1
+  fi
+fi
 
 echo "#"
 echo "##"
@@ -53,9 +121,6 @@ echo "##"
 echo "## UNinstalling all sauce scripts from PATH and ~/.bashrc"
 echo "##"
 echo "#"
-
-# Source the shared functions & configuration
-source ${GIT_ROOT}/docker/lib/commonlib.sh
 
 ADD_TO_PATH=${GIT_ROOT}/docker/sauce_scripts/
 
