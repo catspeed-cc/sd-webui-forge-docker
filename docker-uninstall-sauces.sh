@@ -87,6 +87,9 @@ sed -i '/# managed by sd-forge-webui-docker BEGIN/,/# managed by sd-forge-webui-
 # Update current session's PATH (remove the entry)
 export PATH=$(echo ":$PATH:" | sed -E "s#:${NEW_PATH}:#:#g" | sed 's#^:##; s#:$##')
 
+# source the modified ~/.bashrc
+source ~/.bashrc
+
 echo "Uninstalled: $NEW_PATH removed from PATH and ~/.bashrc"
 
 echo ""
