@@ -114,7 +114,7 @@ Outputs are stored in `sd-webui-forge-docker/outputs/` directory
 
 Due to the nature of Docker, an image running at shutdown _should_ start up again on boot. If this does not happen, submit a [catspeed-cc issue ticket](https://github.com/catspeed-cc/sd-webui-forge-docker/issues)
 
-These are the current tags:
+## These are the current tags:
 ```
 catspeedcc/sd-webui-forge-docker:latest - currently points to v1.1.2
 catspeedcc/sd-webui-forge-docker:v1.1.2 - Menu helper script, cleaned project root more
@@ -126,15 +126,15 @@ catspeedcc/sd-webui-forge-docker:development - (not supported, parity w/ develop
 catspeedcc/sd-webui-forge-docker:bleeding - (not supported, ephemeral, if you use it you're on your own.)
 ```
 
-There are a few main config files:
+## There are a few main config files:
 ```
-./docker/compose_files/docker-compose.yaml # CPU-only          # Should not need configuration
+./docker/compose_files/docker-compose.yaml # CPU-only          # Needs minimal configuration (for CPU & GPU)
 
-./docker/compose_files/docker-compose.single-gpu.nvidia.yaml   # Single GPU only (needs config)
-./docker/compose_files/docker-compose.multi-gpu.nvidia.yaml    # ONE OF MULTIPLE GPU only (needs config)
+./docker/compose_files/docker-compose.single-gpu.nvidia.yaml   # Single GPU only (needs config for GPU)
+./docker/compose_files/docker-compose.multi-gpu.nvidia.yaml    # ONE OF MULTIPLE GPU only (needs config for GPU)
 
 ./docker/compose_files/docker-compose.combined.nvidia.yaml     # ONLY so you can copy the service into
-                       							                     # a different docker-compose.yml file ;)
+                       							                           # a different docker-compose.yml file ;)
 ```
 
 As far as I know there is no way to combine multiple GPU's on this one same task (image generation) but you can dedicate one of many GPU's to image generation and then use the other GPU's for other tasks (chat, development, etc)
