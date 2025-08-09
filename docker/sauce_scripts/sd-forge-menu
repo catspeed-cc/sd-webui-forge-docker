@@ -117,7 +117,7 @@ fi
 
 echo "#"
 echo "##"
-echo "## sd-forge-webui-docker sd-forge-menu.sh script initiated"
+echo "## sd-forge-webui-docker - sd-forge-menu script initiated"
 echo "##"
 echo "## Providing menu to user for docker management"
 echo "##"
