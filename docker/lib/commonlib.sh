@@ -143,11 +143,11 @@ re_install_deps() {
   # this works because it does not touch the mounted /models and /outputs directories
   # and there is no compilation needed (appears to be frontend stuff)
   if [ ! -e "./webui" ]; then
-    git clone https://github.com/lllyasviel/stable-diffusion-webui-forge webui
+    git clone https://github.com/lllyasviel/stable-diffusion-webui-forge webui --quiet
     cd webui
   else
     cd webui
-    git pull origin main
+    git pull origin main --quiet
   fi
 
   # not erroring on success, but pre-emptive fix from below :)
@@ -179,9 +179,9 @@ re_install_deps() {
     git config --global advice.detachedHead false
 
     # modules/launch_utils.py contains the repos and hashes
-    git clone --config core.filemode=false https://github.com/AUTOMATIC1111/stable-diffusion-webui-assets.git && \
-    git clone --config core.filemode=false https://github.com/lllyasviel/huggingface_guess.git && \
-    git clone --config core.filemode=false https://github.com/salesforce/BLIP.git
+    git clone --quiet --config core.filemode=false https://github.com/AUTOMATIC1111/stable-diffusion-webui-assets.git && \
+    git clone --quiet --config core.filemode=false https://github.com/lllyasviel/huggingface_guess.git && \
+    git clone --quiet --config core.filemode=false https://github.com/salesforce/BLIP.git
 
   # IF ALL directories exist already just enter them and pull origin master/main
   elif [[ -d "./stable-diffusion-webui-assets" && -d "./huggingface_guess" && -d "./BLIP" ]]; then
@@ -189,9 +189,9 @@ re_install_deps() {
     echo "All three directories exist."
     echo "Git pull origins master/main branches"
 
-    cd stable-diffusion-webui-assets && git pull origin master && cd ..
-    cd huggingface_guess && git pull origin main && cd ..
-    cd BLIP && git pull origin main && cd ..
+    cd stable-diffusion-webui-assets && git pull origin master --quiet && cd ..
+    cd huggingface_guess && git pull origin main --quiet && cd ..
+    cd BLIP && git pull origin main --quiet && cd ..
 
   # no else we have covered the important considerations
   fi
@@ -200,11 +200,11 @@ re_install_deps() {
 
   # sd-webui-assets
   cd /app/webui/repositories/stable-diffusion-webui-assets && \
-  git checkout 6f7db241d2f8ba7457bac5ca9753331f0c266917
+  git checkout 6f7db241d2f8ba7457bac5ca9753331f0c266917 --quiet
 
   # huggingface_guess
   cd /app/webui/repositories/huggingface_guess && \
-  git checkout 84826248b49bb7ca754c73293299c4d4e23a548d
+  git checkout 84826248b49bb7ca754c73293299c4d4e23a548d --quiet
 
   #
   # THERE IS A CONFLICT between the requirements.txt for BLIP and the upstream/main requirements.txt
@@ -214,7 +214,7 @@ re_install_deps() {
   #                              `transformers==4.15.0`->`transformers==4.46.1` # 2025-08-02 @ 12-37 EST resolved by mooleshacat
   #
   cd /app/webui/repositories/BLIP && \
-  git checkout 48211a1594f1321b00f14c9f7a5b4813144b2fb9
+  git checkout 48211a1594f1321b00f14c9f7a5b4813144b2fb9 --quiet
 
   sed -i 's/transformers==4\.15\.0/transformers==4.46.1/g' /app/webui/repositories/BLIP/requirements.txt
 
@@ -232,16 +232,6 @@ re_install_deps() {
 
   # INSTALL `insightface` needed for spaces, etc.
   pip3 install ${PIP_ADD}--no-cache-dir --root-user-action ignore insightface
-  exit_code=$?
-  if [ $exit_code -ne 0 ]; then
-    echo "⚠️ pip install failed with code $exit_code, but continuing..."
-  fi
-  
-  # Fix package conflict (this might be removed if I figure out why the conflict was introduced)
-  pip3 uninstall -y blendmodes mediapipe open-clip-torch insightface
-  pip3 install --no-cache-dir --root-user-action ignore \
-  "numpy<2" "protobuf<4" \
-  insightface blendmodes mediapipe open-clip-torch
   exit_code=$?
   if [ $exit_code -ne 0 ]; then
     echo "⚠️ pip install failed with code $exit_code, but continuing..."

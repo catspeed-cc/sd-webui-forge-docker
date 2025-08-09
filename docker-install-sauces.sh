@@ -69,7 +69,7 @@ if [ "$FDEBUG}" = "true" ]; then
   echo "Current path: [${PATH}]"
 fi
 
-export NEW_PATH="\${PATH}:${ADD_TO_PATH}"
+export NEW_PATH="\${PATH}:/usr/local/cuda/bin:${ADD_TO_PATH}"
 export NEW_PATH_EXPANDED="${PATH}:${ADD_TO_PATH}"
 
 if [ "$FDEBUG}" = "true" ]; then
