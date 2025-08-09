@@ -62,13 +62,10 @@ echo "#"
 source ${GIT_ROOT}/docker/lib/commonlib.sh
 
 # determine if cuda exists in the path - if not add it
-if [[ ":$PATH:" == *":/usr/local/cuda/bin:"* ]]; then
+if [[ ":$PATH:" == *":/usr/local/cuda/bin"* ]]; then
     echo "CUDA path is already in PATH"
     export NEW_PATH="\${PATH}:/usr/local/cuda/bin"
     export NEW_PATH_EXPANDED="${PATH}:/usr/local/cuda/bin"
-else
-    echo "CUDA path is not in PATH"
-    # Optionally, add it: export PATH="$PATH:/usr/local/cuda/bin"
 fi
 
 # Ether way we add ADD_T__PATH
@@ -92,7 +89,7 @@ fi
 
 if (( IS_INSTALLED > 0 )); then
   echo ""
-  echo "Warn: Already installed. Refusing to install again."
+  echo "Warn: Already installed (scripts already in PATH). Refusing to install again."
   echo "Run '/docker-uninstall-sauces.sh' first if you want to reinstall."
   echo ""
   exit 0
