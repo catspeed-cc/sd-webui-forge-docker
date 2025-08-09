@@ -415,7 +415,7 @@ if [[ -n "${SD_GPU_DEVICE:-}" ]]; then
   export PYTHON_ADD_ARG=" --gpu-device-id=${SD_GPU_DEVICE}"
   echo "🔧 Will pass GPU arg:${PYTHON_ADD_ARG}" >&2
 else
-  echo "⚠️  WARNING: SD_GPU_DEVICE not set. Rust be GPU error or perhaps running oin CPU-only?" >&2
+  echo "⚠️  WARNING: SD_GPU_DEVICE not set. Rust be GPU error or perhaps running on CPU-only?" >&2
   export PYTHON_ADD_ARG=""
 fi
 

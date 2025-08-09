@@ -145,7 +145,11 @@ Included in v1.1.2 is the sdf-docker-menu! To use it for the first time you must
 
 Afterwards you can call the menu with `sdf-menu` from any subdirectory of the project root. Each time you complete a command it loops back to the main menu, where you can run a different command or quit.
 
+Optionally you may also run the scripts directly from any subdirectory of the project root. Start typing "docker-" and hit tab to see all the current scripts.
+
 You will notice the main configurations are editable via this menu (using nano) - this script is compatible with SSH.
+
+Not yet possible to edit the Custom/Cut-down install config (`docker-compose.combined.yaml`) that must be done manually as you must configure it, then copy it to your docker-compose.yaml
 
 ## Installation from GitHub
 
@@ -194,8 +198,6 @@ Below commands & more exist inside the menu! `./sdf-docker-menu.sh` from project
 - You can uninstall/reinstall to debug / start with fresh image (image is already stored locally)
 
 ## Custom / Cut-down Installation w/ sauces archive
-
-### Customize a docker-compose.yaml from another project
 
 Let's say you have another project - let's pick localAGI as an example. You can customize the `docker-compose.yaml` for localAGI and add in this docker service. This way when you start localAGI it will also start your image generation service.
 
