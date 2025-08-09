@@ -66,6 +66,8 @@ You can download previous versions [here](https://github.com/lllyasviel/stable-d
 
 # Docker Installation
 
+This is a dockerized version of lllyasviel/stable-diffusion-webui-forge. It fetches lllyasviel/stable-diffusion-webui-forge source inside the container.
+
 ### Support
 
 - Docker support is only provided for the `latest` and `v*.*.*` tags (Ex. `v1.1.2`)
